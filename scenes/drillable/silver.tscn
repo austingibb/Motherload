@@ -1,0 +1,36 @@
+[gd_scene load_steps=8 format=3 uid="uid://c88c2x0im82ss"]
+
+[ext_resource type="PackedScene" uid="uid://4dp3owa1a7k" path="res://scenes/drillable/dirt.tscn" id="1_r0lpe"]
+[ext_resource type="Shader" path="res://scripts/animated_transparency_mask.gdshader" id="2_d415v"]
+[ext_resource type="Texture2D" uid="uid://8vj32tpdr41f" path="res://assets/dirt_drilled_transparency_mask_left.png" id="3_to11t"]
+[ext_resource type="Texture2D" uid="uid://bj5p8q6k6dbbu" path="res://assets/silver.png" id="4_eabva"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_psr3b"]
+resource_local_to_scene = true
+shader = ExtResource("2_d415v")
+shader_parameter/num_frames = 5
+shader_parameter/frame_index = -1
+shader_parameter/flipH = false
+shader_parameter/flipV = false
+shader_parameter/transparency_mask_frames = ExtResource("3_to11t")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8vrp6"]
+atlas = ExtResource("4_eabva")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_fm3lq"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8vrp6")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="dirt" instance=ExtResource("1_r0lpe")]
+
+[node name="AnimatedSprite2D" parent="." index="0"]
+material = SubResource("ShaderMaterial_psr3b")
+sprite_frames = SubResource("SpriteFrames_fm3lq")
