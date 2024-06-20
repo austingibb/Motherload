@@ -15,15 +15,15 @@ shader_parameter/flipH = false
 shader_parameter/flipV = false
 shader_parameter/transparency_mask_frames = ExtResource("3_puesd")
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_xbgja"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_1v203"]
 atlas = ExtResource("4_wr717")
-region = Rect2(0, 0, 32, 32)
+region = Rect2(0, 0, 25, 25)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_na4qw"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_xbgja")
+"texture": SubResource("AtlasTexture_1v203")
 }],
 "loop": true,
 "name": &"default",
@@ -198,24 +198,25 @@ _data = {
 }
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ocdpi"]
-size = Vector2(31.984, 32.0528)
+size = Vector2(24.9153, 24.9757)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5ou57"]
-size = Vector2(16.2247, 28.8477)
+size = Vector2(3.92079, 13.8187)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kb6at"]
-size = Vector2(31.9663, 5.49664)
+size = Vector2(20.5461, 2.49688)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_in7ko"]
-size = Vector2(15.4703, 29.0113)
+size = Vector2(4.38098, 13.4997)
 
 [node name="dirt" type="StaticBody2D"]
 script = ExtResource("1_7q1a7")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 material = SubResource("ShaderMaterial_2fx2m")
-position = Vector2(0.0371265, 0)
+position = Vector2(0.0742549, -0.074255)
 sprite_frames = SubResource("SpriteFrames_na4qw")
+frame_progress = 0.965815
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="AnimatedSprite2D"]
 libraries = {
@@ -231,22 +232,21 @@ shape = SubResource("RectangleShape2D_ocdpi")
 visible = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RightDrillZone"]
-position = Vector2(13.9284, 0.881626)
+position = Vector2(13.6499, 5.48537)
 shape = SubResource("RectangleShape2D_5ou57")
 
 [node name="TopDrillZone" type="Area2D" parent="."]
 visible = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="TopDrillZone"]
-visible = false
-position = Vector2(0.00590849, -17.1797)
+position = Vector2(0.0801616, -13.764)
 shape = SubResource("RectangleShape2D_kb6at")
 
 [node name="LeftDrillZone" type="Area2D" parent="."]
 visible = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="LeftDrillZone"]
-position = Vector2(-13.2171, 0.740687)
+position = Vector2(-13.2373, 5.88277)
 shape = SubResource("RectangleShape2D_in7ko")
 
 [connection signal="animation_finished" from="AnimatedSprite2D/AnimationPlayer" to="." method="_on_animation_player_animation_finished"]

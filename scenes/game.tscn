@@ -1,43 +1,51 @@
-[gd_scene load_steps=13 format=3 uid="uid://c4n3nw1neoend"]
+[gd_scene load_steps=15 format=3 uid="uid://c4n3nw1neoend"]
 
 [ext_resource type="PackedScene" uid="uid://cwrufed6b0h7m" path="res://scenes/player.tscn" id="1_cpms4"]
 [ext_resource type="Script" path="res://scripts/game.cs" id="1_t5rox"]
 [ext_resource type="Texture2D" uid="uid://kpsgopnm6yhl" path="res://assets/cave.png" id="2_tyf4k"]
 [ext_resource type="PackedScene" uid="uid://4dp3owa1a7k" path="res://scenes/drillable/dirt.tscn" id="3_pqfaf"]
 [ext_resource type="PackedScene" uid="uid://bwvk0l13hnn6j" path="res://scenes/drillable/iron.tscn" id="5_wiboy"]
-[ext_resource type="Script" path="res://scripts/DiggableMapGenerator.cs" id="5_wq7nu"]
 [ext_resource type="PackedScene" uid="uid://vvbgo5qew4k3" path="res://scenes/drillable/gold.tscn" id="5_xwj0t"]
 [ext_resource type="PackedScene" uid="uid://c88c2x0im82ss" path="res://scenes/drillable/silver.tscn" id="7_ll4rb"]
+[ext_resource type="Script" path="res://scripts/DrillableMapGenerator.cs" id="8_iy0wo"]
 
-[sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_4rsox"]
+[sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_qvluj"]
 scenes/1/scene = ExtResource("3_pqfaf")
 scenes/2/scene = ExtResource("5_xwj0t")
 scenes/3/scene = ExtResource("5_wiboy")
 scenes/4/scene = ExtResource("7_ll4rb")
 
-[sub_resource type="TileSet" id="TileSet_xwt6f"]
-tile_size = Vector2i(32, 32)
-sources/0 = SubResource("TileSetScenesCollectionSource_4rsox")
+[sub_resource type="TileSet" id="TileSet_smrpq"]
+tile_size = Vector2i(25, 25)
+sources/0 = SubResource("TileSetScenesCollectionSource_qvluj")
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_2e27v"]
-seed = 12
-frequency = 0.0073
-offset = Vector3(120.6, 2.08167e-14, 2.08167e-14)
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_vnfqb"]
+frequency = 0.2
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_3ygtm"]
-height = 1000000
-noise = SubResource("FastNoiseLite_2e27v")
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_5udv4"]
+width = 20
+height = 60
+noise = SubResource("FastNoiseLite_vnfqb")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_wnes6"]
+frequency = 0.2731
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_1paxr"]
+width = 20
+height = 60
+noise = SubResource("FastNoiseLite_wnes6")
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_t5rox")
 
 [node name="Player" parent="." instance=ExtResource("1_cpms4")]
-position = Vector2(-21.8042, -5.73793)
+z_index = 1
+position = Vector2(-11.1792, -36.7379)
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 position = Vector2(0.525566, -0.420448)
 zoom = Vector2(12, 12)
-position_smoothing_speed = 20.0
+position_smoothing_enabled = true
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 z_index = -2
@@ -46,11 +54,8 @@ scale = Vector2(0.24885, 0.249805)
 texture = ExtResource("2_tyf4k")
 
 [node name="TileMap" type="TileMap" parent="."]
-z_index = -1
-position = Vector2(0.393723, 12.3067)
-scale = Vector2(0.994797, 1.05306)
-tile_set = SubResource("TileSet_xwt6f")
+tile_set = SubResource("TileSet_smrpq")
 format = 2
-layer_0/tile_data = PackedInt32Array(-65536, 0, 65536, -65535, 0, 65536, 0, 0, 131072, 1, 0, 65536, -65534, 0, 65536, -2, 0, 65536, -3, 0, 65536, -4, 0, 65536, -131072, 0, 65536, -131071, 0, 65536, -131070, 0, 65536, -65537, 0, 65536, -65538, 0, 65536, -65539, 0, 65536, -65540, 0, 65536, 65533, 0, 65536, 65532, 0, 65536, 2, 0, 65536, 131068, 0, 65536, 131071, 0, 131072, 65536, 0, 131072, 65537, 0, 65536, 65538, 0, 65536, 196604, 0, 65536, 196607, 0, 65536, 131072, 0, 65536, 131073, 0, 65536, 131074, 0, 65536, 196606, 0, 65536, 131070, 0, 65536, 131069, 0, 65536, 65534, 0, 65536, 196605, 0, 65536)
-script = ExtResource("5_wq7nu")
-NoiseHeight = SubResource("NoiseTexture2D_3ygtm")
+script = ExtResource("8_iy0wo")
+EmptyTileNoiseTexture = SubResource("NoiseTexture2D_5udv4")
+DrillableTypeNoiseTexture = SubResource("NoiseTexture2D_1paxr")

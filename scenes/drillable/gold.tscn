@@ -14,15 +14,15 @@ shader_parameter/flipH = false
 shader_parameter/flipV = false
 shader_parameter/transparency_mask_frames = ExtResource("3_ak7cw")
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_7m3wl"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_8ju3k"]
 atlas = ExtResource("4_cxbva")
-region = Rect2(0, 0, 32, 32)
+region = Rect2(0, 0, 25, 25)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_w7gkt"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_7m3wl")
+"texture": SubResource("AtlasTexture_8ju3k")
 }],
 "loop": true,
 "name": &"default",
