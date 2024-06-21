@@ -1,23 +1,16 @@
-[gd_scene load_steps=15 format=3 uid="uid://c4n3nw1neoend"]
+[gd_scene load_steps=11 format=3 uid="uid://c4n3nw1neoend"]
 
 [ext_resource type="PackedScene" uid="uid://cwrufed6b0h7m" path="res://scenes/player.tscn" id="1_cpms4"]
 [ext_resource type="Script" path="res://scripts/game.cs" id="1_t5rox"]
-[ext_resource type="Texture2D" uid="uid://kpsgopnm6yhl" path="res://assets/cave.png" id="2_tyf4k"]
 [ext_resource type="PackedScene" uid="uid://4dp3owa1a7k" path="res://scenes/drillable/dirt.tscn" id="3_pqfaf"]
-[ext_resource type="PackedScene" uid="uid://bwvk0l13hnn6j" path="res://scenes/drillable/iron.tscn" id="5_wiboy"]
-[ext_resource type="PackedScene" uid="uid://vvbgo5qew4k3" path="res://scenes/drillable/gold.tscn" id="5_xwj0t"]
-[ext_resource type="PackedScene" uid="uid://c88c2x0im82ss" path="res://scenes/drillable/silver.tscn" id="7_ll4rb"]
-[ext_resource type="Script" path="res://scripts/DrillableMapGenerator.cs" id="8_iy0wo"]
+[ext_resource type="Script" path="res://scripts/DrillableGrid.cs" id="8_iy0wo"]
 
-[sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_qvluj"]
+[sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_4ukp1"]
 scenes/1/scene = ExtResource("3_pqfaf")
-scenes/2/scene = ExtResource("5_xwj0t")
-scenes/3/scene = ExtResource("5_wiboy")
-scenes/4/scene = ExtResource("7_ll4rb")
 
 [sub_resource type="TileSet" id="TileSet_smrpq"]
-tile_size = Vector2i(25, 25)
-sources/0 = SubResource("TileSetScenesCollectionSource_qvluj")
+tile_size = Vector2i(29, 29)
+sources/1 = SubResource("TileSetScenesCollectionSource_4ukp1")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_vnfqb"]
 frequency = 0.2
@@ -47,15 +40,10 @@ position = Vector2(0.525566, -0.420448)
 zoom = Vector2(12, 12)
 position_smoothing_enabled = true
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-z_index = -2
-position = Vector2(-1.26851, -8.75489)
-scale = Vector2(0.24885, 0.249805)
-texture = ExtResource("2_tyf4k")
-
 [node name="TileMap" type="TileMap" parent="."]
 tile_set = SubResource("TileSet_smrpq")
 format = 2
+layer_0/tile_data = PackedInt32Array(65535, 1, 65536, 0, 1, 65536, 65534, 1, 65536)
 script = ExtResource("8_iy0wo")
 EmptyTileNoiseTexture = SubResource("NoiseTexture2D_5udv4")
 DrillableTypeNoiseTexture = SubResource("NoiseTexture2D_1paxr")

@@ -14,6 +14,9 @@ public partial class Drillable : StaticBody2D
 	public AnimationPlayer animationPlayer;
 	public CollisionShape2D collisionShape2D;
 
+	[Signal]
+	public delegate void dugEventHandler(Node2D drillable);
+
 	public override void _Ready()
 	{
 		AnimationPlayer animationPlayer = GetNode<AnimationPlayer>("./AnimatedSprite2D/AnimationPlayer");
@@ -86,6 +89,7 @@ public partial class Drillable : StaticBody2D
 	{
 		if (anim_name == "dig_from_left" || anim_name == "dig_from_right" || anim_name == "dig_top")
 		{
+			EmitSignal(SignalName.dug, this);
 			QueueFree();
 		}
 	}

@@ -1,18 +1,15 @@
-[gd_scene load_steps=8 format=3 uid="uid://c88c2x0im82ss"]
+[gd_scene load_steps=7 format=3 uid="uid://c88c2x0im82ss"]
 
 [ext_resource type="PackedScene" uid="uid://4dp3owa1a7k" path="res://scenes/drillable/dirt.tscn" id="1_r0lpe"]
-[ext_resource type="Shader" path="res://scripts/animated_transparency_mask.gdshader" id="2_d415v"]
-[ext_resource type="Texture2D" uid="uid://8vj32tpdr41f" path="res://assets/dirt_drilled_transparency_mask_left.png" id="3_to11t"]
+[ext_resource type="Shader" path="res://scripts/drillable_dynamic_sprite.gdshader" id="2_d415v"]
 [ext_resource type="Texture2D" uid="uid://bj5p8q6k6dbbu" path="res://assets/silver.png" id="4_eabva"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_psr3b"]
 resource_local_to_scene = true
 shader = ExtResource("2_d415v")
-shader_parameter/num_frames = 5
-shader_parameter/frame_index = -1
-shader_parameter/flipH = false
-shader_parameter/flipV = false
-shader_parameter/transparency_mask_frames = ExtResource("3_to11t")
+shader_parameter/corner_states = null
+shader_parameter/show_top_cover = null
+shader_parameter/show_bottom_cover = null
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3mjcu"]
 atlas = ExtResource("4_eabva")
