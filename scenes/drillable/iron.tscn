@@ -8,8 +8,14 @@
 resource_local_to_scene = true
 shader = ExtResource("2_8dckx")
 shader_parameter/corner_states = null
+shader_parameter/dig_orientation = false
 shader_parameter/show_top_cover = null
 shader_parameter/show_bottom_cover = null
+shader_parameter/show_left_cover = null
+shader_parameter/show_right_cover = null
+shader_parameter/flip_dig_animation_h = null
+shader_parameter/flip_dig_animation_v = true
+shader_parameter/dig_offset = 33
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_dt340"]
 atlas = ExtResource("4_fkbl4")

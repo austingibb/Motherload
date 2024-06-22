@@ -63,10 +63,14 @@ public partial class DrillableGrid : TileMap
                 Node2D node2D = positionToNode2D[i][j];
                 if (node2D != null && GodotObject.IsInstanceValid(node2D))
                 {
-                    UpdateDrillableSurface(node2D, new Vector2I(i, j), true, true);
-                    UpdateDrillableSurface(node2D, new Vector2I(i, j), true, false);
-                    UpdateDrillableSurface(node2D, new Vector2I(i, j), false, true);
-                    UpdateDrillableSurface(node2D, new Vector2I(i, j), false, false);
+                    if (i == 1 && j == 2)
+                    {
+                        GD.Print("Updating drillable edges");
+                    }
+                    UpdateDrillableCorner(node2D, new Vector2I(i, j), DrillableCorner.TopLeft);
+                    UpdateDrillableCorner(node2D, new Vector2I(i, j), DrillableCorner.TopRight);
+                    UpdateDrillableCorner(node2D, new Vector2I(i, j), DrillableCorner.BottomLeft);
+                    UpdateDrillableCorner(node2D, new Vector2I(i, j), DrillableCorner.BottomRight);
                 }
             }
         }    
@@ -85,45 +89,50 @@ public partial class DrillableGrid : TileMap
                 Node2D node2D = positionToNode2D[i][j];
                 if (node2D != null && GodotObject.IsInstanceValid(node2D))
                 {
-                    UpdateDrillableSurface(node2D, new Vector2I(i, j), true, true);
-                    UpdateDrillableSurface(node2D, new Vector2I(i, j), true, false);
-                    UpdateDrillableSurface(node2D, new Vector2I(i, j), false, true);
-                    UpdateDrillableSurface(node2D, new Vector2I(i, j), false, false);
+                    UpdateDrillableCorner(node2D, new Vector2I(i, j), DrillableCorner.TopLeft);
+                    UpdateDrillableCorner(node2D, new Vector2I(i, j), DrillableCorner.TopRight);
+                    UpdateDrillableCorner(node2D, new Vector2I(i, j), DrillableCorner.BottomLeft);
+                    UpdateDrillableCorner(node2D, new Vector2I(i, j), DrillableCorner.BottomRight);
                 }
             }
         }   
     }
 
-    private void UpdateDrillableSurface(Node2D drillable, Vector2I gridPos, bool isAbove, bool isLeft)
+    private void UpdateDrillableCorner(Node2D drillable, Vector2I gridPos, DrillableCorner corner)
     {
-        int yFlip = isAbove ? 1 : -1;
-        int xFlip = isLeft ? 1 : -1;
+        int yFlip = 1;
+        if (corner == DrillableCorner.BottomLeft || corner == DrillableCorner.BottomRight)
+        {
+            yFlip = -1;
+        }
+        int xFlip = 1;
+        if (corner == DrillableCorner.TopRight || corner == DrillableCorner.BottomRight)
+        {
+            xFlip = -1;
+        }
+
         bool hasDrillableAbove = HasNeighbor(new Vector2I(0, -1 * yFlip), gridPos);
         bool hasDrillableDiagonal = HasNeighbor(new Vector2I(-1 * xFlip, -1 * yFlip), gridPos);
         bool hasDrillableSide = HasNeighbor(new Vector2I(-1 * xFlip, 0), gridPos);
-
-        DrillableSurface surface = isAbove ? DrillableSurface.Top : DrillableSurface.Bottom;
-        DrillableSide side = isLeft ? DrillableSide.Left : DrillableSide.Right;
         
+        DrillableShaderManager.UpdateDrillableSide(drillable, (xFlip == 1) ? DrillableSurface.Left : DrillableSurface.Right, !hasDrillableSide);
+        DrillableShaderManager.UpdateDrillableSide(drillable, (yFlip == 1) ? DrillableSurface.Top : DrillableSurface.Bottom, !hasDrillableAbove);
 
-        if (hasDrillableAbove)
+        DrillableCornerShape drillableCornerShape = DrillableCornerShape.None;
+        if (!hasDrillableAbove)
         {
-            DrillableShaderManager.UpdateDrillableCorner(drillable, surface, false);
-        } else 
-        {
-            DrillableCornerShape drillableCornerShape = DrillableCornerShape.None;
             if (hasDrillableDiagonal) 
             {
                 drillableCornerShape = DrillableCornerShape.Concave;
-            
             } else
             {
                 drillableCornerShape = hasDrillableSide ? DrillableCornerShape.Straight : DrillableCornerShape.Convex;
             }
-
-            DrillableShaderManager.UpdateDrillableCorner(drillable, surface, true, side, drillableCornerShape);
+        } else {
+            drillableCornerShape = DrillableCornerShape.Straight;
         }
 
+        DrillableShaderManager.UpdateDrillableCorner(drillable, corner, drillableCornerShape);
     }
 
     public void GenerateWorld()

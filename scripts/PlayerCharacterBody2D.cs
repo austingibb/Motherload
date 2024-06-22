@@ -113,7 +113,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 				{
 					// Get the input direction and handle the movement/deceleration.
 					// As good practice, you should replace UI actions with custom gameplay actions.
-					Vector2 direction = Input.GetVector("move_left", "move_right", "ui_up", "down");
+					Vector2 direction = Input.GetVector("move_left", "move_right", "fly", "down");
 					if (direction != Vector2.Zero)
 					{
 						if (direction.Y > 0)
@@ -153,6 +153,10 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 							{
 								playerAnimation.UpdateAnimation(PlayerAnimationState.WalkRight);
 							}
+						} else if (direction.Y < 0)
+						{
+							velocity.Y = -50;
+							playerState = PlayerState.Flying;
 						}
 					} else
 					{
@@ -160,7 +164,6 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 						velocity.X = Mathf.MoveToward(Velocity.X, 0, WalkSpeed);
 						playerAnimation.UpdateAnimation(PlayerAnimationState.Idle);
 					}
-
 				} else if (playerState == PlayerState.Drilling) 
 				{
 					bool endDrilling = (Time.GetTicksMsec() - DrillingStartTime) / 1000.0f > DrillingDuration;

@@ -3,13 +3,17 @@ using Godot;
 public enum DrillableSurface
 {
     Top,
-    Bottom
+    Bottom,
+    Left,
+    Right
 }
 
-public enum DrillableSide 
+public enum DrillableCorner 
 {
-    Left,
-    Right,
+    TopLeft,
+    TopRight,
+    BottomLeft,
+    BottomRight,
     None
 }
 
@@ -23,8 +27,7 @@ public enum DrillableCornerShape
 
 public partial class DrillableShaderManager : GodotObject
 {
-    public static void UpdateDrillableCorner(Node2D drillable, DrillableSurface surface, bool isExposed,
-        DrillableSide side = DrillableSide.None, DrillableCornerShape cornerShape = DrillableCornerShape.None)
+    public static void UpdateDrillableSide(Node2D drillable, DrillableSurface surface, bool isExposed)
     {
         AnimatedSprite2D animatedSprite2D = drillable.GetNode<AnimatedSprite2D>("AnimatedSprite2D");
         ShaderMaterial shaderMaterial = animatedSprite2D.Material as ShaderMaterial;
@@ -37,45 +40,35 @@ public partial class DrillableShaderManager : GodotObject
         {
             shaderMaterial.SetShaderParameter("show_bottom_cover", isExposed);
         }
+        else if (surface == DrillableSurface.Left)
+        {
+            shaderMaterial.SetShaderParameter("show_left_cover", isExposed);
+        }
+        else if (surface == DrillableSurface.Right)
+        {
+            shaderMaterial.SetShaderParameter("show_right_cover", isExposed);
+        }
+    }
+
+    public static void UpdateDrillableCorner(Node2D drillable, DrillableCorner corner, DrillableCornerShape cornerShape)
+    {
+        AnimatedSprite2D animatedSprite2D = drillable.GetNode<AnimatedSprite2D>("AnimatedSprite2D");
+        ShaderMaterial shaderMaterial = animatedSprite2D.Material as ShaderMaterial;
 
         Vector4 cornerStates = (Vector4) shaderMaterial.GetShaderParameter("corner_states");
 
-        if (!isExposed)
+        if (corner == DrillableCorner.TopLeft)
         {
-            if (surface == DrillableSurface.Top)
-            {
-                cornerStates.X = 0.0f;
-                cornerStates.Y = 0.0f;
-            }
-            else if (surface == DrillableSurface.Bottom)
-            {
-                cornerStates.Z = 0.0f;
-                cornerStates.W = 0.0f;
-            }
-        } else
+            cornerStates.X = GetCornerStateForShape(cornerShape);
+        } else if (corner == DrillableCorner.TopRight)
         {
-            if (side == DrillableSide.None || cornerShape == DrillableCornerShape.None)
-            {
-                GD.PrintErr("DrillableShaderManager.UpdateDrillableCorner: If setting exposed surface, must specify both side and corner shape.");
-                return;
-            }
-
-            if (surface == DrillableSurface.Top && side == DrillableSide.Left)
-            {
-                cornerStates.X = GetCornerStateForShape(cornerShape);
-            }
-            else if (surface == DrillableSurface.Top && side == DrillableSide.Right)
-            {
-                cornerStates.Y = GetCornerStateForShape(cornerShape);
-            }
-            else if (surface == DrillableSurface.Bottom && side == DrillableSide.Left)
-            {
-                cornerStates.Z = GetCornerStateForShape(cornerShape);
-            }
-            else if (surface == DrillableSurface.Bottom && side == DrillableSide.Right)
-            {
-                cornerStates.W = GetCornerStateForShape(cornerShape);
-            }
+            cornerStates.Y = GetCornerStateForShape(cornerShape);
+        } else if (corner == DrillableCorner.BottomLeft)
+        {
+            cornerStates.Z = GetCornerStateForShape(cornerShape);
+        } else if (corner == DrillableCorner.BottomRight)
+        {
+            cornerStates.W = GetCornerStateForShape(cornerShape);
         }
 
         shaderMaterial.SetShaderParameter("corner_states", cornerStates);
