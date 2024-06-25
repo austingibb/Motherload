@@ -1,71 +1,89 @@
-[gd_scene load_steps=24 format=3 uid="uid://4dp3owa1a7k"]
+[gd_scene load_steps=22 format=3 uid="uid://4dp3owa1a7k"]
 
-[ext_resource type="Script" path="res://scripts/Drillable.cs" id="1_7q1a7"]
-[ext_resource type="Shader" path="res://scripts/drillable_dynamic_sprite.gdshader" id="2_akk2r"]
-[ext_resource type="Texture2D" uid="uid://dud4q44sj7tp7" path="res://assets/dirt_bottom_cover.png" id="3_7abbq"]
-[ext_resource type="Texture2D" uid="uid://vek6jvgwmjql" path="res://assets/dirt_concave_connector.png" id="4_1ijhk"]
-[ext_resource type="Texture2D" uid="uid://bx68ylxuirvgc" path="res://assets/dirt_top_cover.png" id="4_cdfq2"]
-[ext_resource type="Texture2D" uid="uid://d0mivfawnqnc6" path="res://assets/dirt.png" id="4_wr717"]
-[ext_resource type="Texture2D" uid="uid://dl1xui0fts47f" path="res://assets/dirt_convex_mask.png" id="5_lns21"]
-[ext_resource type="Texture2D" uid="uid://b372ist2ldhbd" path="res://assets/dirt_left_cover.png" id="6_vheo8"]
-[ext_resource type="Texture2D" uid="uid://ut1ddro0h28i" path="res://assets/dig_mask_down.png" id="6_vr3sf"]
-[ext_resource type="Texture2D" uid="uid://cvmw7psh2dyed" path="res://assets/dirt_right_cover.png" id="7_6gpyh"]
-[ext_resource type="Texture2D" uid="uid://drftncua07736" path="res://assets/dig_mask_side.png" id="7_ocxml"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_2fx2m"]
-resource_local_to_scene = true
-shader = ExtResource("2_akk2r")
-shader_parameter/corner_states = Vector4(1, 1, 1, 1)
-shader_parameter/dig_orientation = false
-shader_parameter/show_top_cover = true
-shader_parameter/show_bottom_cover = true
-shader_parameter/show_left_cover = true
-shader_parameter/show_right_cover = true
-shader_parameter/flip_dig_animation_h = true
-shader_parameter/flip_dig_animation_v = true
-shader_parameter/dig_offset = 33
-shader_parameter/top_cover = ExtResource("4_cdfq2")
-shader_parameter/bottom_cover = ExtResource("3_7abbq")
-shader_parameter/left_cover = ExtResource("6_vheo8")
-shader_parameter/right_cover = ExtResource("7_6gpyh")
-shader_parameter/concave_connector = ExtResource("4_1ijhk")
-shader_parameter/convex_mask = ExtResource("5_lns21")
-shader_parameter/dig_down = ExtResource("6_vr3sf")
-shader_parameter/dig_side = ExtResource("7_ocxml")
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_vtyy6"]
-atlas = ExtResource("4_wr717")
-region = Rect2(0, 0, 37, 47)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_na4qw"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_vtyy6")
-}],
-"loop": false,
-"name": &"default",
-"speed": 5.0
-}]
+[ext_resource type="Script" path="res://scripts/Drillable.cs" id="1_0cn1p"]
+[ext_resource type="PackedScene" uid="uid://cv7j1lqpv7dyr" path="res://scenes/tiles/dirt_animated_sprite_2d.tscn" id="2_aes2i"]
+[ext_resource type="Shader" path="res://scripts/drillable_dynamic_sprite.gdshader" id="3_jtjqy"]
+[ext_resource type="Texture2D" uid="uid://dud4q44sj7tp7" path="res://assets/dirt_bottom_cover.png" id="4_ec0rj"]
+[ext_resource type="Texture2D" uid="uid://vek6jvgwmjql" path="res://assets/dirt_concave_connector.png" id="5_j2ryj"]
+[ext_resource type="Texture2D" uid="uid://dl1xui0fts47f" path="res://assets/dirt_convex_mask.png" id="6_aqp4x"]
+[ext_resource type="Texture2D" uid="uid://ut1ddro0h28i" path="res://assets/dig_mask_down.png" id="7_eqnya"]
+[ext_resource type="Texture2D" uid="uid://drftncua07736" path="res://assets/dig_mask_side.png" id="8_qjjrb"]
+[ext_resource type="Texture2D" uid="uid://b372ist2ldhbd" path="res://assets/dirt_left_cover.png" id="9_e2hfc"]
+[ext_resource type="Texture2D" uid="uid://cvmw7psh2dyed" path="res://assets/dirt_right_cover.png" id="10_5hbf2"]
+[ext_resource type="Texture2D" uid="uid://bx68ylxuirvgc" path="res://assets/dirt_top_cover.png" id="11_1axu0"]
 
 [sub_resource type="Animation" id="Animation_86aoo"]
 length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath(".:material:shader_parameter/dig_offset")
+tracks/0/path = NodePath("Dirt_AnimatedSprite2D:material:shader_parameter/dig_orientation")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [33]
+"values": [true]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath(".:material:shader_parameter/flipDigAnimationH")
+tracks/1/path = NodePath("Dirt_AnimatedSprite2D:material:shader_parameter/dig_offset")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [33]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Dirt_AnimatedSprite2D:material:shader_parameter/flip_dig_animation_h")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Dirt_AnimatedSprite2D:material:shader_parameter/flip_dig_animation_v")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_e0exv"]
+resource_name = "dig_right"
+length = 0.3
+tracks/0/type = "method"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"_pre_animation_finished"
+}]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Dirt_AnimatedSprite2D:material:shader_parameter/dig_orientation")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -77,19 +95,19 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath(".:material:shader_parameter/dig_orientation")
+tracks/2/path = NodePath("Dirt_AnimatedSprite2D:material:shader_parameter/dig_offset")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [33, 0]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath(".:material:shader_parameter/flip_dig_animation_v")
+tracks/3/path = NodePath("Dirt_AnimatedSprite2D:material:shader_parameter/flip_dig_animation_h")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
@@ -99,80 +117,54 @@ tracks/3/keys = {
 "values": [true]
 }
 
-[sub_resource type="Animation" id="Animation_e0exv"]
-resource_name = "dig_right"
+[sub_resource type="Animation" id="Animation_o2vxo"]
+resource_name = "dig_left"
 length = 0.3
-tracks/0/type = "value"
+tracks/0/type = "method"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath(".:material:shader_parameter/dig_offset")
+tracks/0/path = NodePath(".")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [33, 0]
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"_pre_animation_finished"
+}]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath(".:material:shader_parameter/flip_dig_animation_h")
+tracks/1/path = NodePath("Dirt_AnimatedSprite2D:material:shader_parameter/flip_dig_animation_h")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath(".:material:shader_parameter/dig_orientation")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
-}
-
-[sub_resource type="Animation" id="Animation_o2vxo"]
-resource_name = "dig_left"
-length = 0.3
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:material:shader_parameter/flip_dig_animation_h")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [false]
 }
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:material:shader_parameter/dig_offset")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Dirt_AnimatedSprite2D:material:shader_parameter/dig_offset")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
 "times": PackedFloat32Array(0, 0.3),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [33, 0]
 }
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath(".:material:shader_parameter/dig_orientation")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Dirt_AnimatedSprite2D:material:shader_parameter/dig_orientation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
@@ -185,19 +177,19 @@ length = 0.3
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath(".:material:shader_parameter/dig_orientation")
+tracks/0/path = NodePath("Dirt_AnimatedSprite2D:material:shader_parameter/dig_offset")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [33, 0]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath(".:material:shader_parameter/flip_dig_animation_v")
+tracks/1/path = NodePath("Dirt_AnimatedSprite2D:material:shader_parameter/dig_orientation")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -209,14 +201,14 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath(".:material:shader_parameter/dig_offset")
+tracks/2/path = NodePath("Dirt_AnimatedSprite2D:material:shader_parameter/flip_dig_animation_v")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [33, 0]
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_d5yom"]
@@ -226,6 +218,28 @@ _data = {
 "dig_from_right": SubResource("Animation_o2vxo"),
 "dig_top": SubResource("Animation_u6j86")
 }
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rcn5w"]
+resource_local_to_scene = true
+shader = ExtResource("3_jtjqy")
+shader_parameter/corner_states = Vector4(1, 1, 1, 1)
+shader_parameter/dig_orientation = true
+shader_parameter/show_top_cover = true
+shader_parameter/show_bottom_cover = true
+shader_parameter/show_left_cover = true
+shader_parameter/show_right_cover = true
+shader_parameter/flip_dig_animation_h = true
+shader_parameter/flip_dig_animation_v = false
+shader_parameter/debug_animation = false
+shader_parameter/dig_offset = 33
+shader_parameter/top_cover = ExtResource("11_1axu0")
+shader_parameter/bottom_cover = ExtResource("4_ec0rj")
+shader_parameter/left_cover = ExtResource("9_e2hfc")
+shader_parameter/right_cover = ExtResource("10_5hbf2")
+shader_parameter/concave_connector = ExtResource("5_j2ryj")
+shader_parameter/convex_mask = ExtResource("6_aqp4x")
+shader_parameter/dig_down = ExtResource("7_eqnya")
+shader_parameter/dig_side = ExtResource("8_qjjrb")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ocdpi"]
 size = Vector2(31.8344, 31.5045)
@@ -240,17 +254,16 @@ size = Vector2(20.5461, 2.49688)
 size = Vector2(4.38098, 13.4997)
 
 [node name="dirt" type="StaticBody2D"]
-script = ExtResource("1_7q1a7")
+script = ExtResource("1_0cn1p")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-material = SubResource("ShaderMaterial_2fx2m")
-position = Vector2(0.0742549, -0.074255)
-sprite_frames = SubResource("SpriteFrames_na4qw")
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="AnimatedSprite2D"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 "": SubResource("AnimationLibrary_d5yom")
 }
+speed_scale = 0.8
+
+[node name="Dirt_AnimatedSprite2D" parent="." instance=ExtResource("2_aes2i")]
+material = SubResource("ShaderMaterial_rcn5w")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false
@@ -279,7 +292,7 @@ visible = false
 position = Vector2(-18.527, 5.66005)
 shape = SubResource("RectangleShape2D_in7ko")
 
-[connection signal="animation_finished" from="AnimatedSprite2D/AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
 [connection signal="body_entered" from="RightDrillZone" to="." method="_on_right_drill_zone_entered"]
 [connection signal="body_exited" from="RightDrillZone" to="." method="_on_right_drill_zone_exited"]
 [connection signal="body_entered" from="TopDrillZone" to="." method="_on_top_drill_zone_entered"]

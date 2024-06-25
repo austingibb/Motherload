@@ -29,7 +29,7 @@ public partial class DrillableShaderManager : GodotObject
 {
     public static void UpdateDrillableSide(Node2D drillable, DrillableSurface surface, bool isExposed)
     {
-        AnimatedSprite2D animatedSprite2D = drillable.GetNode<AnimatedSprite2D>("AnimatedSprite2D");
+        AnimatedSprite2D animatedSprite2D = drillable.GetNode<AnimatedSprite2D>("Dirt_AnimatedSprite2D");
         ShaderMaterial shaderMaterial = animatedSprite2D.Material as ShaderMaterial;
 
         if (surface == DrillableSurface.Top)
@@ -52,7 +52,7 @@ public partial class DrillableShaderManager : GodotObject
 
     public static void UpdateDrillableCorner(Node2D drillable, DrillableCorner corner, DrillableCornerShape cornerShape)
     {
-        AnimatedSprite2D animatedSprite2D = drillable.GetNode<AnimatedSprite2D>("AnimatedSprite2D");
+        AnimatedSprite2D animatedSprite2D = drillable.GetNode<AnimatedSprite2D>("Dirt_AnimatedSprite2D");
         ShaderMaterial shaderMaterial = animatedSprite2D.Material as ShaderMaterial;
 
         Vector4 cornerStates = (Vector4) shaderMaterial.GetShaderParameter("corner_states");

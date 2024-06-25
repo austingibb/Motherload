@@ -9,7 +9,7 @@ public enum DrillFromDirection
 	NONE
 }
 
-public partial class Drillable : StaticBody2D
+public partial class Drillable : Tile
 {
 	public AnimationPlayer animationPlayer;
 	public CollisionShape2D collisionShape2D;
@@ -17,9 +17,13 @@ public partial class Drillable : StaticBody2D
 	[Signal]
 	public delegate void dugEventHandler(Node2D drillable);
 
+	[Signal]
+	public delegate void preDugEventHandler(Node2D drillable, DrillFromDirection direction);
+
 	public override void _Ready()
 	{
-		AnimationPlayer animationPlayer = GetNode<AnimationPlayer>("./AnimatedSprite2D/AnimationPlayer");
+		AnimationPlayer animationPlayer = GetNode<AnimationPlayer>("./AnimationPlayer");
+		this.tileType = TileType.Drillable;
 		this.animationPlayer = animationPlayer;
 		this.collisionShape2D = GetNode<CollisionShape2D>("./CollisionShape2D");
 	}
@@ -92,5 +96,24 @@ public partial class Drillable : StaticBody2D
 			EmitSignal(SignalName.dug, this);
 			QueueFree();
 		}
+	}
+
+	public void _pre_animation_finished()
+	{
+		DrillFromDirection direction;
+		if (this.animationPlayer.CurrentAnimation == "dig_from_left")
+		{
+			direction = DrillFromDirection.LEFT;
+		} else if (this.animationPlayer.CurrentAnimation == "dig_from_right")
+		{
+			direction = DrillFromDirection.RIGHT;
+		} else if (this.animationPlayer.CurrentAnimation == "dig_top")
+		{
+			direction = DrillFromDirection.UP;
+		} else
+		{
+			direction = DrillFromDirection.NONE;
+		}
+		EmitSignal(SignalName.preDug, this, (int)direction);
 	}
 }

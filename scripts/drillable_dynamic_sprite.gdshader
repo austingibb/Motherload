@@ -10,6 +10,8 @@ uniform sampler2D convex_mask: filter_nearest;
 uniform sampler2D dig_down: filter_nearest;
 uniform sampler2D dig_side: filter_nearest;
 uniform vec4 corner_states;
+// dig orientation is true if the dig animation is horizontal, false if it is vertical
+// flip_dig_animation variables are used to flip the dig animation horizontally or vertically
 uniform bool dig_orientation;
 uniform bool show_top_cover;
 uniform bool show_bottom_cover;
@@ -17,6 +19,7 @@ uniform bool show_left_cover;
 uniform bool show_right_cover;
 uniform bool flip_dig_animation_h;
 uniform bool flip_dig_animation_v;
+uniform bool debug_animation;
 uniform int dig_offset;
 
 void vertex() {
@@ -36,7 +39,11 @@ vec4 apply_cover_texture(bool show, sampler2D cover_texture, vec2 uv_param, vec4
 vec4 apply_transparancy_mask(sampler2D mask_texture, vec2 uv_param, vec4 color) {
 	vec4 mask_pixel = texture(mask_texture, uv_param);
 	if(mask_pixel.a > 0.0) {
-		return vec4(0, 0, 0, 0);
+		if(debug_animation) {
+			return mask_pixel;
+		} else {
+			return vec4(0, 0, 0, 0);
+		}
 	}
 	return color;
 }

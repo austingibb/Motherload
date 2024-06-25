@@ -1,0 +1,41 @@
+[gd_scene load_steps=9 format=3 uid="uid://dltcds5x4kmfi"]
+
+[ext_resource type="Script" path="res://scripts/Tile.cs" id="1_5mcwk"]
+[ext_resource type="Texture2D" uid="uid://c2x30lctvuslk" path="res://assets/background_dirt.png" id="1_ayn2n"]
+[ext_resource type="Shader" path="res://scripts/background_dynamic_sprite.gdshader" id="2_6p2tf"]
+[ext_resource type="Texture2D" uid="uid://b1fx1lqlyjall" path="res://assets/background_dirt_top_layer.png" id="3_unkmk"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_yft2n"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kpsmj"]
+resource_local_to_scene = true
+shader = ExtResource("2_6p2tf")
+shader_parameter/show_top_cover = false
+shader_parameter/top_cover = ExtResource("3_unkmk")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sbdxd"]
+atlas = ExtResource("1_ayn2n")
+region = Rect2(0, 0, 33, 35)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_8obru"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sbdxd")
+}],
+"loop": false,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="dirt_background" type="StaticBody2D"]
+script = ExtResource("1_5mcwk")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_yft2n")
+disabled = true
+
+[node name="Dirt_AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+material = SubResource("ShaderMaterial_kpsmj")
+position = Vector2(0, -1)
+sprite_frames = SubResource("SpriteFrames_8obru")

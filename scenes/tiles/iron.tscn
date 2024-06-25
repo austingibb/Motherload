@@ -1,0 +1,59 @@
+[gd_scene load_steps=15 format=3 uid="uid://bwvk0l13hnn6j"]
+
+[ext_resource type="PackedScene" uid="uid://4dp3owa1a7k" path="res://scenes/tiles/dirt.tscn" id="1_wbwn6"]
+[ext_resource type="Shader" path="res://scripts/drillable_dynamic_sprite.gdshader" id="2_8dckx"]
+[ext_resource type="Texture2D" uid="uid://dud4q44sj7tp7" path="res://assets/dirt_bottom_cover.png" id="3_fudfr"]
+[ext_resource type="Texture2D" uid="uid://vek6jvgwmjql" path="res://assets/dirt_concave_connector.png" id="4_fuhx8"]
+[ext_resource type="Texture2D" uid="uid://dl1xui0fts47f" path="res://assets/dirt_convex_mask.png" id="5_785my"]
+[ext_resource type="Texture2D" uid="uid://ut1ddro0h28i" path="res://assets/dig_mask_down.png" id="6_tre6m"]
+[ext_resource type="Texture2D" uid="uid://drftncua07736" path="res://assets/dig_mask_side.png" id="7_p2oyl"]
+[ext_resource type="Texture2D" uid="uid://b372ist2ldhbd" path="res://assets/dirt_left_cover.png" id="8_jw3yg"]
+[ext_resource type="Texture2D" uid="uid://cvmw7psh2dyed" path="res://assets/dirt_right_cover.png" id="9_msx2c"]
+[ext_resource type="Texture2D" uid="uid://bx68ylxuirvgc" path="res://assets/dirt_top_cover.png" id="10_ugbsp"]
+[ext_resource type="Texture2D" uid="uid://crbvrqvmv8cn5" path="res://assets/iron.png" id="11_wr5e1"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rcn5w"]
+resource_local_to_scene = true
+shader = ExtResource("2_8dckx")
+shader_parameter/corner_states = Vector4(1, 1, 1, 1)
+shader_parameter/dig_orientation = true
+shader_parameter/show_top_cover = true
+shader_parameter/show_bottom_cover = true
+shader_parameter/show_left_cover = true
+shader_parameter/show_right_cover = true
+shader_parameter/flip_dig_animation_h = true
+shader_parameter/flip_dig_animation_v = false
+shader_parameter/debug_animation = false
+shader_parameter/dig_offset = 33
+shader_parameter/top_cover = ExtResource("10_ugbsp")
+shader_parameter/bottom_cover = ExtResource("3_fudfr")
+shader_parameter/left_cover = ExtResource("8_jw3yg")
+shader_parameter/right_cover = ExtResource("9_msx2c")
+shader_parameter/concave_connector = ExtResource("4_fuhx8")
+shader_parameter/convex_mask = ExtResource("5_785my")
+shader_parameter/dig_down = ExtResource("6_tre6m")
+shader_parameter/dig_side = ExtResource("7_p2oyl")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_iasq3"]
+atlas = ExtResource("11_wr5e1")
+region = Rect2(0, 0, 37, 47)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_v1k1d"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_iasq3")
+}],
+"loop": false,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="iron" instance=ExtResource("1_wbwn6")]
+
+[node name="Dirt_AnimatedSprite2D" parent="." index="1"]
+material = SubResource("ShaderMaterial_rcn5w")
+sprite_frames = SubResource("SpriteFrames_v1k1d")
+
+[node name="RightDrillZone" parent="." index="3"]
+position = Vector2(0, -0.074255)

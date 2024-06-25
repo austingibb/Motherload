@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public partial class game : Node2D
+public partial class Game : Node2D
 {
     public override void _PhysicsProcess(double delta)
 	{

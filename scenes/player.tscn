@@ -23,7 +23,7 @@
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_jark5"]
 radius = 3.0
-height = 19.5
+height = 22.9465
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rcttw"]
 shader = ExtResource("1_b6055")
@@ -2002,7 +2002,7 @@ animations = [{
 script = ExtResource("1_hs4mh")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(1.04636e-15, 3)
+position = Vector2(0.0349426, 0.763586)
 shape = SubResource("CapsuleShape2D_jark5")
 
 [node name="flipper" type="Node2D" parent="."]

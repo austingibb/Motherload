@@ -81,7 +81,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 				playerState = PlayerState.Flying;
 				playerAnimation.UpdateAnimation(PlayerAnimationState.Launch);
 			}
-			else if (velocity.Y > 0)
+			else if (velocity.Y >= 0)
 			{
 				playerState = PlayerState.Falling;
 				playerAnimation.UpdateAnimation(PlayerAnimationState.Fall);
