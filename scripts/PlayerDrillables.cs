@@ -8,9 +8,9 @@ public class PlayerDrillables
     {
         public DrillFromDirection Direction;
         public double TimeActive;
-        public Node2D Drillable;
+        public Drillable Drillable;
 
-        public DrillableDictValue(DrillFromDirection direction, Node2D drillable)
+        public DrillableDictValue(DrillFromDirection direction, Drillable drillable)
         {
             this.Direction = direction;
             this.Drillable = drillable;
@@ -29,7 +29,7 @@ public class PlayerDrillables
         
     }
 
-    public Node2D ActiveDrillable = null;
+    public Drillable ActiveDrillable = null;
     private const double TimeToStartDrilling = 0.1;
     private Dictionary<string, DrillableDictValue> drillables = new();
     DrillFromDirection currentPendingDirection = DrillFromDirection.NONE;
@@ -71,7 +71,7 @@ public class PlayerDrillables
         return null;
     }
 
-    public void RegisterDrillable(Node2D drillable, DrillFromDirection direction)
+    public void RegisterDrillable(Drillable drillable, DrillFromDirection direction)
     {
         drillables.Add(drillable.GetPath(), new(direction, drillable));
     }

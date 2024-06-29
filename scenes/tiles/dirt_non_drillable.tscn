@@ -38,11 +38,13 @@ shader_parameter/dig_side = ExtResource("7_carek")
 size = Vector2(37.0111, 37.2386)
 
 [node name="dirt_non_drillable" type="StaticBody2D"]
+position = Vector2(2.08165e-12, 2.08165e-12)
 script = ExtResource("1_861ey")
 tileType = 2
 
 [node name="Dirt_AnimatedSprite2D" parent="." instance=ExtResource("1_8msx4")]
 material = SubResource("ShaderMaterial_hfo6y")
+position = Vector2(2.08165e-12, 2.08165e-12)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_l1fh5")

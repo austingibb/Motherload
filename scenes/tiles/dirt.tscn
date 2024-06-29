@@ -222,12 +222,12 @@ _data = {
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rcn5w"]
 resource_local_to_scene = true
 shader = ExtResource("3_jtjqy")
-shader_parameter/corner_states = Vector4(1, 1, 1, 1)
+shader_parameter/corner_states = Vector4(2.08165e-12, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 shader_parameter/dig_orientation = true
 shader_parameter/show_top_cover = true
 shader_parameter/show_bottom_cover = true
-shader_parameter/show_left_cover = true
-shader_parameter/show_right_cover = true
+shader_parameter/show_left_cover = false
+shader_parameter/show_right_cover = false
 shader_parameter/flip_dig_animation_h = true
 shader_parameter/flip_dig_animation_v = false
 shader_parameter/debug_animation = false
@@ -264,6 +264,7 @@ speed_scale = 0.8
 
 [node name="Dirt_AnimatedSprite2D" parent="." instance=ExtResource("2_aes2i")]
 material = SubResource("ShaderMaterial_rcn5w")
+position = Vector2(2.08165e-12, 2.08165e-12)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false

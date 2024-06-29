@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://c4n3nw1neoend"]
+[gd_scene load_steps=24 format=3 uid="uid://c4n3nw1neoend"]
 
 [ext_resource type="PackedScene" uid="uid://cwrufed6b0h7m" path="res://scenes/player.tscn" id="1_cpms4"]
 [ext_resource type="Script" path="res://scripts/Game.cs" id="1_jibs2"]
@@ -10,6 +10,11 @@
 [ext_resource type="PackedScene" uid="uid://bwvk0l13hnn6j" path="res://scenes/tiles/iron.tscn" id="7_p6cjd"]
 [ext_resource type="PackedScene" uid="uid://c88c2x0im82ss" path="res://scenes/tiles/silver.tscn" id="8_ggje1"]
 [ext_resource type="Script" path="res://scripts/DrillableGrid.cs" id="8_iy0wo"]
+[ext_resource type="PackedScene" uid="uid://pb4g2nqwkegp" path="res://scenes/tiles/dirt_non_drillable_stone_cover.tscn" id="9_bld13"]
+[ext_resource type="Script" path="res://scripts/Inventory.cs" id="11_3hhjf"]
+[ext_resource type="PackedScene" uid="uid://bpspmu2o75ucw" path="res://scenes/sell_station.tscn" id="12_nuqs6"]
+[ext_resource type="PackedScene" uid="uid://v0qqttb0yfbx" path="res://scenes/hud.tscn" id="13_6ipmk"]
+[ext_resource type="PackedScene" uid="uid://2j154jrcrhfx" path="res://scenes/charge_station.tscn" id="13_s1kka"]
 
 [sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_4ukp1"]
 scenes/1/scene = ExtResource("3_pqfaf")
@@ -18,6 +23,7 @@ scenes/3/scene = ExtResource("5_br6br")
 scenes/4/scene = ExtResource("6_1qt14")
 scenes/5/scene = ExtResource("7_p6cjd")
 scenes/6/scene = ExtResource("8_ggje1")
+scenes/7/scene = ExtResource("9_bld13")
 
 [sub_resource type="TileSet" id="TileSet_smrpq"]
 tile_size = Vector2i(33, 33)
@@ -39,33 +45,83 @@ width = 20
 height = 60
 noise = SubResource("FastNoiseLite_wnes6")
 
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_77tsn"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_j2r7s"]
+
 [node name="Game" type="Node2D"]
 script = ExtResource("1_jibs2")
 
 [node name="Player" parent="." instance=ExtResource("1_cpms4")]
+unique_name_in_owner = true
 z_index = 1
-position = Vector2(-11.1792, -36.7379)
+position = Vector2(0, -22.4105)
 
-[node name="Camera2D" type="Camera2D" parent="Player"]
-position = Vector2(0.525566, -0.420448)
-zoom = Vector2(12, 12)
-limit_left = -300
-limit_right = 300
+[node name="RemoteTransform2D" type="RemoteTransform2D" parent="Player"]
+remote_path = NodePath("../../Camera2D")
+update_rotation = false
 
-[node name="TileMap" type="TileMap" parent="."]
+[node name="DrillableGrid" type="TileMap" parent="."]
+unique_name_in_owner = true
 tile_set = SubResource("TileSet_smrpq")
 format = 2
 layer_0/z_index = -2
-layer_0/tile_data = PackedInt32Array(65535, 1, 65536, 0, 1, 65536, 65534, 1, 65536)
+layer_0/tile_data = PackedInt32Array(65535, 1, 65536, 65534, 1, 65536, 65533, 1, 65536, 65532, 1, 65536, 65531, 1, 65536, 65530, 1, 65536, 65529, 1, 65536, 65528, 1, 65536, 0, 1, 65536, 1, 1, 65536, 2, 1, 65536, 3, 1, 65536, 4, 1, 65536, 5, 1, 65536, 6, 1, 65536, 7, 1, 65536, 8, 1, 65536, 65527, 1, 65536)
 layer_1/tile_data = PackedInt32Array()
 script = ExtResource("8_iy0wo")
 EmptyTileNoiseTexture = SubResource("NoiseTexture2D_5udv4")
 DrillableTypeNoiseTexture = SubResource("NoiseTexture2D_1paxr")
 
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(0, -22.4105)
+zoom = Vector2(10, 10)
+process_callback = 0
+limit_left = -300
+limit_right = 300
+position_smoothing_enabled = true
+position_smoothing_speed = 10.0
+
 [node name="Sky" type="Node2D" parent="."]
 
 [node name="Sprite2D" type="Sprite2D" parent="Sky"]
 z_index = -3
-position = Vector2(-14.8042, -437.78)
+position = Vector2(-28.7011, -452.141)
 scale = Vector2(4.48955, 1.10574)
 texture = ExtResource("6_qb6hb")
+
+[node name="Inventory" type="Node2D" parent="."]
+unique_name_in_owner = true
+script = ExtResource("11_3hhjf")
+
+[node name="Buildings" type="Node2D" parent="."]
+
+[node name="SellStation" parent="Buildings" instance=ExtResource("12_nuqs6")]
+unique_name_in_owner = true
+position = Vector2(-0.402543, -2.03396)
+
+[node name="ChargeStation" parent="Buildings" instance=ExtResource("13_s1kka")]
+unique_name_in_owner = true
+position = Vector2(-163.768, -26.7826)
+
+[node name="HUD" parent="." instance=ExtResource("13_6ipmk")]
+unique_name_in_owner = true
+visible = false
+
+[node name="BoundaryWall" type="Node2D" parent="."]
+
+[node name="LeftBoundary" type="StaticBody2D" parent="BoundaryWall"]
+position = Vector2(-305, 2.08165e-12)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BoundaryWall/LeftBoundary"]
+position = Vector2(2.08165e-12, 2.08165e-12)
+rotation = 1.5708
+shape = SubResource("WorldBoundaryShape2D_77tsn")
+
+[node name="RightBoundary" type="StaticBody2D" parent="BoundaryWall"]
+position = Vector2(305, 2.08165e-12)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BoundaryWall/RightBoundary"]
+rotation = -1.5708
+shape = SubResource("WorldBoundaryShape2D_j2r7s")
+
+[editable path="HUD"]

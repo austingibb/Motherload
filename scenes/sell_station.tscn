@@ -1,0 +1,33 @@
+[gd_scene load_steps=5 format=3 uid="uid://bpspmu2o75ucw"]
+
+[ext_resource type="Script" path="res://scripts/SellStation.cs" id="1_bg4pi"]
+[ext_resource type="Texture2D" uid="uid://ct6ir1bp5ah5x" path="res://assets/sell_station.png" id="1_korpj"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_q52la"]
+size = Vector2(68.6071, 40.0668)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wjvdt"]
+size = Vector2(12.0577, 22.3493)
+
+[node name="SellStation" type="StaticBody2D"]
+collision_layer = 0
+collision_mask = 0
+script = ExtResource("1_bg4pi")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+z_index = -1
+position = Vector2(0.504604, -35.0341)
+texture = ExtResource("1_korpj")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+position = Vector2(0.202694, -20.2468)
+shape = SubResource("RectangleShape2D_q52la")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(-5.30223, -11.3111)
+shape = SubResource("RectangleShape2D_wjvdt")
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_sell_zone_entered"]

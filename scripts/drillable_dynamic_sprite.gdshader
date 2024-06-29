@@ -75,10 +75,10 @@ vec4 set_corner(int corner_index, float corner_val, vec2 uv_param, vec4 color) {
 }
 
 void fragment() {
-	COLOR = apply_cover_texture(show_top_cover, top_cover, UV, COLOR);
-	COLOR = apply_cover_texture(show_bottom_cover, bottom_cover, UV, COLOR);
 	COLOR = apply_cover_texture(show_left_cover, left_cover, UV, COLOR);
 	COLOR = apply_cover_texture(show_right_cover, right_cover, UV, COLOR);
+	COLOR = apply_cover_texture(show_top_cover, top_cover, UV, COLOR);
+	COLOR = apply_cover_texture(show_bottom_cover, bottom_cover, UV, COLOR);
 	
 	COLOR = set_corner(0, corner_states.x, UV, COLOR);
 	COLOR = set_corner(1, corner_states.y, UV, COLOR);

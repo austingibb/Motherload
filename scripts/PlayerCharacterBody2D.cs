@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 
@@ -16,25 +17,25 @@ public enum PlayerState {
 public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 {
 	public const float WalkSpeed = 120.0f;
-	public const float DrillSideSpeed = 80.0f;
-	public const float DrillDownSpeed = 100.0f;
-	private const float DrillingDuration = 0.3f;
-	
-	public const float VerticalFlightSpeed = -1000.0f;
+	public const float DrillSideSpeed = 90.0f;
+	public const float DrillDownSpeed = 80.0f;	
+	public const float VerticalFlightSpeed = -900.0f;
+	public const float CatchVerticalFlightSpeed = -1100.0f;
+
 	public const float HorizontalFlightSpeed = 300.0f;
 	public const float MaxHorozontalSpeed = 300.0f;
 	public const float TiltAmount = 0.174533f;
 	public const float DragConstant = 0.011f;
-	public float gravity = 600f;
+	public float gravity = 500f;
 	private PlayerState playerState = PlayerState.None;
 	private PlayerDrillables playerDrillables = new();
-	private ulong DrillingStartTime = 0;
-
-	// Get the gravity from the project settings to be synced with RigidBody nodes.
 	public Vector2 prevVelocity = new(0, 0);
 	public AnimatedSprite2D bodyAnimation;
 	public PlayerAnimation playerAnimation;
+	public List<List<Drillable>> SurroundingDrillables;
 
+	public float Energy;
+	public float Health;
 
     public override void _Ready()
     {
@@ -47,14 +48,28 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		AnimatedSprite2D jetAnimation = GetNode<AnimatedSprite2D>("%jet_AnimatedSprite2D");
 		AnimationPlayer animationPlayer = GetNode<AnimationPlayer>("%player_AnimationPlayer");
 		AnimationPlayer shaderAnimationPlayer = GetNode<AnimationPlayer>("%shader_AnimationPlayer");
-		
+
 		playerAnimation = new PlayerAnimation(flipper, bodyAnimation, frontArmAnimation, backArmAnimation, armsAnimation, jetAnimation, animationPlayer, shaderAnimationPlayer);
+
+		SurroundingDrillables = new List<List<Drillable>>();
+		for (int i = 0; i < 3; i++)
+		{
+			SurroundingDrillables.Add(new List<Drillable>());
+			for (int j = 0; j < 3; j++)
+			{
+				SurroundingDrillables[i].Add(null);
+			}
+		}
+
+		Energy = 100.0f;
+		Health = 100.0f;
     }
 
     public override void _PhysicsProcess(double delta)
 	{
 		Vector2 velocity = Velocity;
-		
+		HandleEnergy((float)delta);
+
 		// Add the gravity.
 		if (!IsOnPlayerOnFloor())
 		{
@@ -97,6 +112,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 					playerAnimation.UpdateAnimation(PlayerAnimationState.LandHard);
 					playerState = PlayerState.HurtLanding;
 					velocity.X /= 5;
+					Health -= 10.0f;
 				} else if (prevVelocity.Y > 150 && !Input.IsActionPressed("fly")) 
 				{
 					playerAnimation.UpdateAnimation(PlayerAnimationState.LandSoft);
@@ -166,32 +182,57 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 					}
 				} else if (playerState == PlayerState.Drilling) 
 				{
-					bool endDrilling = (Time.GetTicksMsec() - DrillingStartTime) / 1000.0f > DrillingDuration;
+					Drillable belowDrillable = SurroundingDrillables[1][2];
 					if (playerAnimation.GetCurrentState() == PlayerAnimationState.DrillLeft ||
 						playerAnimation.GetCurrentState() == PlayerAnimationState.DrillRight) 
 					{
 						if (playerAnimation.GetCurrentState() == PlayerAnimationState.DrillLeft)
 						{
-							if (endDrilling)
-							{
-								playerAnimation.UpdateAnimation(PlayerAnimationState.DrillStandupLeft);
-							}
+							playerDrillables.ActiveDrillable.UpdateDrillAnimationFromPosition(this);
 							velocity.X = -DrillSideSpeed;
+							
+							if (playerDrillables.ActiveDrillable.IsDug)
+							{
+								Drillable leftDrillable = SurroundingDrillables[0][1];
+								if (Input.IsActionPressed("move_left") && Common.ValidTile(leftDrillable) && Common.ValidTile(belowDrillable))
+								{
+									playerDrillables.ActiveDrillable = leftDrillable;
+									leftDrillable.StartDrillAnimation(DrillFromDirection.RIGHT);
+								} else {
+									playerAnimation.UpdateAnimation(PlayerAnimationState.DrillStandupLeft);
+								}
+							}
 						} else if (playerAnimation.GetCurrentState() == PlayerAnimationState.DrillRight)
 						{
 							velocity.X = DrillSideSpeed;
-							if (endDrilling)
+							playerDrillables.ActiveDrillable.UpdateDrillAnimationFromPosition(this);
+							if (playerDrillables.ActiveDrillable.IsDug)
 							{
-								playerAnimation.UpdateAnimation(PlayerAnimationState.DrillStandupRight);
+								Drillable rightDrillable = SurroundingDrillables[2][1];
+								if (Input.IsActionPressed("move_right") && Common.ValidTile(rightDrillable) && Common.ValidTile(belowDrillable))
+								{
+									playerDrillables.ActiveDrillable = rightDrillable;
+									rightDrillable.StartDrillAnimation(DrillFromDirection.LEFT);
+								} else {
+									playerAnimation.UpdateAnimation(PlayerAnimationState.DrillStandupRight);
+								}
 							}
 						}
 					}
 					else if (playerAnimation.GetCurrentState() == PlayerAnimationState.DrillDown) 
 					{
 						velocity.Y = DrillDownSpeed;
-						if (endDrilling) 
+						playerDrillables.ActiveDrillable.UpdateDrillAnimationFromPosition(this);
+						if (playerDrillables.ActiveDrillable.IsDug)
 						{
-							playerAnimation.UpdateAnimation(PlayerAnimationState.DrillStandup);
+							if (Input.IsActionPressed("down") && belowDrillable != null && GodotObject.IsInstanceValid(belowDrillable))
+							{
+								playerDrillables.ActiveDrillable = belowDrillable;
+								belowDrillable.StartDrillAnimation(DrillFromDirection.UP);
+							} else 
+							{
+								playerAnimation.UpdateAnimation(PlayerAnimationState.DrillStandup);
+							}
 						}
 					}
 				}
@@ -202,7 +243,13 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		if (Input.IsActionPressed("fly") && !(playerState == PlayerState.HurtLanding || playerState == PlayerState.Drilling))
 		{
 			playerAnimation.SetFlightState(true);
-			velocity.Y += VerticalFlightSpeed * (float)delta;
+			if (velocity.Y < 0) 
+			{
+				velocity.Y += VerticalFlightSpeed * (float)delta;
+			} else
+			{
+				velocity.Y += CatchVerticalFlightSpeed * (float)delta;
+			}
 		} else
 		{
 			playerAnimation.SetFlightState(false);
@@ -218,6 +265,29 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		Velocity = velocity;
 		MoveAndSlide();
 		prevVelocity = velocity;
+	}
+
+	private void HandleEnergy(float delta)
+	{
+		if (Input.IsActionJustPressed("test"))
+		{
+			Energy += 10.0f;
+		}
+
+		Energy -= delta / 4.0f;
+		if (playerState == PlayerState.Flying)
+		{
+			Energy -= delta;
+		} else if (playerState == PlayerState.Drilling)
+		{
+			Energy -= delta;
+		} else if (playerState == PlayerState.Grounded)
+		{
+			if (Input.IsActionPressed("move_left") || Input.IsActionPressed("move_right"))
+			{
+				Energy -= delta / 2.0f;
+			}
+		}
 	}
 
 	private bool IsOnPlayerOnFloor()
@@ -249,37 +319,34 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 				playerAnimation.UpdateAnimation(PlayerAnimationState.DrillLeft);
 				if (playerDrillables.ActiveDrillable != null)
 				{
-					(playerDrillables.ActiveDrillable as Drillable).StartDrillAnimation(DrillFromDirection.RIGHT);
+					playerDrillables.ActiveDrillable.StartDrillAnimation(DrillFromDirection.RIGHT);
 				}
 			} else if (playerAnimation.GetCurrentState() == PlayerAnimationState.SetupDrillRight)
 			{
 				playerAnimation.UpdateAnimation(PlayerAnimationState.DrillRight);
 				if (playerDrillables.ActiveDrillable != null)
 				{
-					(playerDrillables.ActiveDrillable as Drillable).StartDrillAnimation(DrillFromDirection.LEFT);
+					playerDrillables.ActiveDrillable.StartDrillAnimation(DrillFromDirection.LEFT);
 				}
 			}
-
-			DrillingStartTime = Time.GetTicksMsec();
 		} else if (anim_name == "mine_down_setup") {
 			playerAnimation.UpdateAnimation(PlayerAnimationState.DrillDown);
 			if (playerDrillables.ActiveDrillable != null)
 			{
-				(playerDrillables.ActiveDrillable as Drillable).StartDrillAnimation(DrillFromDirection.UP);
+				playerDrillables.ActiveDrillable.StartDrillAnimation(DrillFromDirection.UP);
 			}
 
-			DrillingStartTime = Time.GetTicksMsec();
 		} else if (anim_name == "drill_standup" || anim_name == "drill_down_standup")
 		{
 			playerState = PlayerState.Grounded;
 		}
 	}
 
-	public void RegisterDrillable(Node2D drillable, DrillFromDirection direction) {
+	public void RegisterDrillable(Drillable drillable, DrillFromDirection direction) {
 		playerDrillables.RegisterDrillable(drillable, direction);
 	}
 
-	public void UnregisterDrillable(Node2D drillable) {
+	public void UnregisterDrillable(Drillable drillable) {
 		playerDrillables.UnregisterDrillable(drillable);
 	}
 }

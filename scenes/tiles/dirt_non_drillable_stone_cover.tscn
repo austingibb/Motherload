@@ -1,0 +1,51 @@
+[gd_scene load_steps=14 format=3 uid="uid://pb4g2nqwkegp"]
+
+[ext_resource type="Script" path="res://scripts/Tile.cs" id="1_bcstp"]
+[ext_resource type="PackedScene" uid="uid://cv7j1lqpv7dyr" path="res://scenes/tiles/dirt_animated_sprite_2d.tscn" id="2_o5fc2"]
+[ext_resource type="Shader" path="res://scripts/drillable_dynamic_sprite.gdshader" id="3_5aggu"]
+[ext_resource type="Texture2D" uid="uid://dud4q44sj7tp7" path="res://assets/dirt_bottom_cover.png" id="4_n7236"]
+[ext_resource type="Texture2D" uid="uid://vek6jvgwmjql" path="res://assets/dirt_concave_connector.png" id="5_x0c23"]
+[ext_resource type="Texture2D" uid="uid://dl1xui0fts47f" path="res://assets/dirt_convex_mask.png" id="6_62cx1"]
+[ext_resource type="Texture2D" uid="uid://ut1ddro0h28i" path="res://assets/dig_mask_down.png" id="7_hvnrl"]
+[ext_resource type="Texture2D" uid="uid://drftncua07736" path="res://assets/dig_mask_side.png" id="8_l8pfw"]
+[ext_resource type="Texture2D" uid="uid://b372ist2ldhbd" path="res://assets/dirt_left_cover.png" id="9_v32b2"]
+[ext_resource type="Texture2D" uid="uid://cvmw7psh2dyed" path="res://assets/dirt_right_cover.png" id="10_p66he"]
+[ext_resource type="Texture2D" uid="uid://dmib4bsou68n0" path="res://assets/dirt_stone_cover.png" id="11_6u2ig"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hfo6y"]
+resource_local_to_scene = true
+shader = ExtResource("3_5aggu")
+shader_parameter/corner_states = Vector4(2.08165e-12, 2.08165e-12, 1, 1)
+shader_parameter/dig_orientation = true
+shader_parameter/show_top_cover = true
+shader_parameter/show_bottom_cover = true
+shader_parameter/show_left_cover = true
+shader_parameter/show_right_cover = true
+shader_parameter/flip_dig_animation_h = true
+shader_parameter/flip_dig_animation_v = false
+shader_parameter/debug_animation = false
+shader_parameter/dig_offset = 33
+shader_parameter/top_cover = ExtResource("11_6u2ig")
+shader_parameter/bottom_cover = ExtResource("4_n7236")
+shader_parameter/left_cover = ExtResource("9_v32b2")
+shader_parameter/right_cover = ExtResource("10_p66he")
+shader_parameter/concave_connector = ExtResource("5_x0c23")
+shader_parameter/convex_mask = ExtResource("6_62cx1")
+shader_parameter/dig_down = ExtResource("7_hvnrl")
+shader_parameter/dig_side = ExtResource("8_l8pfw")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_l1fh5"]
+size = Vector2(37.0111, 37.2386)
+
+[node name="dirt_non_drillable" type="StaticBody2D"]
+position = Vector2(2.08165e-12, 2.08165e-12)
+script = ExtResource("1_bcstp")
+tileType = 2
+
+[node name="Dirt_AnimatedSprite2D" parent="." instance=ExtResource("2_o5fc2")]
+material = SubResource("ShaderMaterial_hfo6y")
+position = Vector2(2.08165e-12, 2.08165e-12)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+shape = SubResource("RectangleShape2D_l1fh5")

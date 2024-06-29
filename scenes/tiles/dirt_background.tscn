@@ -38,4 +38,5 @@ disabled = true
 [node name="Dirt_AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 material = SubResource("ShaderMaterial_kpsmj")
 position = Vector2(0, -1)
+scale = Vector2(1.01, 1.01)
 sprite_frames = SubResource("SpriteFrames_8obru")

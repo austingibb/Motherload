@@ -9,10 +9,22 @@ public enum DrillFromDirection
 	NONE
 }
 
+public enum DrillableType
+{
+	DIRT,
+	IRON,
+	GOLD,
+	SILVER
+}
+
 public partial class Drillable : Tile
 {
-	public AnimationPlayer animationPlayer;
 	public CollisionShape2D collisionShape2D;
+	public DrillableAnimation drillableAnimation;
+	public Boolean IsDug = false;
+	
+	[Export]
+	public DrillableType DrillableType;
 
 	[Signal]
 	public delegate void dugEventHandler(Node2D drillable);
@@ -22,23 +34,25 @@ public partial class Drillable : Tile
 
 	public override void _Ready()
 	{
-		AnimationPlayer animationPlayer = GetNode<AnimationPlayer>("./AnimationPlayer");
 		this.tileType = TileType.Drillable;
-		this.animationPlayer = animationPlayer;
 		this.collisionShape2D = GetNode<CollisionShape2D>("./CollisionShape2D");
+		this.drillableAnimation = new DrillableAnimation(this);
 	}
 
 	public void StartDrillAnimation(DrillFromDirection direction) 
 	{
-		if (direction == DrillFromDirection.LEFT)
-			this.animationPlayer.Play("dig_from_left");
-		else if (direction == DrillFromDirection.RIGHT)
-			this.animationPlayer.Play("dig_from_right");
-		else if (direction == DrillFromDirection.UP)
-			this.animationPlayer.Play("dig_top");
+		this.drillableAnimation.StartAnimation(direction);
 		this.collisionShape2D.Disabled = true;
-		GD.Print("Drillable disabling collision shape");
+		EmitSignal(SignalName.preDug, this, (int) drillableAnimation.drillFromDirection);
+	}
 
+	public void UpdateDrillAnimationFromPosition(Node2D drillingEntity)
+	{
+		bool finished = this.drillableAnimation.UpdateAnimationFromPosition(drillingEntity);
+		if (finished)
+		{
+			this.FinishDrillAnimation();
+		}
 	}
 
 	public void HandleBodyEntered(Node2D body, DrillFromDirection direction)
@@ -57,6 +71,13 @@ public partial class Drillable : Tile
 			PlayerCharacterBody2D player = body as PlayerCharacterBody2D;
 			player.UnregisterDrillable(this);
 		}
+	}
+
+	public void FinishDrillAnimation()
+	{
+		IsDug = true;
+		EmitSignal(SignalName.dug, this);
+		QueueFree();
 	}
 
 	private void _on_left_drill_zone_entered(Node2D body)
@@ -87,33 +108,5 @@ public partial class Drillable : Tile
 	private void _on_top_drill_zone_exited(Node2D body)
 	{
 		HandleBodyExited(body);
-	}
-
-	private void _on_animation_player_animation_finished(string anim_name)
-	{
-		if (anim_name == "dig_from_left" || anim_name == "dig_from_right" || anim_name == "dig_top")
-		{
-			EmitSignal(SignalName.dug, this);
-			QueueFree();
-		}
-	}
-
-	public void _pre_animation_finished()
-	{
-		DrillFromDirection direction;
-		if (this.animationPlayer.CurrentAnimation == "dig_from_left")
-		{
-			direction = DrillFromDirection.LEFT;
-		} else if (this.animationPlayer.CurrentAnimation == "dig_from_right")
-		{
-			direction = DrillFromDirection.RIGHT;
-		} else if (this.animationPlayer.CurrentAnimation == "dig_top")
-		{
-			direction = DrillFromDirection.UP;
-		} else
-		{
-			direction = DrillFromDirection.NONE;
-		}
-		EmitSignal(SignalName.preDug, this, (int)direction);
 	}
 }

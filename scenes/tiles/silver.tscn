@@ -50,6 +50,7 @@ animations = [{
 }]
 
 [node name="dirt" instance=ExtResource("1_r0lpe")]
+DrillableType = 3
 
 [node name="Dirt_AnimatedSprite2D" parent="." index="1"]
 material = SubResource("ShaderMaterial_rcn5w")

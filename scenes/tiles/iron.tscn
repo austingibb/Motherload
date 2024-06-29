@@ -50,6 +50,8 @@ animations = [{
 }]
 
 [node name="iron" instance=ExtResource("1_wbwn6")]
+position = Vector2(2.08165e-12, 2.08165e-12)
+DrillableType = 1
 
 [node name="Dirt_AnimatedSprite2D" parent="." index="1"]
 material = SubResource("ShaderMaterial_rcn5w")

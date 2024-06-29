@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://2j154jrcrhfx"]
+
+[ext_resource type="Texture2D" uid="uid://befgv2fg2w7th" path="res://assets/super_charger.png" id="1_neg1l"]
+[ext_resource type="Script" path="res://scripts/ChargeStation.cs" id="1_x0ynl"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dgt24"]
+size = Vector2(24.9448, 40.3789)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dcrh2"]
+size = Vector2(23.9437, 11.4854)
+
+[node name="ChargeStation" type="StaticBody2D"]
+collision_layer = 0
+collision_mask = 0
+script = ExtResource("1_x0ynl")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0.0338898, 4.68822)
+shape = SubResource("RectangleShape2D_dgt24")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_neg1l")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(0.200745, 18.9405)
+shape = SubResource("RectangleShape2D_dcrh2")
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_charge_zone_entered"]
