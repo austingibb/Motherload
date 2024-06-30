@@ -3,31 +3,35 @@
 [ext_resource type="Script" path="res://scripts/SellStation.cs" id="1_bg4pi"]
 [ext_resource type="Texture2D" uid="uid://ct6ir1bp5ah5x" path="res://assets/sell_station.png" id="1_korpj"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_q52la"]
-size = Vector2(68.6071, 40.0668)
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wjvdt"]
 size = Vector2(12.0577, 22.3493)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_h4tip"]
+size = Vector2(67.5408, 2.77382)
+
 [node name="SellStation" type="StaticBody2D"]
-collision_layer = 0
+collision_layer = 2
 collision_mask = 0
 script = ExtResource("1_bg4pi")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+visible = false
+position = Vector2(-5.82705, -0.198647)
+polygon = PackedVector2Array(-28, 2.08165e-12, -28, -55, 15, -38, 30, -38, 40, 2.08165e-12)
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 z_index = -1
 position = Vector2(0.504604, -35.0341)
 texture = ExtResource("1_korpj")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-visible = false
-position = Vector2(0.202694, -20.2468)
-shape = SubResource("RectangleShape2D_q52la")
-
 [node name="Area2D" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 position = Vector2(-5.30223, -11.3111)
 shape = SubResource("RectangleShape2D_wjvdt")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0.810542, -1.58424)
+shape = SubResource("RectangleShape2D_h4tip")
 
 [connection signal="body_entered" from="Area2D" to="." method="_on_sell_zone_entered"]

@@ -4,18 +4,18 @@
 [ext_resource type="Script" path="res://scripts/ChargeStation.cs" id="1_x0ynl"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dgt24"]
-size = Vector2(24.9448, 40.3789)
+size = Vector2(24.9448, 40.796)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dcrh2"]
 size = Vector2(23.9437, 11.4854)
 
 [node name="ChargeStation" type="StaticBody2D"]
-collision_layer = 0
+collision_layer = 2
 collision_mask = 0
 script = ExtResource("1_x0ynl")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0.0338898, 4.68822)
+position = Vector2(0.0338898, 4.89679)
 shape = SubResource("RectangleShape2D_dgt24")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

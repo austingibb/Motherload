@@ -98,10 +98,12 @@ script = ExtResource("11_3hhjf")
 [node name="SellStation" parent="Buildings" instance=ExtResource("12_nuqs6")]
 unique_name_in_owner = true
 position = Vector2(-0.402543, -2.03396)
+collision_layer = 2
 
 [node name="ChargeStation" parent="Buildings" instance=ExtResource("13_s1kka")]
 unique_name_in_owner = true
 position = Vector2(-163.768, -26.7826)
+collision_layer = 2
 
 [node name="HUD" parent="." instance=ExtResource("13_6ipmk")]
 unique_name_in_owner = true
@@ -127,5 +129,4 @@ shape = SubResource("WorldBoundaryShape2D_j2r7s")
 [node name="Projectiles" type="Node2D" parent="."]
 position = Vector2(0, -83.3385)
 
-[editable path="Player"]
 [editable path="HUD"]

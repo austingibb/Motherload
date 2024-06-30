@@ -341,7 +341,6 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 	{
 		Laser laser = laserScene.Instantiate() as Laser;
 		laser.transformSource = projectileSpawnPoint;
-		laser.velocitySource = this;
 		laser.flipDirection = true;
 		laser.ZIndex = -1;
 		Node2D projectiles = GetParent().GetNode<Node2D>("Projectiles");

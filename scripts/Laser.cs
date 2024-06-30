@@ -3,9 +3,8 @@ using System;
 
 public partial class Laser : CharacterBody2D
 {
-    public float speed = 15.0f;
+    public float speed = 20.0f;
     public Node2D transformSource;
-    public CharacterBody2D velocitySource;
     public bool flipDirection;
 
     public bool initialized = false;
@@ -17,6 +16,7 @@ public partial class Laser : CharacterBody2D
 
     public override void _PhysicsProcess(double delta)
     {
+        MoveAndSlide();
         if (!initialized)
         {
             Visible = true;
@@ -29,16 +29,10 @@ public partial class Laser : CharacterBody2D
                     GlobalRotation += Mathf.DegToRad(180);
                 }
             }
-            else if (velocitySource != null)
-            {
-                Velocity = velocitySource.Velocity;
-            }
 
             initialized = true;
+            Velocity = new Vector2(0, -speed).Rotated(GlobalRotation + Mathf.DegToRad(90)) * speed;
         }
-
-        Velocity = new Vector2(0, -speed).Rotated(GlobalRotation + Mathf.DegToRad(90)) * speed;
-        MoveAndSlide();
     }
 
     private void _on_body_entered(Node2D body)
