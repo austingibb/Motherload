@@ -8,9 +8,9 @@ public partial class DrillableAnimation
     private ShaderMaterial shaderMaterial;
     private AnimationPlayer animationPlayer;
     private const float HorozontalAnimationOffset = -10.0f;
-    private const float VerticalAnimationOffset = 1.0f;
+    private const float VerticalAnimationOffset = 3.0f;
     private const float ProgressScale = 1.0f;
-    private const float FinishThreshold = 0.9f;
+    private const float FinishThreshold = 0.95f;
 
     public DrillableAnimation(Drillable drillable)
     {

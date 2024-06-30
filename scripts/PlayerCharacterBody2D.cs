@@ -17,8 +17,8 @@ public enum PlayerState {
 public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 {
 	public const float WalkSpeed = 120.0f;
-	public const float DrillSideSpeed = 90.0f;
-	public const float DrillDownSpeed = 80.0f;	
+	public const float DrillSideSpeed = 40.0f;
+	public const float DrillDownSpeed = 40.0f;	
 	public const float VerticalFlightSpeed = -900.0f;
 	public const float CatchVerticalFlightSpeed = -1100.0f;
 
@@ -26,13 +26,20 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 	public const float MaxHorozontalSpeed = 300.0f;
 	public const float TiltAmount = 0.174533f;
 	public const float DragConstant = 0.011f;
+	public const float EnergyLossScale = 3f;
 	public float gravity = 500f;
 	private PlayerState playerState = PlayerState.None;
 	private PlayerDrillables playerDrillables = new();
 	public Vector2 prevVelocity = new(0, 0);
 	public AnimatedSprite2D bodyAnimation;
+	public AnimatedSprite2D frontHeadAnimation;
+	public AnimatedSprite2D sideHeadAnimation;
+	public Node2D flipper;
+	public Marker2D projectileSpawnPoint;
+
 	public PlayerAnimation playerAnimation;
 	public List<List<Drillable>> SurroundingDrillables;
+	private PackedScene laserScene;
 
 	public float Energy;
 	public float Health;
@@ -40,16 +47,24 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
     public override void _Ready()
     {
 		Node2D flipper = GetNode<Node2D>("%flipper");
+		this.flipper = flipper;
+		Marker2D projectileSpawnPoint = GetNode<Marker2D>("%player_projectile_spawn_point");
+		this.projectileSpawnPoint = projectileSpawnPoint;
+		laserScene = GD.Load<PackedScene>("res://scenes/laser.tscn");
 		AnimatedSprite2D bodyAnimation = GetNode<AnimatedSprite2D>("%body_AnimatedSprite2D");
+		AnimatedSprite2D frontHeadAnimation = GetNode<AnimatedSprite2D>("%front_head_AnimatedSprite2D");
+		AnimatedSprite2D sideHeadAnimation = GetNode<AnimatedSprite2D>("%side_head_AnimatedSprite2D");
 		this.bodyAnimation = bodyAnimation;
+		this.frontHeadAnimation = frontHeadAnimation;
+		this.sideHeadAnimation = sideHeadAnimation;
 		AnimatedSprite2D frontArmAnimation = GetNode<AnimatedSprite2D>("%front_arm_AnimatedSprite2D");
 		AnimatedSprite2D backArmAnimation = GetNode<AnimatedSprite2D>("%back_arm_AnimatedSprite2D");
 		AnimatedSprite2D armsAnimation = GetNode<AnimatedSprite2D>("%arms_AnimatedSprite2D");
 		AnimatedSprite2D jetAnimation = GetNode<AnimatedSprite2D>("%jet_AnimatedSprite2D");
 		AnimationPlayer animationPlayer = GetNode<AnimationPlayer>("%player_AnimationPlayer");
 		AnimationPlayer shaderAnimationPlayer = GetNode<AnimationPlayer>("%shader_AnimationPlayer");
-
-		playerAnimation = new PlayerAnimation(flipper, bodyAnimation, frontArmAnimation, backArmAnimation, armsAnimation, jetAnimation, animationPlayer, shaderAnimationPlayer);
+		
+		playerAnimation = new PlayerAnimation(flipper, bodyAnimation, frontHeadAnimation, sideHeadAnimation, frontArmAnimation, backArmAnimation, armsAnimation, jetAnimation, animationPlayer, shaderAnimationPlayer);
 
 		SurroundingDrillables = new List<List<Drillable>>();
 		for (int i = 0; i < 3; i++)
@@ -69,6 +84,13 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 	{
 		Vector2 velocity = Velocity;
 		HandleEnergy((float)delta);
+		HandleHead((float)delta, frontHeadAnimation);
+		HandleHead((float)delta, sideHeadAnimation);
+
+		if (Input.IsActionJustPressed("fire"))
+		{
+			Shoot();
+		}
 
 		// Add the gravity.
 		if (!IsOnPlayerOnFloor())
@@ -267,27 +289,63 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		prevVelocity = velocity;
 	}
 
-	private void HandleEnergy(float delta)
+	private void HandleHead(float delta, Node2D headAnimation) 
 	{
-		if (Input.IsActionJustPressed("test"))
+		bool isPlayerFacingMouse = ((IsFacingLeft() && (GetGlobalMousePosition().X < this.GlobalPosition.X)) || (!IsFacingLeft() && (GetGlobalMousePosition().X > this.GlobalPosition.X)));
+		if (!isPlayerFacingMouse && playerAnimation.IsFacingForward())
 		{
-			Energy += 10.0f;
+			this.flipper.Scale = new Vector2(this.flipper.Scale.X * -1, this.flipper.Scale.Y);
 		}
 
-		Energy -= delta / 4.0f;
+		bool allowRotation = isPlayerFacingMouse && (playerState != PlayerState.Drilling);
+
+		if (allowRotation)
+		{
+			headAnimation.GlobalRotation = headAnimation.GlobalPosition.AngleToPoint(GetGlobalMousePosition()) + Mathf.DegToRad(180);
+			if (headAnimation.Rotation > Mathf.DegToRad(180))
+			{
+				headAnimation.Rotation -= Mathf.DegToRad(360); 
+			}
+
+			if (headAnimation.Rotation < Mathf.DegToRad(-45))
+			{
+				headAnimation.Rotation = Mathf.DegToRad(-45);
+			} else if (headAnimation.Rotation > Mathf.DegToRad(85))
+			{
+				headAnimation.Rotation = Mathf.DegToRad(85);
+			}
+		} else {
+			headAnimation.Rotation = 0;
+		}
+	}
+
+	private void HandleEnergy(float delta)
+	{
+		Energy -= delta / 4.0f * EnergyLossScale;
 		if (playerState == PlayerState.Flying)
 		{
-			Energy -= delta;
+			Energy -= delta * EnergyLossScale;
 		} else if (playerState == PlayerState.Drilling)
 		{
-			Energy -= delta;
+			Energy -= delta * EnergyLossScale;
 		} else if (playerState == PlayerState.Grounded)
 		{
 			if (Input.IsActionPressed("move_left") || Input.IsActionPressed("move_right"))
 			{
-				Energy -= delta / 2.0f;
+				Energy -= delta / 2.0f * EnergyLossScale;
 			}
 		}
+	}
+
+	public void Shoot()
+	{
+		Laser laser = laserScene.Instantiate() as Laser;
+		laser.transformSource = projectileSpawnPoint;
+		laser.velocitySource = this;
+		laser.flipDirection = true;
+		laser.ZIndex = -1;
+		Node2D projectiles = GetParent().GetNode<Node2D>("Projectiles");
+		projectiles.AddChild(laser);
 	}
 
 	private bool IsOnPlayerOnFloor()
@@ -304,6 +362,16 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 			drag.Y *= -1;
 		drag *= DragConstant;
 		return new(velocity.X + drag.X, velocity.Y + drag.Y);
+	}
+
+
+
+	public void RegisterDrillable(Drillable drillable, DrillFromDirection direction) {
+		playerDrillables.RegisterDrillable(drillable, direction);
+	}
+
+	public void UnregisterDrillable(Drillable drillable) {
+		playerDrillables.UnregisterDrillable(drillable);
 	}
 
 	private void _on_player_animation_player_animation_finished(String anim_name) 
@@ -342,11 +410,8 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		}
 	}
 
-	public void RegisterDrillable(Drillable drillable, DrillFromDirection direction) {
-		playerDrillables.RegisterDrillable(drillable, direction);
-	}
-
-	public void UnregisterDrillable(Drillable drillable) {
-		playerDrillables.UnregisterDrillable(drillable);
+	private bool IsFacingLeft() 
+	{
+		return this.flipper.Scale.X > 0;
 	}
 }

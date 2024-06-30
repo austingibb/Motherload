@@ -1,0 +1,48 @@
+using Godot;
+using System;
+
+public partial class Laser : CharacterBody2D
+{
+    public float speed = 15.0f;
+    public Node2D transformSource;
+    public CharacterBody2D velocitySource;
+    public bool flipDirection;
+
+    public bool initialized = false;
+
+    public override void _Ready()
+    {
+        Visible = false;
+    }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        if (!initialized)
+        {
+            Visible = true;
+            if (transformSource != null)
+            {
+                GlobalPosition = transformSource.GlobalPosition;
+                GlobalRotation = transformSource.GlobalRotation;
+                if (flipDirection)
+                {
+                    GlobalRotation += Mathf.DegToRad(180);
+                }
+            }
+            else if (velocitySource != null)
+            {
+                Velocity = velocitySource.Velocity;
+            }
+
+            initialized = true;
+        }
+
+        Velocity = new Vector2(0, -speed).Rotated(GlobalRotation + Mathf.DegToRad(90)) * speed;
+        MoveAndSlide();
+    }
+
+    private void _on_body_entered(Node2D body)
+    {
+        QueueFree();
+    }
+}

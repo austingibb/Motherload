@@ -66,6 +66,7 @@ public partial class DrillableGrid : TileMap
                 } else {
                     DrillableShaderManager.UpdateDrillableSide((Node2D) child, DrillableSurface.Top, false);
                 }
+                tile.ZIndex = -2;
             }
         }
         UpdateAllDrillableEdges();

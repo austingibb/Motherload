@@ -254,6 +254,7 @@ size = Vector2(20.5461, 2.49688)
 size = Vector2(4.38098, 13.4997)
 
 [node name="dirt" type="StaticBody2D"]
+collision_layer = 3
 script = ExtResource("1_0cn1p")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
