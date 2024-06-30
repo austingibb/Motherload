@@ -21,7 +21,8 @@ public enum PlayerAnimationState
     LandHard,
     LandSoft,
     FlyLeft,
-    FlyRight
+    FlyRight,
+    PowerDown
 }
 
 public partial class PlayerAnimation : GodotObject
@@ -49,7 +50,8 @@ public partial class PlayerAnimation : GodotObject
         PlayerAnimationState.FlyRight,
         PlayerAnimationState.SetupDrillDown,
         PlayerAnimationState.DrillDown,
-        PlayerAnimationState.DrillStandup
+        PlayerAnimationState.DrillStandup,
+        PlayerAnimationState.PowerDown
     };
 
     public HashSet<PlayerAnimationState> sideFacingStates = new HashSet<PlayerAnimationState>
@@ -107,6 +109,11 @@ public partial class PlayerAnimation : GodotObject
         {
             bodyAnimation.Rotation = 0;
             bodyAnimation.Position = new Vector2(0, 0);
+        }
+
+        if (state != PlayerAnimationState.PowerDown)
+        {
+            frontHeadAnimation.Play("default");
         }
         
         _currentState = state;
@@ -201,6 +208,10 @@ public partial class PlayerAnimation : GodotObject
                 break;
             case PlayerAnimationState.DrillStandup:
                 animationPlayer.Play("drill_down_standup");
+                break;
+            case PlayerAnimationState.PowerDown:
+                animationPlayer.SpeedScale = 1.0f;
+                animationPlayer.Play("power_down");
                 break;
             default:
                 break;

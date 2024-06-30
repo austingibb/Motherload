@@ -11,14 +11,15 @@ public enum PlayerState {
 	Flying,
 	Falling,
 	Drilling,
+	Dead,
 	None
 }
 
 public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 {
 	public const float WalkSpeed = 120.0f;
-	public const float DrillSideSpeed = 40.0f;
-	public const float DrillDownSpeed = 40.0f;	
+	public const float DrillSideSpeed = 80.0f;
+	public const float DrillDownSpeed = 80.0f;	
 	public const float VerticalFlightSpeed = -900.0f;
 	public const float CatchVerticalFlightSpeed = -1100.0f;
 
@@ -26,7 +27,8 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 	public const float MaxHorozontalSpeed = 300.0f;
 	public const float TiltAmount = 0.174533f;
 	public const float DragConstant = 0.011f;
-	public const float EnergyLossScale = 3f;
+	public const float EnergyLossScale = 4.0f;
+	public const float NoEnergyHealthLoss = 10.0f;
 	public float gravity = 500f;
 	private PlayerState playerState = PlayerState.None;
 	private PlayerDrillables playerDrillables = new();
@@ -93,7 +95,14 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		}
 
 		// Add the gravity.
-		if (!IsOnPlayerOnFloor())
+		if (playerState == PlayerState.Dead)
+		{
+			if (!IsOnPlayerOnFloor()) 
+			{
+				velocity.Y += gravity * (float)delta;
+			}
+		}
+		else if (!IsOnPlayerOnFloor())
 		{
 			velocity.Y += gravity * (float)delta;
 
@@ -216,7 +225,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 							if (playerDrillables.ActiveDrillable.IsDug)
 							{
 								Drillable leftDrillable = SurroundingDrillables[0][1];
-								if (Input.IsActionPressed("move_left") && Common.ValidTile(leftDrillable) && Common.ValidTile(belowDrillable))
+								if (Health > 0 && Input.IsActionPressed("move_left") && Common.ValidTile(leftDrillable) && Common.ValidTile(belowDrillable))
 								{
 									playerDrillables.ActiveDrillable = leftDrillable;
 									leftDrillable.StartDrillAnimation(DrillFromDirection.RIGHT);
@@ -231,7 +240,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 							if (playerDrillables.ActiveDrillable.IsDug)
 							{
 								Drillable rightDrillable = SurroundingDrillables[2][1];
-								if (Input.IsActionPressed("move_right") && Common.ValidTile(rightDrillable) && Common.ValidTile(belowDrillable))
+								if (Health > 0 && Input.IsActionPressed("move_right") && Common.ValidTile(rightDrillable) && Common.ValidTile(belowDrillable))
 								{
 									playerDrillables.ActiveDrillable = rightDrillable;
 									rightDrillable.StartDrillAnimation(DrillFromDirection.LEFT);
@@ -247,7 +256,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 						playerDrillables.ActiveDrillable.UpdateDrillAnimationFromPosition(this);
 						if (playerDrillables.ActiveDrillable.IsDug)
 						{
-							if (Input.IsActionPressed("down") && belowDrillable != null && GodotObject.IsInstanceValid(belowDrillable))
+							if (Health > 0 && Input.IsActionPressed("down") && belowDrillable != null && GodotObject.IsInstanceValid(belowDrillable))
 							{
 								playerDrillables.ActiveDrillable = belowDrillable;
 								belowDrillable.StartDrillAnimation(DrillFromDirection.UP);
@@ -262,7 +271,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		}
 
 		// Handle flight.
-		if (Input.IsActionPressed("fly") && !(playerState == PlayerState.HurtLanding || playerState == PlayerState.Drilling))
+		if (Input.IsActionPressed("fly") && !(playerState == PlayerState.HurtLanding || playerState == PlayerState.Drilling || playerState == PlayerState.Dead))
 		{
 			playerAnimation.SetFlightState(true);
 			if (velocity.Y < 0) 
@@ -297,7 +306,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 			this.flipper.Scale = new Vector2(this.flipper.Scale.X * -1, this.flipper.Scale.Y);
 		}
 
-		bool allowRotation = isPlayerFacingMouse && (playerState != PlayerState.Drilling);
+		bool allowRotation = isPlayerFacingMouse && (playerState != PlayerState.Drilling) && (playerState != PlayerState.Dead);
 
 		if (allowRotation)
 		{
@@ -307,9 +316,9 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 				headAnimation.Rotation -= Mathf.DegToRad(360); 
 			}
 
-			if (headAnimation.Rotation < Mathf.DegToRad(-45))
+			if (headAnimation.Rotation < Mathf.DegToRad(-35))
 			{
-				headAnimation.Rotation = Mathf.DegToRad(-45);
+				headAnimation.Rotation = Mathf.DegToRad(-35);
 			} else if (headAnimation.Rotation > Mathf.DegToRad(85))
 			{
 				headAnimation.Rotation = Mathf.DegToRad(85);
@@ -334,6 +343,28 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 			{
 				Energy -= delta / 2.0f * EnergyLossScale;
 			}
+		}
+
+		if (Energy <= 0)
+		{
+			Energy = 0;
+			Health -= delta * NoEnergyHealthLoss;
+		}
+
+		if (Health <= 0)
+		{
+			Health = 0;
+			Die();
+		}
+	}
+
+	public void Die()
+	{
+		if (playerState != PlayerState.Drilling && playerState != PlayerState.Dead)
+		{
+			this.Rotation = 0;
+			playerState = PlayerState.Dead;
+			playerAnimation.UpdateAnimation(PlayerAnimationState.PowerDown);
 		}
 	}
 

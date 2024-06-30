@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://v0qqttb0yfbx"]
+[gd_scene load_steps=14 format=3 uid="uid://v0qqttb0yfbx"]
 
 [ext_resource type="FontFile" uid="uid://cf1shrgw3bt7c" path="res://assets/fonts/PixelOperator8.ttf" id="1_n4lkf"]
 [ext_resource type="Shader" path="res://scripts/hurt.gdshader" id="2_u71ds"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://scripts/ui/ProgressBarNinePatch.cs" id="3_rpbc3"]
 [ext_resource type="Texture2D" uid="uid://q25n24hf7232" path="res://assets/health_bar.png" id="4_mbnf4"]
 [ext_resource type="Texture2D" uid="uid://sgqfts07b28t" path="res://assets/bar_background.png" id="5_uv074"]
+[ext_resource type="Script" path="res://scripts/EnergyShaderAnimationPlayer.cs" id="6_jlhy5"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0t4ke"]
 
@@ -130,6 +131,7 @@ position = Vector2(198.984, 0.0166046)
 libraries = {
 "": SubResource("AnimationLibrary_ob5vb")
 }
+script = ExtResource("6_jlhy5")
 
 [node name="Health" type="Node2D" parent="ProgressBars" node_paths=PackedStringArray("background", "fill")]
 position = Vector2(2.08165e-12, 12.317)
