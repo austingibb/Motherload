@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://cfxy3wc07h88x"]
+
+[sub_resource type="Curve2D" id="Curve2D_0yuvf"]
+bake_interval = 1.0
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 4, 0, 0, 0, 0, 27, 14, 0, 0, 0, 0, 45, 17, 0, 0, 0, 0, 70, 18, 0, 0, 0, 0, 135, 17, 0, 0, 0, 0, 345, 4)
+}
+point_count = 7
+
+[node name="SilverProbability" type="Path2D"]
+curve = SubResource("Curve2D_0yuvf")

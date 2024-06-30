@@ -27,7 +27,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 	public const float MaxHorozontalSpeed = 300.0f;
 	public const float TiltAmount = 0.174533f;
 	public const float DragConstant = 0.011f;
-	public const float EnergyLossScale = 4.0f;
+	public const float EnergyLossScale = 3.0f;
 	public const float NoEnergyHealthLoss = 10.0f;
 	public float gravity = 500f;
 	private PlayerState playerState = PlayerState.None;
@@ -143,7 +143,8 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 					playerAnimation.UpdateAnimation(PlayerAnimationState.LandHard);
 					playerState = PlayerState.HurtLanding;
 					velocity.X /= 5;
-					Health -= 10.0f;
+					float healthLoss = (Mathf.Pow(1.01f, prevVelocity.Y - 200f)*4)+7;
+					Health -= healthLoss;
 				} else if (prevVelocity.Y > 150 && !Input.IsActionPressed("fly")) 
 				{
 					playerAnimation.UpdateAnimation(PlayerAnimationState.LandSoft);
@@ -385,7 +386,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 
 	private Vector2 ApplyDrag(Vector2 velocity) 
 	{
-		Vector2 drag = new(Mathf.Pow(Mathf.Abs(velocity.X), 1.1f), Mathf.Pow(Mathf.Abs(velocity.Y), 1.1f));
+		Vector2 drag = new(Mathf.Pow(Mathf.Abs(velocity.X), 1.05f), Mathf.Pow(Mathf.Abs(velocity.Y), 1.05f));
 		if (velocity.X > 0)
 			drag.X *= -1;
 		if (velocity.Y > 0)

@@ -14,7 +14,8 @@ public enum DrillableType
 	DIRT,
 	IRON,
 	GOLD,
-	SILVER
+	SILVER,
+	NONE
 }
 
 public partial class Drillable : Tile

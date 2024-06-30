@@ -73,6 +73,18 @@ scale = Vector2(2.35106, 2.36028)
 theme_override_fonts/font = ExtResource("1_n4lkf")
 text = "Credits: "
 
+[node name="Depth" type="Node2D" parent="."]
+position = Vector2(1399.72, 40)
+
+[node name="DepthLabel" type="Label" parent="Depth"]
+offset_left = -0.90036
+offset_top = 87.1544
+offset_right = 137.099
+offset_bottom = 451.155
+scale = Vector2(2.35106, 2.36028)
+theme_override_fonts/font = ExtResource("1_n4lkf")
+text = "Depth: "
+
 [node name="Inventory" type="Node2D" parent="."]
 material = SubResource("ShaderMaterial_0t4ke")
 position = Vector2(2013.82, 40)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://c4n3nw1neoend"]
+[gd_scene load_steps=25 format=3 uid="uid://c4n3nw1neoend"]
 
 [ext_resource type="PackedScene" uid="uid://cwrufed6b0h7m" path="res://scenes/player.tscn" id="1_cpms4"]
 [ext_resource type="Script" path="res://scripts/Game.cs" id="1_jibs2"]
@@ -12,6 +12,9 @@
 [ext_resource type="Script" path="res://scripts/DrillableGrid.cs" id="8_iy0wo"]
 [ext_resource type="PackedScene" uid="uid://pb4g2nqwkegp" path="res://scenes/tiles/dirt_non_drillable_stone_cover.tscn" id="9_bld13"]
 [ext_resource type="Script" path="res://scripts/Inventory.cs" id="11_3hhjf"]
+[ext_resource type="PackedScene" uid="uid://edg51lolexlp" path="res://scenes/tiles/iron_probability.tscn" id="11_sxu0c"]
+[ext_resource type="PackedScene" uid="uid://csxfamqdg7vnh" path="res://scenes/tiles/gold_probability.tscn" id="12_1biul"]
+[ext_resource type="PackedScene" uid="uid://cfxy3wc07h88x" path="res://scenes/tiles/silver_probability.tscn" id="12_hh8dn"]
 [ext_resource type="PackedScene" uid="uid://bpspmu2o75ucw" path="res://scenes/sell_station.tscn" id="12_nuqs6"]
 [ext_resource type="PackedScene" uid="uid://v0qqttb0yfbx" path="res://scenes/hud.tscn" id="13_6ipmk"]
 [ext_resource type="PackedScene" uid="uid://2j154jrcrhfx" path="res://scenes/charge_station.tscn" id="13_s1kka"]
@@ -37,14 +40,6 @@ width = 20
 height = 60
 noise = SubResource("FastNoiseLite_vnfqb")
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_wnes6"]
-frequency = 0.2731
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_1paxr"]
-width = 20
-height = 60
-noise = SubResource("FastNoiseLite_wnes6")
-
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_77tsn"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_j2r7s"]
@@ -61,7 +56,7 @@ position = Vector2(0, -22.4105)
 remote_path = NodePath("../../Camera2D")
 update_rotation = false
 
-[node name="DrillableGrid" type="TileMap" parent="."]
+[node name="DrillableGrid" type="TileMap" parent="." node_paths=PackedStringArray("toPath")]
 unique_name_in_owner = true
 tile_set = SubResource("TileSet_smrpq")
 format = 2
@@ -70,14 +65,24 @@ layer_0/tile_data = PackedInt32Array(65535, 1, 65536, 65534, 1, 65536, 65533, 1,
 layer_1/tile_data = PackedInt32Array()
 script = ExtResource("8_iy0wo")
 EmptyTileNoiseTexture = SubResource("NoiseTexture2D_5udv4")
-DrillableTypeNoiseTexture = SubResource("NoiseTexture2D_1paxr")
+drillableType = [1, 3, 2]
+toPath = [NodePath("../DrillableResourceProbability/IronProbability"), NodePath("../DrillableResourceProbability/SilverProbability"), NodePath("../DrillableResourceProbability/GoldProbability")]
+
+[node name="DrillableResourceProbability" type="Node2D" parent="."]
+visible = false
+
+[node name="SilverProbability" parent="DrillableResourceProbability" instance=ExtResource("12_hh8dn")]
+
+[node name="GoldProbability" parent="DrillableResourceProbability" instance=ExtResource("12_1biul")]
+
+[node name="IronProbability" parent="DrillableResourceProbability" instance=ExtResource("11_sxu0c")]
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(0, -22.4105)
 zoom = Vector2(10, 10)
 process_callback = 0
-limit_left = -300
-limit_right = 300
+limit_left = -620
+limit_right = 620
 position_smoothing_enabled = true
 position_smoothing_speed = 10.0
 
@@ -110,7 +115,7 @@ visible = false
 [node name="BoundaryWall" type="Node2D" parent="."]
 
 [node name="LeftBoundary" type="StaticBody2D" parent="BoundaryWall"]
-position = Vector2(-305, 2.08165e-12)
+position = Vector2(-620, 2.08165e-12)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BoundaryWall/LeftBoundary"]
 position = Vector2(2.08165e-12, 2.08165e-12)
@@ -118,7 +123,7 @@ rotation = 1.5708
 shape = SubResource("WorldBoundaryShape2D_77tsn")
 
 [node name="RightBoundary" type="StaticBody2D" parent="BoundaryWall"]
-position = Vector2(305, 2.08165e-12)
+position = Vector2(620, 2.08165e-12)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BoundaryWall/RightBoundary"]
 rotation = -1.5708

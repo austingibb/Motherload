@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://edg51lolexlp"]
+
+[sub_resource type="Curve2D" id="Curve2D_yp5va"]
+bake_interval = 1.0
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 33, 0, 0, 0, 0, 20, 27, 0, 0, 0, 0, 29, 24, 0, 0, 0, 0, 84, 19, 0, 0, 0, 0, 134, 16, 0, 0, 0, 0, 431, 4)
+}
+point_count = 7
+
+[node name="IronProbability" type="Path2D"]
+curve = SubResource("Curve2D_yp5va")

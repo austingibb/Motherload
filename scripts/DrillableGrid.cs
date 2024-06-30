@@ -8,13 +8,15 @@ using System.Numerics;
 public partial class DrillableGrid : TileMap
 {
     [Export]
-    public int Width = 20;
+    public int Width = 40;
     [Export]
-    public int StartingRows = 60;
+    public int StartingRows = 200;
     [Export]
     public NoiseTexture2D EmptyTileNoiseTexture;
     [Export]
-    public NoiseTexture2D DrillableTypeNoiseTexture;
+    Godot.Collections.Array<DrillableType> drillableType = new Godot.Collections.Array<DrillableType>();
+    [Export]
+    Godot.Collections.Array<Path2D> toPath = new Godot.Collections.Array<Path2D>();
 
     [Signal]
     public delegate void drillableDugEventHandler(Drillable drillable);
@@ -27,16 +29,35 @@ public partial class DrillableGrid : TileMap
     public const int SILVER_TILE_SET_ID = 6;
     public const int DIRT_NON_DRILLABLE_STONE_TOP_TILE_SET_ID = 7;
     
+    private DrillableGridProbability drillableGridProbability;
     private FastNoiseLite emptyTileNoise;
-    private FastNoiseLite drillableTypeNoise;
     private List<List<Node2D>> positionToNode2D = new List<List<Node2D>>();
 
     public override void _Ready()
     {
         emptyTileNoise = EmptyTileNoiseTexture.Noise as FastNoiseLite;
-        drillableTypeNoise = DrillableTypeNoiseTexture.Noise as FastNoiseLite;
         emptyTileNoise.Seed = (int) (new RandomNumberGenerator().Randi() % Mathf.Pow(2, 25));
-        drillableTypeNoise.Seed = (int) (new RandomNumberGenerator().Randi() % Mathf.Pow(2, 25));
+
+        drillableGridProbability = new DrillableGridProbability(drillableType, toPath);
+    }
+
+    public int MapDrillableTypeToTileSetId(DrillableType drillableType)
+    {
+        switch (drillableType)
+        {
+            case DrillableType.DIRT:
+                return DIRT_TILE_SET_ID;
+            case DrillableType.IRON:
+                return IRON_TILE_SET_ID;
+            case DrillableType.GOLD:
+                return GOLD_TILE_SET_ID;
+            case DrillableType.SILVER:
+                return SILVER_TILE_SET_ID;
+            case DrillableType.NONE:
+                return -1;
+            default:
+                return DIRT_TILE_SET_ID;
+        }
     }
 
     public void Init(List<Node2D> buildings = null)
@@ -91,20 +112,12 @@ public partial class DrillableGrid : TileMap
                     continue;
                 }
 
+                int tileSetId;
                 var emptyTileNoiseValue = emptyTileNoise.GetNoise2D(i, j);
-                var drillableTypeNoiseValue = drillableTypeNoise.GetNoise2D(i, j);
-                int tileSetId = -1;
-
                 if (emptyTileNoiseValue < -0.3) {
                     tileSetId = -1;
-                } else if (drillableTypeNoiseValue < 0.28) {
-                    tileSetId = DIRT_TILE_SET_ID;
-                } else if (drillableTypeNoiseValue < 0.37) {
-                    tileSetId = IRON_TILE_SET_ID;
-                } else if (drillableTypeNoiseValue < 0.4) {
-                    tileSetId = SILVER_TILE_SET_ID;
-                } else if (drillableTypeNoiseValue < 0.42) {
-                    tileSetId = GOLD_TILE_SET_ID;
+                } else {
+                    tileSetId = MapDrillableTypeToTileSetId(drillableGridProbability.GetDrillableTypeForDepth((uint) j));
                 }
 
                 bool tileOverlapsBuilding = j == 0 && buildings != null && buildings.Any((building) => {
@@ -119,6 +132,7 @@ public partial class DrillableGrid : TileMap
                 {
                     tileSetId = DIRT_NON_DRILLABLE_STONE_TOP_TILE_SET_ID;
                 }
+
                 if (tileSetId != -1) {
                     SetCell(1, GridPositionToTileMapPosition(new Vector2I(i, j)), 1, new Vector2I(0, 0), tileSetId);
                 }
@@ -271,6 +285,17 @@ public partial class DrillableGrid : TileMap
                 surroundingDrillables[i+1][j+1] = null;
             }
         }
+    }
+
+    public int GetDepth(Node2D node2D)
+    {
+        Vector2I tileMapPosition = LocalToMap(node2D.Position);
+        int depth = TileMapPositionToGridPosition(tileMapPosition).Y + 1;
+        if (depth < 0)
+        {
+            return 0;
+        }
+        return depth;
     }
 
     public void _on_drillable_pre_dug(Node2D drillable, DrillFromDirection direction)

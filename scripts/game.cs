@@ -12,6 +12,7 @@ public partial class Game : Node2D
     public CanvasLayer hud;
     public Label inventoryLabel;
     public Label moneyLabel;
+    public Label depthLabel;
     public ProgressBarNinePatch energyBar;
     public AnimationPlayer energyBarAnimator;
     public ProgressBarNinePatch healthBar;
@@ -31,6 +32,7 @@ public partial class Game : Node2D
         hud.Visible = true;
         inventoryLabel = GetNode<Label>("%HUD/Inventory/InventoryLabel");
         moneyLabel = GetNode<Label>("%HUD/Money/MoneyLabel");
+        depthLabel = GetNode<Label>("%HUD/Depth/DepthLabel");
         sellStation = GetNode<StaticBody2D>("%SellStation") as SellStation;
         sellStation.sellAll += _on_sell_all;
         chargeStation = GetNode<StaticBody2D>("%ChargeStation") as ChargeStation;
@@ -61,6 +63,7 @@ public partial class Game : Node2D
 
         energyBar.SetValue(playerCharacter.Energy);
         healthBar.SetValue(playerCharacter.Health);
+        depthLabel.Text = $"Depth: {drillableGrid.GetDepth(playerCharacter)}";
 
         if (playerCharacter.Energy <= 10.0f)
         {
