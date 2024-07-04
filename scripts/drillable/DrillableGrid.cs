@@ -8,26 +8,20 @@ using System.Numerics;
 public partial class DrillableGrid : TileMap
 {
     [Export]
-    public int Width = 40;
+    public int Width = 80;
     [Export]
-    public int StartingRows = 200;
+    public int StartingRows = 250;
     [Export]
     public NoiseTexture2D EmptyTileNoiseTexture;
     [Export]
     Godot.Collections.Array<DrillableType> drillableType = new Godot.Collections.Array<DrillableType>();
     [Export]
-    Godot.Collections.Array<Path2D> toPath = new Godot.Collections.Array<Path2D>();
+    Godot.Collections.Array<Curve> toCurve = new Godot.Collections.Array<Curve>();
+    [Export]
+    Godot.Collections.Array<Vector2I> depthRanges = new Godot.Collections.Array<Vector2I>();
 
     [Signal]
     public delegate void drillableDugEventHandler(Drillable drillable);
-
-    public const int DIRT_TILE_SET_ID = 1;
-    public const int DIRT_NON_DRILLABLE_TILE_SET_ID = 2;
-    public const int DIRT_BACKGROUND_TILE_SET_ID = 3;
-    public const int GOLD_TILE_SET_ID = 4;
-    public const int IRON_TILE_SET_ID = 5;
-    public const int SILVER_TILE_SET_ID = 6;
-    public const int DIRT_NON_DRILLABLE_STONE_TOP_TILE_SET_ID = 7;
     
     private DrillableGridProbability drillableGridProbability;
     private FastNoiseLite emptyTileNoise;
@@ -38,26 +32,7 @@ public partial class DrillableGrid : TileMap
         emptyTileNoise = EmptyTileNoiseTexture.Noise as FastNoiseLite;
         emptyTileNoise.Seed = (int) (new RandomNumberGenerator().Randi() % Mathf.Pow(2, 25));
 
-        drillableGridProbability = new DrillableGridProbability(drillableType, toPath);
-    }
-
-    public int MapDrillableTypeToTileSetId(DrillableType drillableType)
-    {
-        switch (drillableType)
-        {
-            case DrillableType.DIRT:
-                return DIRT_TILE_SET_ID;
-            case DrillableType.IRON:
-                return IRON_TILE_SET_ID;
-            case DrillableType.GOLD:
-                return GOLD_TILE_SET_ID;
-            case DrillableType.SILVER:
-                return SILVER_TILE_SET_ID;
-            case DrillableType.NONE:
-                return -1;
-            default:
-                return DIRT_TILE_SET_ID;
-        }
+        drillableGridProbability = new DrillableGridProbability(drillableType, toCurve, depthRanges);
     }
 
     public void Init(List<Node2D> buildings = null)
@@ -101,13 +76,13 @@ public partial class DrillableGrid : TileMap
             positionToNode2D.Add(new List<Node2D>());
             for (int j = 0; j < StartingRows; j++)
             {
-                SetCell(0, GridPositionToTileMapPosition(new Vector2I(i, j)), 1, new Vector2I(0, 0), DIRT_BACKGROUND_TILE_SET_ID);
+                SetCell(0, GridPositionToTileMapPosition(new Vector2I(i, j)), 1, new Vector2I(0, 0), DrillableConstants.DIRT_BACKGROUND_TILE_SET_ID);
                 // clear any tiles left from editor
                 EraseCell(1, GridPositionToTileMapPosition(new Vector2I(i, j)));
 
                 if (i == 0 || i == Width - 1)
                 {
-                    SetCell(1, GridPositionToTileMapPosition(new Vector2I(i, j)), 1, new Vector2I(0, 0), DIRT_NON_DRILLABLE_TILE_SET_ID);
+                    SetCell(1, GridPositionToTileMapPosition(new Vector2I(i, j)), 1, new Vector2I(0, 0), DrillableConstants.DIRT_NON_DRILLABLE_TILE_SET_ID);
                     positionToNode2D[i].Add(null);
                     continue;
                 }
@@ -117,7 +92,7 @@ public partial class DrillableGrid : TileMap
                 if (emptyTileNoiseValue < -0.3) {
                     tileSetId = -1;
                 } else {
-                    tileSetId = MapDrillableTypeToTileSetId(drillableGridProbability.GetDrillableTypeForDepth((uint) j));
+                    tileSetId = DrillableConstants.MapDrillableTypeToTileSetId(drillableGridProbability.GetDrillableTypeForDepth((uint) j));
                 }
 
                 bool tileOverlapsBuilding = j == 0 && buildings != null && buildings.Any((building) => {
@@ -130,7 +105,7 @@ public partial class DrillableGrid : TileMap
                 });
                 if (tileOverlapsBuilding)
                 {
-                    tileSetId = DIRT_NON_DRILLABLE_STONE_TOP_TILE_SET_ID;
+                    tileSetId = DrillableConstants.DIRT_NON_DRILLABLE_STONE_TOP_TILE_SET_ID;
                 }
 
                 if (tileSetId != -1) {
@@ -213,7 +188,7 @@ public partial class DrillableGrid : TileMap
 
         DrillableCornerShape drillableCornerShape = DrillableCornerShape.None;
         int tileSetId = GetCellAlternativeTile(1, GridPositionToTileMapPosition(gridPos));
-        if (hasDrillableAbove || (tileSetId == DIRT_NON_DRILLABLE_STONE_TOP_TILE_SET_ID && (corner == DrillableCorner.TopLeft || corner == DrillableCorner.TopRight)))
+        if (hasDrillableAbove || (tileSetId == DrillableConstants.DIRT_NON_DRILLABLE_STONE_TOP_TILE_SET_ID && (corner == DrillableCorner.TopLeft || corner == DrillableCorner.TopRight)))
         {
             drillableCornerShape = DrillableCornerShape.Straight;
         } else {

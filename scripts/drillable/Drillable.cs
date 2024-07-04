@@ -9,15 +9,6 @@ public enum DrillFromDirection
 	NONE
 }
 
-public enum DrillableType
-{
-	DIRT,
-	IRON,
-	GOLD,
-	SILVER,
-	NONE
-}
-
 public partial class Drillable : Tile
 {
 	public CollisionShape2D collisionShape2D;

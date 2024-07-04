@@ -1,0 +1,40 @@
+[gd_scene load_steps=5 format=3 uid="uid://dawbd1hptxxk8"]
+
+[ext_resource type="Script" path="res://scripts/buildings/UpgradeStation.cs" id="1_gi511"]
+[ext_resource type="Texture2D" uid="uid://bfsa2qqgxul1e" path="res://assets/upgrade_station.png" id="2_tbax1"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dgt24"]
+size = Vector2(71.9664, 2.38165)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dcrh2"]
+size = Vector2(16.9808, 11.4042)
+
+[node name="UpgradeStation" type="StaticBody2D"]
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("1_gi511")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(-0.23164, -0.216825, -0.957359, 7.66242, -29.4678, 7.71426, -29.3123, 36.1728, -34.8588, 39.5941, 37.765, 39.8533, 37.6612, -27.7631, -1.11295, -26.7782, -0.335396, -1.79272)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(2.05735, 38.587)
+shape = SubResource("RectangleShape2D_dgt24")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_tbax1")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(-18.8519, 30.8667)
+shape = SubResource("RectangleShape2D_dcrh2")
+
+[node name="Platform" type="StaticBody2D" parent="."]
+position = Vector2(-18.7086, 38.515)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Platform"]
+position = Vector2(0.31102, -1.55511)
+polygon = PackedVector2Array(-0.339951, 0.332638, -11.5368, 0.0216103, -16.7175, 3.02783, 15.397, 3.07079, 9.82012, 0.0216103)
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_upgrade_zone_entered"]

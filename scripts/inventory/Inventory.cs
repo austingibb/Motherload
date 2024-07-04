@@ -7,19 +7,18 @@ public partial class Inventory : Node2D
     public Dictionary<DrillableType, int> inventory = new();
     public uint Capacity;
     private uint Count;
-    private HashSet<DrillableType> sellableDrillableTypes = new HashSet<DrillableType>();
+    private HashSet<DrillableType> nonSellableDrillableTypes = new HashSet<DrillableType>();
 
     public override void _Ready()
     {
-        sellableDrillableTypes.Add(DrillableType.IRON);
-        sellableDrillableTypes.Add(DrillableType.GOLD);
-        sellableDrillableTypes.Add(DrillableType.SILVER);
+        nonSellableDrillableTypes.Add(DrillableType.DIRT);
+        nonSellableDrillableTypes.Add(DrillableType.NONE);
         
         Capacity = 10;
         Count = 0;
         foreach (DrillableType drillableType in Enum.GetValues(typeof(DrillableType)))
         {
-            if (!sellableDrillableTypes.Contains(drillableType))
+            if (nonSellableDrillableTypes.Contains(drillableType))
             {
                 continue;
             }
@@ -30,7 +29,7 @@ public partial class Inventory : Node2D
 
     public bool AddToInventory(DrillableType drillableType)
     {
-        if (!sellableDrillableTypes.Contains(drillableType))
+        if (nonSellableDrillableTypes.Contains(drillableType))
         {
             return false;
         }

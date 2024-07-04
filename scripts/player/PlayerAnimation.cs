@@ -29,15 +29,13 @@ public partial class PlayerAnimation : GodotObject
 {
     Node2D flipper;
     public AnimatedSprite2D bodyAnimation;
-    public AnimatedSprite2D frontHeadAnimation;
-    public AnimatedSprite2D sideHeadAnimation;
-    public AnimatedSprite2D frontArmAnimation;
-    public AnimatedSprite2D backArmAnimation;
-    public AnimatedSprite2D armsAnimation;
+    public Node2D frontSprites;
+    public Node2D sideSprites;
     public AnimatedSprite2D jetAnimation;
     public AnimationPlayer animationPlayer;
     public AnimationPlayer shaderAnimationPlayer;
     public PlayerAnimationState _currentState;
+    public Battery battery;
 
     public HashSet<PlayerAnimationState> forwardFacingStates = new HashSet<PlayerAnimationState>
     {
@@ -66,20 +64,17 @@ public partial class PlayerAnimation : GodotObject
         PlayerAnimationState.DrillStandupRight
     };
 
-    public PlayerAnimation(Node2D flipper, AnimatedSprite2D bodyAnimation, AnimatedSprite2D frontHeadAnimation, AnimatedSprite2D sideHeadAnimation, 
-        AnimatedSprite2D frontArmAnimation, AnimatedSprite2D backArmAnimation, AnimatedSprite2D armsAnimation, AnimatedSprite2D jetAnimation, 
-        AnimationPlayer animationPlayer, AnimationPlayer shaderAnimationPlayer)
+    public PlayerAnimation(Node2D flipper, AnimatedSprite2D bodyAnimation, AnimatedSprite2D jetAnimation, Node2D frontSprites, Node2D sideSprites,
+        AnimationPlayer animationPlayer, AnimationPlayer shaderAnimationPlayer, Battery battery)
     {
         this.flipper = flipper;
+        this.frontSprites = frontSprites;
+        this.sideSprites = sideSprites;
         this.bodyAnimation = bodyAnimation;
-        this.frontHeadAnimation = frontHeadAnimation;
-        this.sideHeadAnimation = sideHeadAnimation;
-        this.frontArmAnimation = frontArmAnimation;
-        this.backArmAnimation = backArmAnimation;
-        this.armsAnimation = armsAnimation;
         this.jetAnimation = jetAnimation;
         this.animationPlayer = animationPlayer;
         this.shaderAnimationPlayer = shaderAnimationPlayer;
+        this.battery = battery;
         this._currentState = PlayerAnimationState.Idle;
     }
 
@@ -110,11 +105,6 @@ public partial class PlayerAnimation : GodotObject
             bodyAnimation.Rotation = 0;
             bodyAnimation.Position = new Vector2(0, 0);
         }
-
-        if (state != PlayerAnimationState.PowerDown)
-        {
-            frontHeadAnimation.Play("default");
-        }
         
         _currentState = state;
         animationPlayer.SpeedScale = 4.0f;
@@ -123,19 +113,15 @@ public partial class PlayerAnimation : GodotObject
 
         if (forwardFacingStates.Contains(state))
         {
-            frontHeadAnimation.Visible = true;
-            armsAnimation.Visible = true;
-            sideHeadAnimation.Visible = false;
-            frontArmAnimation.Visible = false;
-            backArmAnimation.Visible = false;
+            frontSprites.Visible = true;
+            sideSprites.Visible = false;
+            battery.SetOrientation(false);
         }
         else if (sideFacingStates.Contains(state))
         {
-            frontHeadAnimation.Visible = false;
-            armsAnimation.Visible = false;
-            sideHeadAnimation.Visible = true;
-            frontArmAnimation.Visible = true;
-            backArmAnimation.Visible = true;
+            sideSprites.Visible = true;
+            frontSprites.Visible = false;
+            battery.SetOrientation(true);
         }
 
         switch (state)
@@ -183,7 +169,7 @@ public partial class PlayerAnimation : GodotObject
                 animationPlayer.Play("mine_forward_setup");
                 break;
             case PlayerAnimationState.SetupDrillDown:
-                animationPlayer.SpeedScale = 4.0f;
+                animationPlayer.SpeedScale = 3.0f;
                 animationPlayer.Play("mine_down_setup");
                 break;
             case PlayerAnimationState.DrillDown:
@@ -207,6 +193,7 @@ public partial class PlayerAnimation : GodotObject
                 animationPlayer.Play("drill_standup");
                 break;
             case PlayerAnimationState.DrillStandup:
+                animationPlayer.SpeedScale = 3.0f;
                 animationPlayer.Play("drill_down_standup");
                 break;
             case PlayerAnimationState.PowerDown:

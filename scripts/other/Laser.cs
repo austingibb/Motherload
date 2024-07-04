@@ -3,7 +3,7 @@ using System;
 
 public partial class Laser : CharacterBody2D
 {
-    public float speed = 20.0f;
+    public float speed = 30.0f;
     public Node2D transformSource;
     public bool flipDirection;
 

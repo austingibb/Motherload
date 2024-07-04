@@ -1,16 +1,16 @@
 [gd_scene load_steps=22 format=3 uid="uid://4dp3owa1a7k"]
 
-[ext_resource type="Script" path="res://scripts/Drillable.cs" id="1_0cn1p"]
+[ext_resource type="Script" path="res://scripts/drillable/Drillable.cs" id="1_00jve"]
 [ext_resource type="PackedScene" uid="uid://cv7j1lqpv7dyr" path="res://scenes/tiles/dirt_animated_sprite_2d.tscn" id="2_aes2i"]
-[ext_resource type="Shader" path="res://scripts/drillable_dynamic_sprite.gdshader" id="3_jtjqy"]
-[ext_resource type="Texture2D" uid="uid://dud4q44sj7tp7" path="res://assets/dirt_bottom_cover.png" id="4_ec0rj"]
-[ext_resource type="Texture2D" uid="uid://vek6jvgwmjql" path="res://assets/dirt_concave_connector.png" id="5_j2ryj"]
-[ext_resource type="Texture2D" uid="uid://dl1xui0fts47f" path="res://assets/dirt_convex_mask.png" id="6_aqp4x"]
-[ext_resource type="Texture2D" uid="uid://ut1ddro0h28i" path="res://assets/dig_mask_down.png" id="7_eqnya"]
-[ext_resource type="Texture2D" uid="uid://drftncua07736" path="res://assets/dig_mask_side.png" id="8_qjjrb"]
-[ext_resource type="Texture2D" uid="uid://b372ist2ldhbd" path="res://assets/dirt_left_cover.png" id="9_e2hfc"]
-[ext_resource type="Texture2D" uid="uid://cvmw7psh2dyed" path="res://assets/dirt_right_cover.png" id="10_5hbf2"]
-[ext_resource type="Texture2D" uid="uid://bx68ylxuirvgc" path="res://assets/dirt_top_cover.png" id="11_1axu0"]
+[ext_resource type="Shader" path="res://scripts/shaders/drillable_dynamic_sprite.gdshader" id="3_fy1h1"]
+[ext_resource type="Texture2D" uid="uid://dud4q44sj7tp7" path="res://assets/tiles/covers/dirt_bottom_cover.png" id="4_e3cdm"]
+[ext_resource type="Texture2D" uid="uid://vek6jvgwmjql" path="res://assets/tiles/covers/dirt_concave_connector.png" id="5_hw3xc"]
+[ext_resource type="Texture2D" uid="uid://dl1xui0fts47f" path="res://assets/tiles/masks/dirt_convex_mask.png" id="6_o3t2y"]
+[ext_resource type="Texture2D" uid="uid://ut1ddro0h28i" path="res://assets/tiles/masks/dig_mask_down.png" id="7_iqsrk"]
+[ext_resource type="Texture2D" uid="uid://drftncua07736" path="res://assets/tiles/masks/dig_mask_side.png" id="8_tnkgg"]
+[ext_resource type="Texture2D" uid="uid://b372ist2ldhbd" path="res://assets/tiles/covers/dirt_left_cover.png" id="9_k0nhp"]
+[ext_resource type="Texture2D" uid="uid://cvmw7psh2dyed" path="res://assets/tiles/covers/dirt_right_cover.png" id="10_afoab"]
+[ext_resource type="Texture2D" uid="uid://bx68ylxuirvgc" path="res://assets/tiles/covers/dirt_top_cover.png" id="11_a0ec4"]
 
 [sub_resource type="Animation" id="Animation_86aoo"]
 length = 0.001
@@ -221,7 +221,7 @@ _data = {
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rcn5w"]
 resource_local_to_scene = true
-shader = ExtResource("3_jtjqy")
+shader = ExtResource("3_fy1h1")
 shader_parameter/corner_states = Vector4(2.08165e-12, 2.08165e-12, 2.08165e-12, 2.08165e-12)
 shader_parameter/dig_orientation = true
 shader_parameter/show_top_cover = true
@@ -232,14 +232,14 @@ shader_parameter/flip_dig_animation_h = true
 shader_parameter/flip_dig_animation_v = false
 shader_parameter/debug_animation = false
 shader_parameter/dig_offset = 33
-shader_parameter/top_cover = ExtResource("11_1axu0")
-shader_parameter/bottom_cover = ExtResource("4_ec0rj")
-shader_parameter/left_cover = ExtResource("9_e2hfc")
-shader_parameter/right_cover = ExtResource("10_5hbf2")
-shader_parameter/concave_connector = ExtResource("5_j2ryj")
-shader_parameter/convex_mask = ExtResource("6_aqp4x")
-shader_parameter/dig_down = ExtResource("7_eqnya")
-shader_parameter/dig_side = ExtResource("8_qjjrb")
+shader_parameter/top_cover = ExtResource("11_a0ec4")
+shader_parameter/bottom_cover = ExtResource("4_e3cdm")
+shader_parameter/left_cover = ExtResource("9_k0nhp")
+shader_parameter/right_cover = ExtResource("10_afoab")
+shader_parameter/concave_connector = ExtResource("5_hw3xc")
+shader_parameter/convex_mask = ExtResource("6_o3t2y")
+shader_parameter/dig_down = ExtResource("7_iqsrk")
+shader_parameter/dig_side = ExtResource("8_tnkgg")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ocdpi"]
 size = Vector2(31.8344, 31.5045)
@@ -255,7 +255,8 @@ size = Vector2(4.38098, 13.4997)
 
 [node name="dirt" type="StaticBody2D"]
 collision_layer = 3
-script = ExtResource("1_0cn1p")
+script = ExtResource("1_00jve")
+tileType = 1
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

@@ -1,11 +1,11 @@
 [gd_scene load_steps=14 format=3 uid="uid://v0qqttb0yfbx"]
 
 [ext_resource type="FontFile" uid="uid://cf1shrgw3bt7c" path="res://assets/fonts/PixelOperator8.ttf" id="1_n4lkf"]
-[ext_resource type="Shader" path="res://scripts/hurt.gdshader" id="2_u71ds"]
-[ext_resource type="Texture2D" uid="uid://sjwnk3mw7vxl" path="res://assets/energy_bar.png" id="3_qy2bo"]
+[ext_resource type="Shader" path="res://scripts/shaders/player_color_adjust.gdshader" id="2_u71ds"]
+[ext_resource type="Texture2D" uid="uid://sjwnk3mw7vxl" path="res://assets/other/energy_bar.png" id="3_qy2bo"]
 [ext_resource type="Script" path="res://scripts/ui/ProgressBarNinePatch.cs" id="3_rpbc3"]
-[ext_resource type="Texture2D" uid="uid://q25n24hf7232" path="res://assets/health_bar.png" id="4_mbnf4"]
-[ext_resource type="Texture2D" uid="uid://sgqfts07b28t" path="res://assets/bar_background.png" id="5_uv074"]
+[ext_resource type="Texture2D" uid="uid://q25n24hf7232" path="res://assets/other/health_bar.png" id="4_mbnf4"]
+[ext_resource type="Texture2D" uid="uid://sgqfts07b28t" path="res://assets/other/bar_background.png" id="5_uv074"]
 [ext_resource type="Script" path="res://scripts/EnergyShaderAnimationPlayer.cs" id="6_jlhy5"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0t4ke"]

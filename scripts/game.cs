@@ -16,8 +16,11 @@ public partial class Game : Node2D
     public ProgressBarNinePatch energyBar;
     public AnimationPlayer energyBarAnimator;
     public ProgressBarNinePatch healthBar;
+
+    // Buildings
     public SellStation sellStation;
     public ChargeStation chargeStation;
+    public UpgradeStation upgradeStation;
 
     // Member variables
     public int Money;
@@ -33,10 +36,6 @@ public partial class Game : Node2D
         inventoryLabel = GetNode<Label>("%HUD/Inventory/InventoryLabel");
         moneyLabel = GetNode<Label>("%HUD/Money/MoneyLabel");
         depthLabel = GetNode<Label>("%HUD/Depth/DepthLabel");
-        sellStation = GetNode<StaticBody2D>("%SellStation") as SellStation;
-        sellStation.sellAll += _on_sell_all;
-        chargeStation = GetNode<StaticBody2D>("%ChargeStation") as ChargeStation;
-        chargeStation.charge += _on_charge;
         energyBar = GetNode<ProgressBarNinePatch>("%HUD/ProgressBars//Energy") as ProgressBarNinePatch;
         energyBarAnimator = GetNode<AnimationPlayer>("%HUD/ProgressBars/Energy/AnimationPlayer");
         healthBar = GetNode<ProgressBarNinePatch>("%HUD/ProgressBars/Health") as ProgressBarNinePatch;
@@ -46,10 +45,31 @@ public partial class Game : Node2D
         inventoryLabel.Text = GetInventoryString();
         moneyLabel.Text = GetMoneyString();
 
-        List<Node2D> buildings = new List<Node2D>();
-        buildings.Add(sellStation);
-        buildings.Add(chargeStation);
+        // load buildings
+        sellStation = GetNode<StaticBody2D>("%SellStation") as SellStation;
+        sellStation.sellAll += _on_sell_all;
+        chargeStation = GetNode<StaticBody2D>("%ChargeStation") as ChargeStation;
+        chargeStation.charge += _on_charge;
+        upgradeStation = GetNode<StaticBody2D>("%UpgradeStation") as UpgradeStation;
+        upgradeStation.upgrade += _on_upgrade;
+
+        List<Node2D> buildings = new List<Node2D>
+        {
+            sellStation,
+            chargeStation,
+            upgradeStation
+        };
         drillableGrid.Init(buildings);
+
+        int tileWidth = drillableGrid.TileSet.TileSize.X;
+        Camera2D camera = GetNode<Camera2D>("%Camera2D");
+        camera.LimitLeft = -tileWidth* drillableGrid.Width / 2 + tileWidth/2;
+        camera.LimitRight = tileWidth* drillableGrid.Width / 2 - tileWidth/2;
+
+        StaticBody2D leftBoundary = GetNode<StaticBody2D>("%LeftBoundary");
+        leftBoundary.Position = new Vector2(-tileWidth * drillableGrid.Width / 2 + tileWidth/2, 0);
+        StaticBody2D rightBoundary = GetNode<StaticBody2D>("%RightBoundary");
+        rightBoundary.Position = new Vector2(tileWidth* drillableGrid.Width / 2 - tileWidth/2, 0);
     }
 
     public override void _PhysicsProcess(double delta)
@@ -96,13 +116,7 @@ public partial class Game : Node2D
 
     public void _on_sell_all()
     {
-        Dictionary<DrillableType, int> itemPrices = new Dictionary<DrillableType, int>
-        {
-            { DrillableType.IRON, 1 },
-            { DrillableType.GOLD, 5 },
-            { DrillableType.SILVER, 3 }
-        };
-        Money += inventory.SellAll(itemPrices);
+        Money += inventory.SellAll(DrillableConstants.itemPrices);
         inventoryLabel.Text = GetInventoryString();
         moneyLabel.Text = GetMoneyString();
     }
@@ -110,6 +124,11 @@ public partial class Game : Node2D
     public void _on_charge()
     {
         playerCharacter.Energy = 100.0f;
+    }
+
+    public void _on_upgrade()
+    {
+        playerCharacter.Health = 100.0f;
     }
 
     public void _on_drillable_dug(Drillable drillable)

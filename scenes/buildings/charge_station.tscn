@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://2j154jrcrhfx"]
 
 [ext_resource type="Texture2D" uid="uid://befgv2fg2w7th" path="res://assets/super_charger.png" id="1_neg1l"]
-[ext_resource type="Script" path="res://scripts/ChargeStation.cs" id="1_x0ynl"]
+[ext_resource type="Script" path="res://scripts/buildings/ChargeStation.cs" id="1_x0ynl"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dgt24"]
 size = Vector2(24.9448, 40.796)

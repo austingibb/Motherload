@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://bpspmu2o75ucw"]
 
-[ext_resource type="Script" path="res://scripts/SellStation.cs" id="1_bg4pi"]
+[ext_resource type="Script" path="res://scripts/buildings/SellStation.cs" id="1_bg4pi"]
 [ext_resource type="Texture2D" uid="uid://ct6ir1bp5ah5x" path="res://assets/sell_station.png" id="1_korpj"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wjvdt"]

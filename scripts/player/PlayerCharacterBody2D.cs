@@ -18,8 +18,8 @@ public enum PlayerState {
 public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 {
 	public const float WalkSpeed = 120.0f;
-	public const float DrillSideSpeed = 80.0f;
-	public const float DrillDownSpeed = 80.0f;	
+	public const float DrillSideSpeed = 180.0f;
+	public const float DrillDownSpeed = 180.0f;	
 	public const float VerticalFlightSpeed = -900.0f;
 	public const float CatchVerticalFlightSpeed = -1100.0f;
 
@@ -39,6 +39,8 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 	public Node2D flipper;
 	public Marker2D projectileSpawnPoint;
 
+	public Battery battery;
+
 	public PlayerAnimation playerAnimation;
 	public List<List<Drillable>> SurroundingDrillables;
 	private PackedScene laserScene;
@@ -49,6 +51,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
     public override void _Ready()
     {
 		Node2D flipper = GetNode<Node2D>("%flipper");
+		battery = GetNode<Node2D>("%body_AnimatedSprite2D/Battery/Battery1") as Battery;
 		this.flipper = flipper;
 		Marker2D projectileSpawnPoint = GetNode<Marker2D>("%player_projectile_spawn_point");
 		this.projectileSpawnPoint = projectileSpawnPoint;
@@ -59,14 +62,14 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		this.bodyAnimation = bodyAnimation;
 		this.frontHeadAnimation = frontHeadAnimation;
 		this.sideHeadAnimation = sideHeadAnimation;
-		AnimatedSprite2D frontArmAnimation = GetNode<AnimatedSprite2D>("%front_arm_AnimatedSprite2D");
-		AnimatedSprite2D backArmAnimation = GetNode<AnimatedSprite2D>("%back_arm_AnimatedSprite2D");
-		AnimatedSprite2D armsAnimation = GetNode<AnimatedSprite2D>("%arms_AnimatedSprite2D");
+		Node2D frontSprites = GetNode<Node2D>("%body_AnimatedSprite2D/front");
+		Node2D sideSprites = GetNode<Node2D>("%body_AnimatedSprite2D/side");
 		AnimatedSprite2D jetAnimation = GetNode<AnimatedSprite2D>("%jet_AnimatedSprite2D");
 		AnimationPlayer animationPlayer = GetNode<AnimationPlayer>("%player_AnimationPlayer");
 		AnimationPlayer shaderAnimationPlayer = GetNode<AnimationPlayer>("%shader_AnimationPlayer");
 		
-		playerAnimation = new PlayerAnimation(flipper, bodyAnimation, frontHeadAnimation, sideHeadAnimation, frontArmAnimation, backArmAnimation, armsAnimation, jetAnimation, animationPlayer, shaderAnimationPlayer);
+		playerAnimation = new PlayerAnimation(flipper, bodyAnimation, jetAnimation, frontSprites, sideSprites,
+			animationPlayer, shaderAnimationPlayer, battery);
 
 		SurroundingDrillables = new List<List<Drillable>>();
 		for (int i = 0; i < 3; i++)
@@ -86,6 +89,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 	{
 		Vector2 velocity = Velocity;
 		HandleEnergy((float)delta);
+		battery.SetCharge(Energy/100.0f);
 		HandleHead((float)delta, frontHeadAnimation);
 		HandleHead((float)delta, sideHeadAnimation);
 
@@ -320,9 +324,6 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 			if (headAnimation.Rotation < Mathf.DegToRad(-35))
 			{
 				headAnimation.Rotation = Mathf.DegToRad(-35);
-			} else if (headAnimation.Rotation > Mathf.DegToRad(85))
-			{
-				headAnimation.Rotation = Mathf.DegToRad(85);
 			}
 		} else {
 			headAnimation.Rotation = 0;
@@ -331,6 +332,11 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 
 	private void HandleEnergy(float delta)
 	{
+		if (Input.IsActionJustPressed("test"))
+		{
+			Energy = 100f;
+		}
+
 		Energy -= delta / 4.0f * EnergyLossScale;
 		if (playerState == PlayerState.Flying)
 		{

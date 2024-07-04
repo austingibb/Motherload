@@ -1,16 +1,16 @@
 [gd_scene load_steps=15 format=3 uid="uid://vvbgo5qew4k3"]
 
 [ext_resource type="PackedScene" uid="uid://4dp3owa1a7k" path="res://scenes/tiles/dirt.tscn" id="1_l32io"]
-[ext_resource type="Shader" path="res://scripts/drillable_dynamic_sprite.gdshader" id="2_d0kvl"]
-[ext_resource type="Texture2D" uid="uid://dud4q44sj7tp7" path="res://assets/dirt_bottom_cover.png" id="3_2xf6s"]
-[ext_resource type="Texture2D" uid="uid://vek6jvgwmjql" path="res://assets/dirt_concave_connector.png" id="4_wum0k"]
-[ext_resource type="Texture2D" uid="uid://dl1xui0fts47f" path="res://assets/dirt_convex_mask.png" id="5_mnw8j"]
-[ext_resource type="Texture2D" uid="uid://ut1ddro0h28i" path="res://assets/dig_mask_down.png" id="6_ouq7c"]
-[ext_resource type="Texture2D" uid="uid://drftncua07736" path="res://assets/dig_mask_side.png" id="7_o2o6t"]
-[ext_resource type="Texture2D" uid="uid://b372ist2ldhbd" path="res://assets/dirt_left_cover.png" id="8_aydf7"]
-[ext_resource type="Texture2D" uid="uid://cvmw7psh2dyed" path="res://assets/dirt_right_cover.png" id="9_dsr40"]
-[ext_resource type="Texture2D" uid="uid://bx68ylxuirvgc" path="res://assets/dirt_top_cover.png" id="10_nlbr7"]
-[ext_resource type="Texture2D" uid="uid://ct7v5rgmihucj" path="res://assets/gold.png" id="11_f8y7h"]
+[ext_resource type="Shader" path="res://scripts/shaders/drillable_dynamic_sprite.gdshader" id="2_d0kvl"]
+[ext_resource type="Texture2D" uid="uid://dud4q44sj7tp7" path="res://assets/tiles/covers/dirt_bottom_cover.png" id="3_2xf6s"]
+[ext_resource type="Texture2D" uid="uid://vek6jvgwmjql" path="res://assets/tiles/covers/dirt_concave_connector.png" id="4_wum0k"]
+[ext_resource type="Texture2D" uid="uid://dl1xui0fts47f" path="res://assets/tiles/masks/dirt_convex_mask.png" id="5_mnw8j"]
+[ext_resource type="Texture2D" uid="uid://ut1ddro0h28i" path="res://assets/tiles/masks/dig_mask_down.png" id="6_ouq7c"]
+[ext_resource type="Texture2D" uid="uid://drftncua07736" path="res://assets/tiles/masks/dig_mask_side.png" id="7_o2o6t"]
+[ext_resource type="Texture2D" uid="uid://b372ist2ldhbd" path="res://assets/tiles/covers/dirt_left_cover.png" id="8_aydf7"]
+[ext_resource type="Texture2D" uid="uid://cvmw7psh2dyed" path="res://assets/tiles/covers/dirt_right_cover.png" id="9_dsr40"]
+[ext_resource type="Texture2D" uid="uid://bx68ylxuirvgc" path="res://assets/tiles/covers/dirt_top_cover.png" id="10_nlbr7"]
+[ext_resource type="Texture2D" uid="uid://ct7v5rgmihucj" path="res://assets/tiles/gold.png" id="11_f8y7h"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rcn5w"]
 resource_local_to_scene = true
@@ -50,7 +50,7 @@ animations = [{
 }]
 
 [node name="dirt" instance=ExtResource("1_l32io")]
-DrillableType = 2
+DrillableType = 3
 
 [node name="Dirt_AnimatedSprite2D" parent="." index="1"]
 material = SubResource("ShaderMaterial_rcn5w")
