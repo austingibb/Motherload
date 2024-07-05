@@ -1,4 +1,4 @@
-[gd_scene load_steps=380 format=3 uid="uid://cwrufed6b0h7m"]
+[gd_scene load_steps=381 format=3 uid="uid://cwrufed6b0h7m"]
 
 [ext_resource type="Script" path="res://scripts/player/PlayerCharacterBody2D.cs" id="1_m1nbs"]
 [ext_resource type="Shader" path="res://scripts/shaders/player_color_adjust.gdshader" id="2_4qksy"]
@@ -48,6 +48,7 @@
 [ext_resource type="Texture2D" uid="uid://bmkwibg8s1vnx" path="res://assets/player/side/drills/mload_player_mining_forward_setup_back_drill.png" id="44_ulvrs"]
 [ext_resource type="Texture2D" uid="uid://bxpxndqpdrufk" path="res://assets/player/side/drills/mload_player_walking_back_drill.png" id="45_oi3bv"]
 [ext_resource type="Texture2D" uid="uid://b8s08b4sgidtj" path="res://assets/player/jets/foot_jets.png" id="46_1j81h"]
+[ext_resource type="Script" path="res://scripts/player/PlayerShaderManager.cs" id="49_ccio1"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_jark5"]
 radius = 3.0
@@ -59,7 +60,7 @@ height = 22.9465
 shader = ExtResource("2_4qksy")
 shader_parameter/hurt_strength = 0.0
 shader_parameter/colors_to_replace = null
-shader_parameter/replacement_colors = null
+shader_parameter/replacement_colors = PackedColorArray()
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_bhooa"]
 atlas = ExtResource("3_c8bx2")
@@ -733,8 +734,8 @@ animations = [{
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_x710y"]
 shader = ExtResource("17_2rqt5")
-shader_parameter/colors_to_replace = PackedColorArray(0.494118, 0.321569, 0, 1, 0.862745, 0.564706, 0.00784314, 1)
-shader_parameter/replacement_colors = PackedColorArray(0.996078, 0.929412, 0.368627, 1, 0.980392, 0.72549, 0.0392157, 1)
+shader_parameter/colors_to_replace = PackedColorArray()
+shader_parameter/replacement_colors = PackedColorArray()
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_24gto"]
 atlas = ExtResource("17_64ks6")
@@ -1088,7 +1089,7 @@ animations = [{
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_u1q2t"]
 shader = ExtResource("2_4qksy")
 shader_parameter/hurt_strength = 0.0
-shader_parameter/colors_to_replace = null
+shader_parameter/colors_to_replace = PackedColorArray()
 shader_parameter/replacement_colors = null
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jl6au"]
@@ -1697,8 +1698,8 @@ animations = [{
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_46tb5"]
 shader = ExtResource("17_2rqt5")
-shader_parameter/colors_to_replace = PackedColorArray(0.494118, 0.321569, 0, 1, 0.862745, 0.564706, 0.00784314, 1)
-shader_parameter/replacement_colors = PackedColorArray(0.996078, 0.929412, 0.368627, 1, 0.980392, 0.72549, 0.0392157, 1)
+shader_parameter/colors_to_replace = PackedColorArray()
+shader_parameter/replacement_colors = PackedColorArray()
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3mnrq"]
 atlas = ExtResource("37_u5pbn")
@@ -2164,8 +2165,8 @@ animations = [{
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_f0cqk"]
 shader = ExtResource("17_2rqt5")
-shader_parameter/colors_to_replace = PackedColorArray(0.494118, 0.321569, 0, 1, 0.862745, 0.564706, 0.00784314, 1)
-shader_parameter/replacement_colors = PackedColorArray(0.996078, 0.929412, 0.368627, 1, 0.980392, 0.72549, 0.0392157, 1)
+shader_parameter/colors_to_replace = PackedColorArray()
+shader_parameter/replacement_colors = PackedColorArray()
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_vm3ij"]
 atlas = ExtResource("43_0tiuw")
@@ -3004,6 +3005,218 @@ tracks/12/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [&"setup_drill_forward"]
+}
+
+[sub_resource type="Animation" id="Animation_bq4lv"]
+resource_name = "fall"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("flipper/body_AnimatedSprite2D:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"fall"]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("flipper/body_AnimatedSprite2D:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("flipper/body_AnimatedSprite2D/front/arms_AnimatedSprite2D:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("flipper/body_AnimatedSprite2D/front/front_head_AnimatedSprite2D:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0.349, -6.878), Vector2(0.349, -6.878)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("flipper/body_AnimatedSprite2D/front/arms_AnimatedSprite2D:animation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"fall"]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("flipper/body_AnimatedSprite2D/Battery:position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [Vector2(-2.5, 0.5), Vector2(-2.5, 0.5)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("flipper/body_AnimatedSprite2D/front/drills_AnimatedSprite2D:animation")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"fall"]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("flipper/body_AnimatedSprite2D/front/drills_AnimatedSprite2D:frame")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4]
+}
+
+[sub_resource type="Animation" id="Animation_kmh8t"]
+resource_name = "idle"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("flipper/body_AnimatedSprite2D:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"idle"]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("flipper/body_AnimatedSprite2D:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("flipper/body_AnimatedSprite2D/front/front_head_AnimatedSprite2D:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0.349, -6.878)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("flipper/body_AnimatedSprite2D/front/arms_AnimatedSprite2D:animation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"idle"]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("flipper/body_AnimatedSprite2D/side/side_head_AnimatedSprite2D:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0.349, -6.878)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("flipper/body_AnimatedSprite2D/Battery:position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [Vector2(-2.5, 0.5), Vector2(-2.5, 0.5)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("flipper/body_AnimatedSprite2D/front/drills_AnimatedSprite2D:animation")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"idle"]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("flipper/body_AnimatedSprite2D/front/drills_AnimatedSprite2D:frame")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("flipper/body_AnimatedSprite2D/front/front_head_AnimatedSprite2D:animation")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"default"]
 }
 
 [sub_resource type="Animation" id="Animation_nfgmf"]
@@ -4018,9 +4231,8 @@ tracks/13/keys = {
 "values": [0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2]
 }
 
-[sub_resource type="Animation" id="Animation_kmh8t"]
-resource_name = "idle"
-length = 0.1
+[sub_resource type="Animation" id="Animation_3i8v8"]
+resource_name = "power_down"
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -4031,7 +4243,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [&"idle"]
+"values": [&"power_down"]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -4040,194 +4252,106 @@ tracks/1/path = NodePath("flipper/body_AnimatedSprite2D:frame")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": [0]
+"values": [0, 1, 2, 3, 4, 5]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("flipper/body_AnimatedSprite2D/front/front_head_AnimatedSprite2D:position")
+tracks/2/path = NodePath("flipper/body_AnimatedSprite2D/front/arms_AnimatedSprite2D:animation")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0.349, -6.878)]
+"update": 1,
+"values": [&"power_down"]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("flipper/body_AnimatedSprite2D/front/arms_AnimatedSprite2D:animation")
+tracks/3/path = NodePath("flipper/body_AnimatedSprite2D/front/arms_AnimatedSprite2D:frame")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": [&"idle"]
+"values": [0, 1, 2, 3, 4, 5]
 }
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("flipper/body_AnimatedSprite2D/side/side_head_AnimatedSprite2D:position")
+tracks/4/path = NodePath("flipper/body_AnimatedSprite2D/front/front_head_AnimatedSprite2D:animation")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0.349, -6.878)]
+"update": 1,
+"values": [&"power_down"]
 }
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("flipper/body_AnimatedSprite2D/Battery:position")
+tracks/5/path = NodePath("flipper/body_AnimatedSprite2D/front/front_head_AnimatedSprite2D:frame")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0, 0.1),
-"transitions": PackedFloat32Array(1, 1),
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": [Vector2(-2.5, 0.5), Vector2(-2.5, 0.5)]
+"values": [0, 1, 2, 3, 4, 5]
 }
 tracks/6/type = "value"
 tracks/6/imported = false
 tracks/6/enabled = true
-tracks/6/path = NodePath("flipper/body_AnimatedSprite2D/front/drills_AnimatedSprite2D:animation")
+tracks/6/path = NodePath("flipper/body_AnimatedSprite2D/front/front_head_AnimatedSprite2D:position")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"idle"]
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0.349, -6.878), Vector2(0.349, -6.878)]
 }
 tracks/7/type = "value"
 tracks/7/imported = false
 tracks/7/enabled = true
-tracks/7/path = NodePath("flipper/body_AnimatedSprite2D/front/drills_AnimatedSprite2D:frame")
+tracks/7/path = NodePath("flipper/body_AnimatedSprite2D/Battery:position")
 tracks/7/interp = 1
 tracks/7/loop_wrap = true
 tracks/7/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.4, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
-"values": [0]
+"values": [Vector2(-2.5, 0.5), Vector2(-2.5, 1.5), Vector2(-2.5, 1.5)]
 }
 tracks/8/type = "value"
 tracks/8/imported = false
 tracks/8/enabled = true
-tracks/8/path = NodePath("flipper/body_AnimatedSprite2D/front/front_head_AnimatedSprite2D:animation")
+tracks/8/path = NodePath("flipper/body_AnimatedSprite2D/front/drills_AnimatedSprite2D:animation")
 tracks/8/interp = 1
 tracks/8/loop_wrap = true
 tracks/8/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [&"default"]
+"values": [&"power_down"]
 }
-
-[sub_resource type="Animation" id="Animation_bq4lv"]
-resource_name = "fall"
-length = 0.5
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("flipper/body_AnimatedSprite2D:animation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("flipper/body_AnimatedSprite2D/front/drills_AnimatedSprite2D:frame")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": [&"fall"]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("flipper/body_AnimatedSprite2D:frame")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("flipper/body_AnimatedSprite2D/front/arms_AnimatedSprite2D:frame")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3, 4]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("flipper/body_AnimatedSprite2D/front/front_head_AnimatedSprite2D:position")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector2(0.349, -6.878), Vector2(0.349, -6.878)]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("flipper/body_AnimatedSprite2D/front/arms_AnimatedSprite2D:animation")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"fall"]
-}
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("flipper/body_AnimatedSprite2D/Battery:position")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [Vector2(-2.5, 0.5), Vector2(-2.5, 0.5)]
-}
-tracks/6/type = "value"
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/path = NodePath("flipper/body_AnimatedSprite2D/front/drills_AnimatedSprite2D:animation")
-tracks/6/interp = 1
-tracks/6/loop_wrap = true
-tracks/6/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"fall"]
-}
-tracks/7/type = "value"
-tracks/7/imported = false
-tracks/7/enabled = true
-tracks/7/path = NodePath("flipper/body_AnimatedSprite2D/front/drills_AnimatedSprite2D:frame")
-tracks/7/interp = 1
-tracks/7/loop_wrap = true
-tracks/7/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3, 4]
+"values": [0, 1, 2, 3, 4, 5]
 }
 
 [sub_resource type="Animation" id="Animation_owg24"]
@@ -4377,129 +4501,6 @@ tracks/11/keys = {
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
 "update": 1,
 "values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
-}
-
-[sub_resource type="Animation" id="Animation_3i8v8"]
-resource_name = "power_down"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("flipper/body_AnimatedSprite2D:animation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"power_down"]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("flipper/body_AnimatedSprite2D:frame")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3, 4, 5]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("flipper/body_AnimatedSprite2D/front/arms_AnimatedSprite2D:animation")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"power_down"]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("flipper/body_AnimatedSprite2D/front/arms_AnimatedSprite2D:frame")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3, 4, 5]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("flipper/body_AnimatedSprite2D/front/front_head_AnimatedSprite2D:animation")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"power_down"]
-}
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("flipper/body_AnimatedSprite2D/front/front_head_AnimatedSprite2D:frame")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3, 4, 5]
-}
-tracks/6/type = "value"
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/path = NodePath("flipper/body_AnimatedSprite2D/front/front_head_AnimatedSprite2D:position")
-tracks/6/interp = 1
-tracks/6/loop_wrap = true
-tracks/6/keys = {
-"times": PackedFloat32Array(0, 1),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector2(0.349, -6.878), Vector2(0.349, -6.878)]
-}
-tracks/7/type = "value"
-tracks/7/imported = false
-tracks/7/enabled = true
-tracks/7/path = NodePath("flipper/body_AnimatedSprite2D/Battery:position")
-tracks/7/interp = 1
-tracks/7/loop_wrap = true
-tracks/7/keys = {
-"times": PackedFloat32Array(0, 0.4, 1),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 1,
-"values": [Vector2(-2.5, 0.5), Vector2(-2.5, 1.5), Vector2(-2.5, 1.5)]
-}
-tracks/8/type = "value"
-tracks/8/imported = false
-tracks/8/enabled = true
-tracks/8/path = NodePath("flipper/body_AnimatedSprite2D/front/drills_AnimatedSprite2D:animation")
-tracks/8/interp = 1
-tracks/8/loop_wrap = true
-tracks/8/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"power_down"]
-}
-tracks/9/type = "value"
-tracks/9/imported = false
-tracks/9/enabled = true
-tracks/9/path = NodePath("flipper/body_AnimatedSprite2D/front/drills_AnimatedSprite2D:frame")
-tracks/9/interp = 1
-tracks/9/loop_wrap = true
-tracks/9/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3, 4, 5]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_b26ya"]
@@ -4673,7 +4674,6 @@ _data = {
 script = ExtResource("1_m1nbs")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-visible = false
 position = Vector2(0.0349426, 0.763586)
 shape = SubResource("CapsuleShape2D_jark5")
 
@@ -4695,14 +4695,13 @@ unique_name_in_owner = true
 z_index = 1
 material = SubResource("ShaderMaterial_7hxlo")
 position = Vector2(0.349, -4.878)
-scale = Vector2(1, 1)
 sprite_frames = SubResource("SpriteFrames_26287")
 animation = &"power_down"
 offset = Vector2(-0.367244, 6.89239)
 
 [node name="drills_AnimatedSprite2D" type="AnimatedSprite2D" parent="flipper/body_AnimatedSprite2D/front"]
+unique_name_in_owner = true
 material = SubResource("ShaderMaterial_x710y")
-scale = Vector2(1, 1)
 sprite_frames = SubResource("SpriteFrames_iejce")
 animation = &"mine_down_setup"
 
@@ -4711,7 +4710,6 @@ unique_name_in_owner = true
 material = SubResource("ShaderMaterial_u1q2t")
 use_parent_material = true
 position = Vector2(16.494, 4.5142)
-scale = Vector2(1, 1)
 sprite_frames = SubResource("SpriteFrames_emnws")
 animation = &"launch"
 offset = Vector2(-16.494, -4.5142)
@@ -4724,7 +4722,6 @@ unique_name_in_owner = true
 z_index = 1
 material = SubResource("ShaderMaterial_1aqd2")
 position = Vector2(0.349, -2.878)
-scale = Vector2(1, 1)
 sprite_frames = SubResource("SpriteFrames_6yk8p")
 offset = Vector2(-0.367244, 6.89239)
 
@@ -4737,11 +4734,11 @@ unique_name_in_owner = true
 z_index = 2
 material = SubResource("ShaderMaterial_k6rhv")
 position = Vector2(-2.08165e-12, -2.08165e-12)
-scale = Vector2(1, 1)
 sprite_frames = SubResource("SpriteFrames_h0rl5")
 animation = &"setup_drill_forward"
 
 [node name="front_drill_AnimatedSprite2D" type="AnimatedSprite2D" parent="flipper/body_AnimatedSprite2D/side"]
+unique_name_in_owner = true
 z_index = 2
 material = SubResource("ShaderMaterial_46tb5")
 sprite_frames = SubResource("SpriteFrames_g682d")
@@ -4751,11 +4748,11 @@ animation = &"setup_drill_forward"
 unique_name_in_owner = true
 z_index = -1
 material = SubResource("ShaderMaterial_1g4wt")
-scale = Vector2(1, 1)
 sprite_frames = SubResource("SpriteFrames_20v51")
 animation = &"setup_drill_forward"
 
 [node name="back_drill_AnimatedSprite2D" type="AnimatedSprite2D" parent="flipper/body_AnimatedSprite2D/side"]
+unique_name_in_owner = true
 z_index = -1
 material = SubResource("ShaderMaterial_f0cqk")
 sprite_frames = SubResource("SpriteFrames_eh1jk")
@@ -4780,8 +4777,6 @@ libraries = {
 "": SubResource("AnimationLibrary_pcd6x")
 }
 
-[node name="heads" type="Node2D" parent="flipper/body_AnimatedSprite2D"]
-
 [node name="Battery" type="Node2D" parent="flipper/body_AnimatedSprite2D"]
 position = Vector2(2.08165e-12, 1)
 
@@ -4792,6 +4787,16 @@ visible = false
 
 [node name="side_Charge" parent="flipper/body_AnimatedSprite2D/Battery/Battery1" index="3"]
 visible = false
+
+[node name="shaderManager" type="Node2D" parent="flipper/body_AnimatedSprite2D"]
+unique_name_in_owner = true
+script = ExtResource("49_ccio1")
+b_armorColorReplacements = PackedColorArray(0.956863, 0.737255, 0.368627, 1, 1, 0.368627, 0.101961, 1, 0.580392, 0.333333, 0, 1, 0.690196, 0.227451, 0.054902, 1, 0.376471, 0.0862745, 0, 1, 0.992157, 0.52549, 0.329412, 1)
+drillColorsToReplace = PackedColorArray(0.494118, 0.321569, 0, 1, 0.862745, 0.564706, 0.00784314, 1, 0.662745, 0.431373, 0, 1, 0, 0, 0, 1)
+a_drillColorReplacements = PackedColorArray(1, 1, 1, 0.776471, 0.917647, 0.917647, 0.917647, 0.807843, 0.94902, 0.94902, 0.94902, 0.819608, 1, 1, 1, 0.870588)
+b_drillColorReplacements = PackedColorArray(0.160784, 0.478431, 0.992157, 0.572549, 0.00784314, 0.917647, 0.996078, 0.513726, 0.0862745, 0.698039, 0.996078, 0.529412, 0.0576, 0.17352, 0.36, 0.643137)
+c_drillColorReplacements = PackedColorArray(1, 0.627451, 0.129412, 0.831373, 0.968627, 0.776471, 0.462745, 0.858824, 0.917647, 0.6, 0.215686, 0.85098, 0.286275, 0.0941176, 0.121569, 0.811765)
+d_drillColorReplacements = PackedColorArray(0.537255, 0.537255, 0.537255, 1, 0.905882, 0.905882, 0.905882, 1, 0.72549, 0.72549, 0.72549, 1, 0, 0, 0, 1)
 
 [connection signal="animation_finished" from="flipper/body_AnimatedSprite2D/player_AnimationPlayer" to="." method="_on_player_animation_player_animation_finished"]
 

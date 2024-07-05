@@ -8,9 +8,9 @@ using System.Numerics;
 public partial class DrillableGrid : TileMap
 {
     [Export]
-    public int Width = 80;
+    public int Width = 40;
     [Export]
-    public int StartingRows = 250;
+    public int StartingRows = 200;
     [Export]
     public NoiseTexture2D EmptyTileNoiseTexture;
     [Export]

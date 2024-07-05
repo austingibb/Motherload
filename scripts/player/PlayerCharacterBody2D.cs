@@ -42,6 +42,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 	public Battery battery;
 
 	public PlayerAnimation playerAnimation;
+	public PlayerShaderManager playerShaderManager;
 	public List<List<Drillable>> SurroundingDrillables;
 	private PackedScene laserScene;
 
@@ -67,7 +68,8 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		AnimatedSprite2D jetAnimation = GetNode<AnimatedSprite2D>("%jet_AnimatedSprite2D");
 		AnimationPlayer animationPlayer = GetNode<AnimationPlayer>("%player_AnimationPlayer");
 		AnimationPlayer shaderAnimationPlayer = GetNode<AnimationPlayer>("%shader_AnimationPlayer");
-		
+		playerShaderManager = GetNode<Node2D>("%shaderManager") as PlayerShaderManager;
+
 		playerAnimation = new PlayerAnimation(flipper, bodyAnimation, jetAnimation, frontSprites, sideSprites,
 			animationPlayer, shaderAnimationPlayer, battery);
 
@@ -88,6 +90,25 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
     public override void _PhysicsProcess(double delta)
 	{
 		Vector2 velocity = Velocity;
+
+		if (Input.IsActionJustPressed("test1"))
+		{
+			playerShaderManager.UpdateDrills(DrillType.A);
+		} else if (Input.IsActionJustPressed("test2"))
+		{
+			playerShaderManager.UpdateDrills(DrillType.B);
+		} else if (Input.IsActionJustPressed("test3"))
+		{
+			playerShaderManager.UpdateDrills(DrillType.C);
+		} else if (Input.IsActionJustPressed("test4"))
+		{
+			playerShaderManager.UpdateDrills(DrillType.D);
+		} else if (Input.IsActionJustPressed("test5"))
+		{
+			playerShaderManager.UpdateDrills(DrillType.F);
+		}
+
+
 		HandleEnergy((float)delta);
 		battery.SetCharge(Energy/100.0f);
 		HandleHead((float)delta, frontHeadAnimation);
@@ -332,7 +353,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 
 	private void HandleEnergy(float delta)
 	{
-		if (Input.IsActionJustPressed("test"))
+		if (Input.IsActionJustPressed("test6"))
 		{
 			Energy = 100f;
 		}

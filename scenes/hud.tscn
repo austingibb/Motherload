@@ -6,17 +6,21 @@
 [ext_resource type="Script" path="res://scripts/ui/ProgressBarNinePatch.cs" id="3_rpbc3"]
 [ext_resource type="Texture2D" uid="uid://q25n24hf7232" path="res://assets/other/health_bar.png" id="4_mbnf4"]
 [ext_resource type="Texture2D" uid="uid://sgqfts07b28t" path="res://assets/other/bar_background.png" id="5_uv074"]
-[ext_resource type="Script" path="res://scripts/EnergyShaderAnimationPlayer.cs" id="6_jlhy5"]
+[ext_resource type="Script" path="res://scripts/ui/EnergyShaderAnimationPlayer.cs" id="7_hyd02"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0t4ke"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rlrqr"]
 shader = ExtResource("2_u71ds")
-shader_parameter/strength = 2.08165e-12
+shader_parameter/hurt_strength = 0.0
+shader_parameter/colors_to_replace = null
+shader_parameter/replacement_colors = null
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_g240t"]
 shader = ExtResource("2_u71ds")
-shader_parameter/strength = 2.08165e-12
+shader_parameter/hurt_strength = 0.0
+shader_parameter/colors_to_replace = null
+shader_parameter/replacement_colors = null
 
 [sub_resource type="Animation" id="Animation_biexx"]
 length = 0.001
@@ -143,7 +147,7 @@ position = Vector2(198.984, 0.0166046)
 libraries = {
 "": SubResource("AnimationLibrary_ob5vb")
 }
-script = ExtResource("6_jlhy5")
+script = ExtResource("7_hyd02")
 
 [node name="Health" type="Node2D" parent="ProgressBars" node_paths=PackedStringArray("background", "fill")]
 position = Vector2(2.08165e-12, 12.317)
