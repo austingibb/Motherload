@@ -1,4 +1,4 @@
-[gd_scene load_steps=381 format=3 uid="uid://cwrufed6b0h7m"]
+[gd_scene load_steps=382 format=3 uid="uid://cwrufed6b0h7m"]
 
 [ext_resource type="Script" path="res://scripts/player/PlayerCharacterBody2D.cs" id="1_m1nbs"]
 [ext_resource type="Shader" path="res://scripts/shaders/player_color_adjust.gdshader" id="2_4qksy"]
@@ -49,6 +49,7 @@
 [ext_resource type="Texture2D" uid="uid://bxpxndqpdrufk" path="res://assets/player/side/drills/mload_player_walking_back_drill.png" id="45_oi3bv"]
 [ext_resource type="Texture2D" uid="uid://b8s08b4sgidtj" path="res://assets/player/jets/foot_jets.png" id="46_1j81h"]
 [ext_resource type="Script" path="res://scripts/player/PlayerShaderManager.cs" id="49_ccio1"]
+[ext_resource type="PackedScene" uid="uid://bdbgvfmne2wld" path="res://scenes/drill_color_replacements.tscn" id="50_258eg"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_jark5"]
 radius = 3.0
@@ -4792,11 +4793,8 @@ visible = false
 unique_name_in_owner = true
 script = ExtResource("49_ccio1")
 b_armorColorReplacements = PackedColorArray(0.956863, 0.737255, 0.368627, 1, 1, 0.368627, 0.101961, 1, 0.580392, 0.333333, 0, 1, 0.690196, 0.227451, 0.054902, 1, 0.376471, 0.0862745, 0, 1, 0.992157, 0.52549, 0.329412, 1)
-drillColorsToReplace = PackedColorArray(0.494118, 0.321569, 0, 1, 0.862745, 0.564706, 0.00784314, 1, 0.662745, 0.431373, 0, 1, 0, 0, 0, 1)
-a_drillColorReplacements = PackedColorArray(1, 1, 1, 0.776471, 0.917647, 0.917647, 0.917647, 0.807843, 0.94902, 0.94902, 0.94902, 0.819608, 1, 1, 1, 0.870588)
-b_drillColorReplacements = PackedColorArray(0.160784, 0.478431, 0.992157, 0.572549, 0.00784314, 0.917647, 0.996078, 0.513726, 0.0862745, 0.698039, 0.996078, 0.529412, 0.0576, 0.17352, 0.36, 0.643137)
-c_drillColorReplacements = PackedColorArray(1, 0.627451, 0.129412, 0.831373, 0.968627, 0.776471, 0.462745, 0.858824, 0.917647, 0.6, 0.215686, 0.85098, 0.286275, 0.0941176, 0.121569, 0.811765)
-d_drillColorReplacements = PackedColorArray(0.537255, 0.537255, 0.537255, 1, 0.905882, 0.905882, 0.905882, 1, 0.72549, 0.72549, 0.72549, 1, 0, 0, 0, 1)
+
+[node name="drillColorReplacements" parent="flipper/body_AnimatedSprite2D/shaderManager" instance=ExtResource("50_258eg")]
 
 [connection signal="animation_finished" from="flipper/body_AnimatedSprite2D/player_AnimationPlayer" to="." method="_on_player_animation_player_animation_finished"]
 

@@ -254,7 +254,7 @@ size = Vector2(20.5461, 2.49688)
 size = Vector2(4.38098, 13.4997)
 
 [node name="dirt" type="StaticBody2D"]
-collision_layer = 3
+collision_layer = 7
 script = ExtResource("1_00jve")
 tileType = 1
 

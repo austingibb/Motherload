@@ -1,0 +1,183 @@
+[gd_scene load_steps=13 format=3 uid="uid://v0qqttb0yfbx"]
+
+[ext_resource type="FontFile" uid="uid://cf1shrgw3bt7c" path="res://assets/fonts/PixelOperator8.ttf" id="1_n4lkf"]
+[ext_resource type="Shader" path="res://scripts/shaders/player_color_adjust.gdshader" id="2_u71ds"]
+[ext_resource type="Texture2D" uid="uid://sjwnk3mw7vxl" path="res://assets/other/energy_bar.png" id="3_qy2bo"]
+[ext_resource type="Script" path="res://scripts/ui/ProgressBarNinePatch.cs" id="3_rpbc3"]
+[ext_resource type="Texture2D" uid="uid://q25n24hf7232" path="res://assets/other/health_bar.png" id="4_mbnf4"]
+[ext_resource type="Texture2D" uid="uid://sgqfts07b28t" path="res://assets/other/bar_background.png" id="5_uv074"]
+[ext_resource type="Script" path="res://scripts/ui/EnergyShaderAnimationPlayer.cs" id="7_hyd02"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_g240t"]
+shader = ExtResource("2_u71ds")
+shader_parameter/hurt_strength = 0.0
+shader_parameter/colors_to_replace = null
+shader_parameter/replacement_colors = null
+
+[sub_resource type="Animation" id="Animation_biexx"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("EnergyBar:material:shader_parameter/strength")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [2.08165e-12]
+}
+
+[sub_resource type="Animation" id="Animation_ysfk8"]
+resource_name = "low_energy"
+length = 0.5
+loop_mode = 1
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("EnergyBar:material:shader_parameter/strength")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.25, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [2.08165e-12, 1.0, 2.08165e-12]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ob5vb"]
+_data = {
+"RESET": SubResource("Animation_biexx"),
+"low_energy": SubResource("Animation_ysfk8")
+}
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rlrqr"]
+shader = ExtResource("2_u71ds")
+shader_parameter/hurt_strength = 0.0
+shader_parameter/colors_to_replace = null
+shader_parameter/replacement_colors = null
+
+[node name="HUD" type="CanvasLayer"]
+offset = Vector2(2.08165e-12, 2.08165e-12)
+transform = Transform2D(1, 0, 0, 1, 2.08165e-12, 2.08165e-12)
+
+[node name="ProgressBars" type="Node2D" parent="."]
+position = Vector2(36.5503, 19.3638)
+
+[node name="Energy" type="Node2D" parent="ProgressBars" node_paths=PackedStringArray("background", "fill")]
+position = Vector2(2.08165e-12, 96.724)
+scale = Vector2(5, 5)
+script = ExtResource("3_rpbc3")
+background = NodePath("EnergyBarBackground")
+fill = NodePath("EnergyBar")
+MaxValue = 100.0
+RoundedPosition = true
+
+[node name="EnergyBar" type="NinePatchRect" parent="ProgressBars/Energy"]
+material = SubResource("ShaderMaterial_g240t")
+offset_right = 60.0
+offset_bottom = 12.0
+texture = ExtResource("3_qy2bo")
+patch_margin_left = 5
+patch_margin_top = 5
+patch_margin_right = 5
+patch_margin_bottom = 5
+
+[node name="EnergyBarBackground" type="NinePatchRect" parent="ProgressBars/Energy"]
+z_index = -1
+offset_left = -2.0
+offset_top = -2.0
+offset_right = 201.0
+offset_bottom = 14.0
+texture = ExtResource("5_uv074")
+patch_margin_left = 4
+patch_margin_top = 4
+patch_margin_right = 4
+patch_margin_bottom = 4
+
+[node name="MaxWidthMarker" type="Node2D" parent="ProgressBars/Energy"]
+position = Vector2(198.984, 0.0166046)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="ProgressBars/Energy"]
+libraries = {
+"": SubResource("AnimationLibrary_ob5vb")
+}
+script = ExtResource("7_hyd02")
+
+[node name="Health" type="Node2D" parent="ProgressBars" node_paths=PackedStringArray("background", "fill")]
+position = Vector2(2.08165e-12, 12.317)
+scale = Vector2(5, 5)
+script = ExtResource("3_rpbc3")
+background = NodePath("HealthBarBackground")
+fill = NodePath("HealthBar")
+MaxValue = 100.0
+RoundedPosition = true
+
+[node name="HealthBar" type="NinePatchRect" parent="ProgressBars/Health"]
+offset_right = 60.0
+offset_bottom = 12.0
+texture = ExtResource("4_mbnf4")
+patch_margin_left = 5
+patch_margin_top = 5
+patch_margin_right = 5
+patch_margin_bottom = 5
+
+[node name="HealthBarBackground" type="NinePatchRect" parent="ProgressBars/Health"]
+z_index = -1
+offset_left = -2.0
+offset_top = -2.0
+offset_right = 201.0
+offset_bottom = 14.0
+texture = ExtResource("5_uv074")
+patch_margin_left = 4
+patch_margin_top = 4
+patch_margin_right = 4
+patch_margin_bottom = 4
+
+[node name="MaxWidthMarker" type="Node2D" parent="ProgressBars/Health"]
+position = Vector2(198.982, 0.0121491)
+
+[node name="MoneyLabel" type="Label" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -69.0
+offset_top = 50.0
+offset_right = 68.9995
+offset_bottom = 414.0
+grow_horizontal = 2
+scale = Vector2(2.35106, 2.36028)
+theme_override_fonts/font = ExtResource("1_n4lkf")
+text = "Credits: "
+
+[node name="DepthLabel" type="Label" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -69.0
+offset_top = 150.0
+offset_right = 68.9993
+offset_bottom = 514.001
+grow_horizontal = 2
+scale = Vector2(2.35106, 2.36028)
+theme_override_fonts/font = ExtResource("1_n4lkf")
+text = "Depth: "
+
+[node name="InventoryLabel" type="Label" parent="."]
+material = SubResource("ShaderMaterial_rlrqr")
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -552.763
+offset_top = 50.0
+offset_right = -334.762
+offset_bottom = 414.0
+grow_horizontal = 0
+scale = Vector2(2.35106, 2.36028)
+theme_override_fonts/font = ExtResource("1_n4lkf")
+text = "Inventory: (0/10)
+    Iron: 0
+    Silver: 0
+    Gold: 0"

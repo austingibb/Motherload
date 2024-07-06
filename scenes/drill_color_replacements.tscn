@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://bdbgvfmne2wld"]
+
+[ext_resource type="Script" path="res://scripts/player/DrillColorReplacements.cs" id="1_8q1v1"]
+
+[node name="drillColorReplacements" type="Node2D"]
+script = ExtResource("1_8q1v1")
+drillColorsToReplace = PackedColorArray(0.494118, 0.321569, 0, 1, 0.862745, 0.564706, 0.00784314, 1, 0.662745, 0.431373, 0, 1, 0, 0, 0, 1)
+s_drillColorReplacements = PackedColorArray(0.0941176, 0.0941176, 0.0941176, 0.913725, 0.133333, 0.133333, 0.133333, 0.921569, 0.109804, 0.109804, 0.109804, 0.937255, 0, 0, 0, 0.909804)
+a_drillColorReplacements = PackedColorArray(1, 1, 1, 0.776471, 0.917647, 0.917647, 0.917647, 0.807843, 0.94902, 0.94902, 0.94902, 0.819608, 1, 1, 1, 0.870588)
+b_drillColorReplacements = PackedColorArray(0.160784, 0.478431, 0.992157, 0.572549, 0.00784314, 0.917647, 0.996078, 0.513726, 0.0862745, 0.698039, 0.996078, 0.529412, 0.0588235, 0.172549, 0.360784, 0.643137)
+c_drillColorReplacements = PackedColorArray(1, 0.627451, 0.129412, 0.831373, 0.968627, 0.776471, 0.462745, 0.858824, 0.917647, 0.6, 0.215686, 0.85098, 0.286275, 0.0941176, 0.121569, 0.811765)
+d_drillColorReplacements = PackedColorArray(0.537255, 0.537255, 0.537255, 1, 0.905882, 0.905882, 0.905882, 1, 0.72549, 0.72549, 0.72549, 1, 0, 0, 0, 1)

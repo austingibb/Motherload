@@ -36,10 +36,6 @@ public partial class DrillableGridProbability
 
     public float GetProbabilityForDepth(int curveIdx, uint depth)
     {
-        if (depth == 20)
-        {
-            GD.Print("Depth: " + depth);
-        }
         int lowerDepthRange = depthRanges[curveIdx].X;
         int upperDepthRange = depthRanges[curveIdx].Y;
         int depthWidth = upperDepthRange - lowerDepthRange;

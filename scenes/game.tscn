@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://c4n3nw1neoend"]
+[gd_scene load_steps=34 format=3 uid="uid://c4n3nw1neoend"]
 
 [ext_resource type="PackedScene" uid="uid://cwrufed6b0h7m" path="res://scenes/player.tscn" id="1_cpms4"]
 [ext_resource type="Script" path="res://scripts/Game.cs" id="1_jibs2"]
@@ -19,6 +19,8 @@
 [ext_resource type="PackedScene" uid="uid://v0qqttb0yfbx" path="res://scenes/hud.tscn" id="13_6ipmk"]
 [ext_resource type="PackedScene" uid="uid://2j154jrcrhfx" path="res://scenes/buildings/charge_station.tscn" id="13_s1kka"]
 [ext_resource type="PackedScene" uid="uid://dawbd1hptxxk8" path="res://scenes/buildings/upgrade_station.tscn" id="18_svd0m"]
+[ext_resource type="PackedScene" uid="uid://p0424hsm5m6h" path="res://scenes/ui/upgrade_menu.tscn" id="20_2vh3i"]
+[ext_resource type="PackedScene" uid="uid://bxsd1akipkk11" path="res://scenes/chest.tscn" id="21_ujdqk"]
 
 [sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_4ukp1"]
 scenes/1/scene = ExtResource("3_pqfaf")
@@ -162,5 +164,11 @@ shape = SubResource("WorldBoundaryShape2D_j2r7s")
 
 [node name="Projectiles" type="Node2D" parent="."]
 position = Vector2(0, -83.3385)
+
+[node name="UpgradeMenu" parent="." instance=ExtResource("20_2vh3i")]
+unique_name_in_owner = true
+
+[node name="Chest" parent="." instance=ExtResource("21_ujdqk")]
+position = Vector2(46, -24)
 
 [editable path="HUD"]

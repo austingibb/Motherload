@@ -2,25 +2,6 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public enum ArmorType
-{
-    A,
-    B,
-    C,
-    D,
-    F
-}
-
-public enum DrillType
-{
-    A,
-    B,
-    C,
-    D,
-    F
-}
-
-
 public partial class PlayerShaderManager : Node2D
 {
     // armor color replacements
@@ -38,18 +19,7 @@ public partial class PlayerShaderManager : Node2D
     public Color[] f_armorColorReplacements;
 
     // drill color replacements
-    [Export]
-    public Color[] drillColorsToReplace;
-    [Export]
-    public Color[] a_drillColorReplacements;
-    [Export]
-    public Color[] b_drillColorReplacements;
-    [Export]
-    public Color[] c_drillColorReplacements;
-    [Export]
-    public Color[] d_drillColorReplacements;
-    [Export]
-    public Color[] f_drillColorReplacements;
+    DrillColorReplacements drillColorReplacements;
 
     // nodes
     public ShaderMaterial bodyShader;
@@ -67,6 +37,8 @@ public partial class PlayerShaderManager : Node2D
 
     public override void _Ready()
     {
+        drillColorReplacements = GetNode<DrillColorReplacements>("drillColorReplacements");
+
         // body
         AnimatedSprite2D bodyAnimation = GetNode<AnimatedSprite2D>("%body_AnimatedSprite2D");
         bodyShader = bodyAnimation.Material as ShaderMaterial;
@@ -104,12 +76,12 @@ public partial class PlayerShaderManager : Node2D
     public void UpdateDrills(DrillType drillType)
     {
         Color[] drillColors = DrillTypeToColors(drillType);
-        UpdateColorReplaceParameters(drillsShader, drillColorsToReplace, drillColors);
-        UpdateColorReplaceParameters(frontDrillShader, drillColorsToReplace, drillColors);
-        UpdateColorReplaceParameters(backDrillShader, drillColorsToReplace, drillColors);
+        UpdateColorReplaceParameters(drillsShader, drillColorReplacements.drillColorsToReplace, drillColors);
+        UpdateColorReplaceParameters(frontDrillShader, drillColorReplacements.drillColorsToReplace, drillColors);
+        UpdateColorReplaceParameters(backDrillShader, drillColorReplacements.drillColorsToReplace, drillColors);
     }
 
-    public void UpdateColorReplaceParameters(ShaderMaterial shaderMaterial, Color[] colorsToReplace, Color[] replacementColors)
+    public static void UpdateColorReplaceParameters(ShaderMaterial shaderMaterial, Color[] colorsToReplace, Color[] replacementColors)
     {
         if (replacementColors == null || colorsToReplace.Length != replacementColors.Length)
         {
@@ -143,18 +115,20 @@ public partial class PlayerShaderManager : Node2D
     {
         switch (drillType)
         {
-            case DrillType.A:
-                return a_drillColorReplacements;
-            case DrillType.B:
-                return b_drillColorReplacements;
-            case DrillType.C:
-                return c_drillColorReplacements;
-            case DrillType.D:
-                return d_drillColorReplacements;
-            case DrillType.F:
-                return f_drillColorReplacements;
+            case DrillType.QCarbon:
+                return drillColorReplacements.s_drillColorReplacements;
+            case DrillType.Diamond:
+                return drillColorReplacements.a_drillColorReplacements;
+            case DrillType.Sapphire:
+                return drillColorReplacements.b_drillColorReplacements;
+            case DrillType.Topaz:
+                return drillColorReplacements.c_drillColorReplacements;
+            case DrillType.Steel:
+                return drillColorReplacements.d_drillColorReplacements;
+            case DrillType.Base:
+                return drillColorReplacements.f_drillColorReplacements;
             default:
-                return f_drillColorReplacements;
+                return drillColorReplacements.f_drillColorReplacements;
         }
     }
 }

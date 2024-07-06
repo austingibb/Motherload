@@ -5,6 +5,8 @@ using System.Collections.Generic;
 
 public partial class Game : Node2D
 {
+    public static float GRAVITY = 500f;
+
     // Nodes
     public PlayerCharacterBody2D playerCharacter;
     public DrillableGrid drillableGrid;
@@ -22,6 +24,9 @@ public partial class Game : Node2D
     public ChargeStation chargeStation;
     public UpgradeStation upgradeStation;
 
+    // UI
+    public UpgradeMenu upgradeMenu;
+
     // Member variables
     public int Money;
 
@@ -33,12 +38,15 @@ public partial class Game : Node2D
         inventory = GetNode<Inventory>("%Inventory") as Inventory;
         hud = GetNode<CanvasLayer>("%HUD") as CanvasLayer;
         hud.Visible = true;
-        inventoryLabel = GetNode<Label>("%HUD/Inventory/InventoryLabel");
-        moneyLabel = GetNode<Label>("%HUD/Money/MoneyLabel");
-        depthLabel = GetNode<Label>("%HUD/Depth/DepthLabel");
+        inventoryLabel = GetNode<Label>("%HUD/InventoryLabel");
+        moneyLabel = GetNode<Label>("%HUD/MoneyLabel");
+        depthLabel = GetNode<Label>("%HUD/DepthLabel");
         energyBar = GetNode<ProgressBarNinePatch>("%HUD/ProgressBars//Energy") as ProgressBarNinePatch;
         energyBarAnimator = GetNode<AnimationPlayer>("%HUD/ProgressBars/Energy/AnimationPlayer");
         healthBar = GetNode<ProgressBarNinePatch>("%HUD/ProgressBars/Health") as ProgressBarNinePatch;
+        upgradeMenu = GetNode<UpgradeMenu>("%UpgradeMenu") as UpgradeMenu;
+        upgradeMenu.RegisterMoneyAuthorization(CanAfford);
+        upgradeMenu.upgrade += UpgradePurchased;
 
         Money = 0;
 
@@ -79,6 +87,20 @@ public partial class Game : Node2D
             GetTree().ReloadCurrentScene();
         }
 
+        if (Input.IsActionJustPressed("test1"))
+        {
+            Money += 1000;
+            moneyLabel.Text = GetMoneyString();
+        } else if (Input.IsActionJustPressed("test2"))
+        {
+            Money += 10_000;
+            moneyLabel.Text = GetMoneyString();
+        } else if (Input.IsActionJustPressed("test3"))
+        {
+            Money += 100_000;
+            moneyLabel.Text = GetMoneyString();
+        }
+
         drillableGrid.GetSurroundingDrillables(playerCharacter.Position, playerCharacter.SurroundingDrillables);
 
         energyBar.SetValue(playerCharacter.Energy);
@@ -112,6 +134,24 @@ public partial class Game : Node2D
             }
         }
         return inventoryStringBuilder.ToString();
+    }
+
+    public void UpgradePurchased(int upgradeIndex)
+    {
+        Upgrade upgrade = UpgradeConstants.upgrades[upgradeIndex];
+        Money -= upgrade.cost;
+        moneyLabel.Text = GetMoneyString();
+
+        if (upgrade.upgradeType == UpgradeType.Drill)
+        {
+            DrillUpgrade drillUpgrade = (DrillUpgrade)upgrade;
+            playerCharacter.HandleDrillUpgrade(drillUpgrade);
+        }
+    }
+
+    public bool CanAfford(int cost)
+    {
+        return Money >= cost;
     }
 
     public void _on_sell_all()

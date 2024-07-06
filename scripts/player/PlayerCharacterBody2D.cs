@@ -18,8 +18,9 @@ public enum PlayerState {
 public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 {
 	public const float WalkSpeed = 120.0f;
-	public const float DrillSideSpeed = 180.0f;
-	public const float DrillDownSpeed = 180.0f;	
+	public const float BaseDrillSpeed = 70.0f;
+	public float DrillSideSpeed = 70.0f;
+	public float DrillDownSpeed = 70.0f;	
 	public const float VerticalFlightSpeed = -900.0f;
 	public const float CatchVerticalFlightSpeed = -1100.0f;
 
@@ -29,7 +30,6 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 	public const float DragConstant = 0.011f;
 	public const float EnergyLossScale = 3.0f;
 	public const float NoEnergyHealthLoss = 10.0f;
-	public float gravity = 500f;
 	private PlayerState playerState = PlayerState.None;
 	private PlayerDrillables playerDrillables = new();
 	public Vector2 prevVelocity = new(0, 0);
@@ -68,7 +68,8 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		AnimatedSprite2D jetAnimation = GetNode<AnimatedSprite2D>("%jet_AnimatedSprite2D");
 		AnimationPlayer animationPlayer = GetNode<AnimationPlayer>("%player_AnimationPlayer");
 		AnimationPlayer shaderAnimationPlayer = GetNode<AnimationPlayer>("%shader_AnimationPlayer");
-		playerShaderManager = GetNode<Node2D>("%shaderManager") as PlayerShaderManager;
+		playerShaderManager = GetNode<Node2D>("%shaderManager") as PlayerShaderManager;	
+		playerShaderManager.UpdateDrills(DrillType.Base);
 
 		playerAnimation = new PlayerAnimation(flipper, bodyAnimation, jetAnimation, frontSprites, sideSprites,
 			animationPlayer, shaderAnimationPlayer, battery);
@@ -91,24 +92,6 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 	{
 		Vector2 velocity = Velocity;
 
-		if (Input.IsActionJustPressed("test1"))
-		{
-			playerShaderManager.UpdateDrills(DrillType.A);
-		} else if (Input.IsActionJustPressed("test2"))
-		{
-			playerShaderManager.UpdateDrills(DrillType.B);
-		} else if (Input.IsActionJustPressed("test3"))
-		{
-			playerShaderManager.UpdateDrills(DrillType.C);
-		} else if (Input.IsActionJustPressed("test4"))
-		{
-			playerShaderManager.UpdateDrills(DrillType.D);
-		} else if (Input.IsActionJustPressed("test5"))
-		{
-			playerShaderManager.UpdateDrills(DrillType.F);
-		}
-
-
 		HandleEnergy((float)delta);
 		battery.SetCharge(Energy/100.0f);
 		HandleHead((float)delta, frontHeadAnimation);
@@ -124,12 +107,12 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		{
 			if (!IsOnPlayerOnFloor()) 
 			{
-				velocity.Y += gravity * (float)delta;
+				velocity.Y += Game.GRAVITY * (float)delta;
 			}
 		}
 		else if (!IsOnPlayerOnFloor())
 		{
-			velocity.Y += gravity * (float)delta;
+			velocity.Y += Game.GRAVITY * (float)delta;
 
 			Vector2 direction = Input.GetVector("move_left", "move_right", "ui_up", "ui_down");
 			if (direction.X < 0)
@@ -423,7 +406,6 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 	}
 
 
-
 	public void RegisterDrillable(Drillable drillable, DrillFromDirection direction) {
 		playerDrillables.RegisterDrillable(drillable, direction);
 	}
@@ -431,6 +413,13 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 	public void UnregisterDrillable(Drillable drillable) {
 		playerDrillables.UnregisterDrillable(drillable);
 	}
+
+	public void HandleDrillUpgrade(DrillUpgrade drillUpgrade)
+    {
+		DrillSideSpeed = BaseDrillSpeed * drillUpgrade.drillSpeedMultiplier;
+		DrillDownSpeed = BaseDrillSpeed * drillUpgrade.drillSpeedMultiplier;
+		playerShaderManager.UpdateDrills(drillUpgrade.drillType);
+    }
 
 	private void _on_player_animation_player_animation_finished(String anim_name) 
 	{
