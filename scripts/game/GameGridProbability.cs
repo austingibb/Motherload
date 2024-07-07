@@ -3,35 +3,37 @@ using System.Collections.Generic;
 using Godot;
 
 
-public partial class DrillableGridProbability
+public partial class GameGridProbability<[MustBeVariant] T>
 {
-    public Godot.Collections.Array<DrillableType> drillableTypes;
+    public Godot.Collections.Array<T> types;
+    public T defaultType;
     public Godot.Collections.Array<Curve> probabilityCurves;
     private RandomNumberGenerator rng = new RandomNumberGenerator();
     Godot.Collections.Array<Vector2I> depthRanges;
 
-    public DrillableGridProbability(Godot.Collections.Array<DrillableType> drillableTypes, Godot.Collections.Array<Curve> probabilityCurves, Godot.Collections.Array<Vector2I> depthRanges)
+    public GameGridProbability(Godot.Collections.Array<T> types, T defaultType, Godot.Collections.Array<Curve> probabilityCurves, Godot.Collections.Array<Vector2I> depthRanges)
     {
-        this.drillableTypes = drillableTypes;
+        this.types = types;
         this.probabilityCurves = probabilityCurves;
         this.depthRanges = depthRanges;
+        this.defaultType = defaultType;
     }    
 
-    public DrillableType GetDrillableTypeForDepth(uint depth)
+    public T GetTypeForDepth(uint depth)
     {
-        float tileRandomSelectionAmount = rng.Randf();
+        float randomSelectionAmount = rng.Randf();
         float cumulativeProbability = 0;
         for (int i = 0; i < probabilityCurves.Count; i++)
         {
             float probability = GetProbabilityForDepth(i, depth);
             cumulativeProbability += probability;
-            if (cumulativeProbability >= tileRandomSelectionAmount)
+            if (cumulativeProbability >= randomSelectionAmount)
             {
-                return drillableTypes[i];
+                return types[i];
             }
         }
 
-        return DrillableType.DIRT;
+        return defaultType;
     }
 
     public float GetProbabilityForDepth(int curveIdx, uint depth)

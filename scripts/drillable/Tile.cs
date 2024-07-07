@@ -4,6 +4,7 @@ public enum TileType
 {
     Background,
     Drillable,
+    GameGridItem,
     NonDrillable
 }
 

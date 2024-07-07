@@ -9,7 +9,7 @@ public partial class Game : Node2D
 
     // Nodes
     public PlayerCharacterBody2D playerCharacter;
-    public DrillableGrid drillableGrid;
+    public GameGrid gameGrid;
     public Inventory inventory;
     public CanvasLayer hud;
     public Label inventoryLabel;
@@ -33,8 +33,9 @@ public partial class Game : Node2D
     public override void _Ready()
     {
         playerCharacter = GetNode<CharacterBody2D>("%Player") as PlayerCharacterBody2D;
-        drillableGrid = GetNode<TileMap>("%DrillableGrid") as DrillableGrid;
-        drillableGrid.drillableDug += _on_drillable_dug;
+        gameGrid = GetNode<TileMap>("%GameGrid") as GameGrid;
+        gameGrid.drillableDug += _on_drillable_dug;
+        gameGrid.itemSpawned += _on_item_spawned;
         inventory = GetNode<Inventory>("%Inventory") as Inventory;
         hud = GetNode<CanvasLayer>("%HUD") as CanvasLayer;
         hud.Visible = true;
@@ -67,17 +68,17 @@ public partial class Game : Node2D
             chargeStation,
             upgradeStation
         };
-        drillableGrid.Init(buildings);
+        gameGrid.Init(buildings);
 
-        int tileWidth = drillableGrid.TileSet.TileSize.X;
+        int tileWidth = gameGrid.TileSet.TileSize.X;
         Camera2D camera = GetNode<Camera2D>("%Camera2D");
-        camera.LimitLeft = -tileWidth* drillableGrid.Width / 2 + tileWidth/2;
-        camera.LimitRight = tileWidth* drillableGrid.Width / 2 - tileWidth/2;
+        camera.LimitLeft = -tileWidth* gameGrid.Width / 2 + tileWidth/2;
+        camera.LimitRight = tileWidth* gameGrid.Width / 2 - tileWidth/2;
 
         StaticBody2D leftBoundary = GetNode<StaticBody2D>("%LeftBoundary");
-        leftBoundary.Position = new Vector2(-tileWidth * drillableGrid.Width / 2 + tileWidth/2, 0);
+        leftBoundary.Position = new Vector2(-tileWidth * gameGrid.Width / 2 + tileWidth/2, 0);
         StaticBody2D rightBoundary = GetNode<StaticBody2D>("%RightBoundary");
-        rightBoundary.Position = new Vector2(tileWidth* drillableGrid.Width / 2 - tileWidth/2, 0);
+        rightBoundary.Position = new Vector2(tileWidth* gameGrid.Width / 2 - tileWidth/2, 0);
     }
 
     public override void _PhysicsProcess(double delta)
@@ -101,11 +102,11 @@ public partial class Game : Node2D
             moneyLabel.Text = GetMoneyString();
         }
 
-        drillableGrid.GetSurroundingDrillables(playerCharacter.Position, playerCharacter.SurroundingDrillables);
+        gameGrid.GetSurroundingDrillables(playerCharacter.Position, playerCharacter.SurroundingDrillables);
 
         energyBar.SetValue(playerCharacter.Energy);
         healthBar.SetValue(playerCharacter.Health);
-        depthLabel.Text = $"Depth: {drillableGrid.GetDepth(playerCharacter)}";
+        depthLabel.Text = $"Depth: {gameGrid.GetDepth(playerCharacter)}";
 
         if (playerCharacter.Energy <= 10.0f)
         {
@@ -156,7 +157,7 @@ public partial class Game : Node2D
 
     public void _on_sell_all()
     {
-        Money += inventory.SellAll(DrillableConstants.itemPrices);
+        Money += inventory.SellAll(GameGridConstants.itemPrices);
         inventoryLabel.Text = GetInventoryString();
         moneyLabel.Text = GetMoneyString();
     }
@@ -175,5 +176,22 @@ public partial class Game : Node2D
     {
         inventory.AddToInventory(drillable.DrillableType);
         inventoryLabel.Text = GetInventoryString();
+    }
+
+    public void _on_item_spawned(GameGridItemType gameGridItemType, Node2D item)
+    {
+        if (gameGridItemType == GameGridItemType.Chest)
+        {
+            Chest chest = (Chest) item;
+            chest.RegisterMoneyAuthorization(CanAfford);
+            chest.chestOpened += _on_chest_opened;
+        }
+    }
+
+    public void _on_chest_opened(Chest chest)
+    {
+        GD.Print("Chest opened: " + chest.chestType);
+        Money -= chest.Cost;
+        moneyLabel.Text = GetMoneyString();
     }
 }

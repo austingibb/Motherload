@@ -13,10 +13,11 @@ public enum DrillableType
     NONE
 }
 
-public class DrillableConstants
+public class GameGridConstants
 {
+    // tile ids
     public const int DIRT_TILE_SET_ID = 1;
-    public const int DIRT_NON_DRILLABLE_TILE_SET_ID = 2;
+    public const int DIRT_NON_DRILLABLE_TILE_SET_ID = 13;
     public const int DIRT_BACKGROUND_TILE_SET_ID = 3;
     public const int GOLD_TILE_SET_ID = 4;
     public const int IRON_TILE_SET_ID = 5;
@@ -25,6 +26,14 @@ public class DrillableConstants
     public const int DIAMOND_TILE_SET_ID = 8;
     public const int LITHIUM_TILE_SET_ID = 9;
     public const int COPPER_TILE_SET_ID = 10;
+
+    // item ids
+    public const int GOLD_CHEST_TILE_SET_ID = 12;
+    public const int SILVER_CHEST_TILE_SET_ID = 17;
+    public const int RED_CHEST_TILE_SET_ID = 16;
+    public const int GREEN_CHEST_TILE_SET_ID = 15;
+    public const int BROWN_CHEST_TILE_SET_ID = 14;
+
 
     public static Dictionary<DrillableType, int> itemPrices = new Dictionary<DrillableType, int>
     {
@@ -58,6 +67,25 @@ public class DrillableConstants
                 return -1;
             default:
                 return DIRT_TILE_SET_ID;
+        }
+    }
+
+    public static int MapChestTypeToTileSetId(ChestType chestType)
+    {
+        switch (chestType)
+        {
+            case ChestType.Gold:
+                return GOLD_CHEST_TILE_SET_ID;
+            case ChestType.Silver:
+                return SILVER_CHEST_TILE_SET_ID;
+            case ChestType.Red:
+                return RED_CHEST_TILE_SET_ID;
+            case ChestType.Green:
+                return GREEN_CHEST_TILE_SET_ID;
+            case ChestType.Brown:
+                return BROWN_CHEST_TILE_SET_ID;
+            default:
+                return -1;
         }
     }
 }

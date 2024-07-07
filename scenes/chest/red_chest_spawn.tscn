@@ -1,0 +1,11 @@
+[gd_scene load_steps=4 format=3 uid="uid://dixg40hghgngo"]
+
+[ext_resource type="PackedScene" uid="uid://d4hktp3q7gvtg" path="res://scenes/chest/gold_chest_spawn.tscn" id="1_fr35t"]
+[ext_resource type="PackedScene" uid="uid://xgjc6x46cxw4" path="res://scenes/chest/red_chest.tscn" id="2_fpoit"]
+[ext_resource type="Texture2D" uid="uid://ngha4l6cbc2d" path="res://assets/chests/red_chest.png" id="3_0l5im"]
+
+[node name="Chest" instance=ExtResource("1_fr35t")]
+SpawnableItem = ExtResource("2_fpoit")
+
+[node name="closed_Sprite2D" parent="." index="0"]
+texture = ExtResource("3_0l5im")

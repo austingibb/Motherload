@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://booipoa7pvevg"]
+
+[ext_resource type="PackedScene" uid="uid://bxsd1akipkk11" path="res://scenes/chest/gold_chest.tscn" id="1_b2u8a"]
+[ext_resource type="Texture2D" uid="uid://b1loy2ckwsvvt" path="res://assets/chests/green_chest.png" id="2_rfmer"]
+[ext_resource type="Texture2D" uid="uid://bl7nn33xyajki" path="res://assets/chests/green_chest_open.png" id="3_aii0d"]
+
+[node name="Chest" instance=ExtResource("1_b2u8a")]
+Cost = 300
+chestType = 1
+
+[node name="closed_Sprite2D" parent="." index="0"]
+texture = ExtResource("2_rfmer")
+
+[node name="open_Sprite2D" parent="." index="1"]
+visible = true
+position = Vector2(2.08165e-12, 2.08165e-12)
+texture = ExtResource("3_aii0d")

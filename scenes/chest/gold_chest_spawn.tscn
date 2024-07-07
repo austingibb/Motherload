@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://d4hktp3q7gvtg"]
+
+[ext_resource type="Script" path="res://scripts/game/GameGridItem.cs" id="1_o3dwh"]
+[ext_resource type="PackedScene" uid="uid://bxsd1akipkk11" path="res://scenes/chest/gold_chest.tscn" id="2_68cxe"]
+[ext_resource type="Texture2D" uid="uid://b10sm1lifebt6" path="res://assets/chests/gold_chest.png" id="2_o38gm"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_od8q3"]
+size = Vector2(20, 17)
+
+[node name="Chest" type="StaticBody2D"]
+collision_layer = 4
+collision_mask = 4
+script = ExtResource("1_o3dwh")
+SpawnableItem = ExtResource("2_68cxe")
+tileType = 2
+
+[node name="closed_Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_o38gm")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 0.5)
+shape = SubResource("RectangleShape2D_od8q3")

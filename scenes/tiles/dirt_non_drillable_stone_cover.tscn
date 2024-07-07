@@ -1,6 +1,6 @@
 [gd_scene load_steps=14 format=3 uid="uid://pb4g2nqwkegp"]
 
-[ext_resource type="Script" path="res://scripts/Tile.cs" id="1_bcstp"]
+[ext_resource type="Script" path="res://scripts/drillable/Tile.cs" id="1_ridka"]
 [ext_resource type="PackedScene" uid="uid://cv7j1lqpv7dyr" path="res://scenes/tiles/dirt_animated_sprite_2d.tscn" id="2_o5fc2"]
 [ext_resource type="Shader" path="res://scripts/shaders/drillable_dynamic_sprite.gdshader" id="3_5aggu"]
 [ext_resource type="Texture2D" uid="uid://dud4q44sj7tp7" path="res://assets/tiles/covers/dirt_bottom_cover.png" id="4_n7236"]
@@ -40,8 +40,8 @@ size = Vector2(37.0111, 37.2386)
 [node name="dirt_non_drillable" type="StaticBody2D"]
 position = Vector2(2.08165e-12, 2.08165e-12)
 collision_layer = 3
-script = ExtResource("1_bcstp")
-tileType = 2
+script = ExtResource("1_ridka")
+tileType = 3
 
 [node name="Dirt_AnimatedSprite2D" parent="." instance=ExtResource("2_o5fc2")]
 material = SubResource("ShaderMaterial_hfo6y")

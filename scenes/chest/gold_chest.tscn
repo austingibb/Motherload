@@ -1,12 +1,15 @@
-[gd_scene load_steps=7 format=3 uid="uid://bxsd1akipkk11"]
+[gd_scene load_steps=8 format=3 uid="uid://bxsd1akipkk11"]
 
-[ext_resource type="Script" path="res://scripts/other/Chest.cs" id="1_ba3m1"]
-[ext_resource type="Texture2D" uid="uid://b10sm1lifebt6" path="res://assets/other/gold_chest.png" id="1_usc0f"]
-[ext_resource type="Texture2D" uid="uid://cjshgymgduf4o" path="res://assets/other/gold_chest_open.png" id="2_hxxaw"]
-[ext_resource type="FontFile" uid="uid://cf1shrgw3bt7c" path="res://assets/fonts/PixelOperator8.ttf" id="4_cw830"]
+[ext_resource type="Script" path="res://scripts/other/Chest.cs" id="1_0mfqd"]
+[ext_resource type="Texture2D" uid="uid://b10sm1lifebt6" path="res://assets/chests/gold_chest.png" id="2_xle5e"]
+[ext_resource type="Texture2D" uid="uid://cjshgymgduf4o" path="res://assets/chests/gold_chest_open.png" id="3_rrlkk"]
+[ext_resource type="FontFile" uid="uid://cf1shrgw3bt7c" path="res://assets/fonts/PixelOperator8.ttf" id="4_qi2qf"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tbuwg"]
+size = Vector2(20, 17.1976)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_04cpy"]
-size = Vector2(20, 18.5)
+size = Vector2(20, 18.6647)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_uid8f"]
 size = Vector2(36, 30)
@@ -14,24 +17,30 @@ size = Vector2(36, 30)
 [node name="Chest" type="CharacterBody2D"]
 collision_layer = 4
 collision_mask = 4
-script = ExtResource("1_ba3m1")
+script = ExtResource("1_0mfqd")
+Cost = 1000
+chestType = 2
 
 [node name="closed_Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_usc0f")
+texture = ExtResource("2_xle5e")
 
 [node name="open_Sprite2D" type="Sprite2D" parent="."]
 visible = false
 position = Vector2(2.08165e-12, -4.5)
-texture = ExtResource("2_hxxaw")
+texture = ExtResource("3_rrlkk")
 
 [node name="closed_CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(2.08165e-12, 0.5)
-shape = SubResource("RectangleShape2D_04cpy")
+visible = false
+position = Vector2(2.08165e-12, 0.848822)
+shape = SubResource("RectangleShape2D_tbuwg")
 
 [node name="open_CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+position = Vector2(0, 0.0823364)
 shape = SubResource("RectangleShape2D_04cpy")
 
 [node name="purchase_Area2D" type="Area2D" parent="."]
+visible = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="purchase_Area2D"]
 position = Vector2(0, -5)
@@ -50,11 +59,14 @@ offset_bottom = 3.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(0.5, 0.5)
-theme_override_fonts/font = ExtResource("4_cw830")
+theme_override_fonts/font = ExtResource("4_qi2qf")
 theme_override_font_sizes/font_size = 8
 text = "(e) purchase"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="Timer" type="Timer" parent="."]
+
 [connection signal="body_entered" from="purchase_Area2D" to="." method="_on_body_entered"]
 [connection signal="body_exited" from="purchase_Area2D" to="." method="_on_body_exited"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

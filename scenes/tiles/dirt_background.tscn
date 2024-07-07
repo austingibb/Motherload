@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://dltcds5x4kmfi"]
 
-[ext_resource type="Script" path="res://scripts/Tile.cs" id="1_5mcwk"]
+[ext_resource type="Script" path="res://scripts/drillable/Tile.cs" id="1_5mcwk"]
 [ext_resource type="Shader" path="res://scripts/shaders/background_dynamic_sprite.gdshader" id="2_ebsoy"]
 [ext_resource type="Texture2D" uid="uid://b1fx1lqlyjall" path="res://assets/tiles/covers/background_dirt_top_layer.png" id="3_afkjt"]
 [ext_resource type="Texture2D" uid="uid://c2x30lctvuslk" path="res://assets/tiles/background_dirt.png" id="4_to34x"]

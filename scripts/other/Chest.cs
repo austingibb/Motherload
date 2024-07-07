@@ -7,7 +7,8 @@ public enum ChestType
     Green,
     Gold,
     Silver,
-    Brown
+    Brown,
+    None
 }
 
 public partial class Chest : CharacterBody2D
@@ -18,6 +19,7 @@ public partial class Chest : CharacterBody2D
     public CollisionShape2D closedCollisionShape2D;
     public CollisionShape2D openCollisionShape2D;
     public Label purchasePrompt;
+    public Timer timer;
 
     // member variables
     [Export]
@@ -29,7 +31,7 @@ public partial class Chest : CharacterBody2D
     // signals
     MoneyAuthorization moneyAuthorization;
     [Signal]
-    public delegate void chestOpenedEventHandler(int chestType);
+    public delegate void chestOpenedEventHandler(Chest chest);
 
     public override void _Ready()
     {
@@ -38,6 +40,7 @@ public partial class Chest : CharacterBody2D
         closedCollisionShape2D = GetNode<CollisionShape2D>("closed_CollisionShape2D");
         openCollisionShape2D = GetNode<CollisionShape2D>("open_CollisionShape2D");
         purchasePrompt = GetNode<Label>("purchasePrompt");
+        timer = GetNode<Timer>("Timer");
         purchasePrompt.Visible = false;
         openSprite.Visible = false;
         openCollisionShape2D.Disabled = true;
@@ -65,13 +68,24 @@ public partial class Chest : CharacterBody2D
 
             if (moneyAuthorization(Cost))
             {
-                EmitSignal(SignalName.chestOpened, (int)chestType);
-                closedSprite.Visible = false;
-                closedCollisionShape2D.Disabled = true;
-                openSprite.Visible = true;
-                openCollisionShape2D.Disabled = false;
+                ChestOpened();
             }
         }
+    }
+
+    private void ChestOpened()
+    {
+        EmitSignal(SignalName.chestOpened, this);
+        closedSprite.Visible = false;
+        closedCollisionShape2D.Disabled = true;
+        openSprite.Visible = true;
+        openCollisionShape2D.Disabled = false;
+        timer.Start();
+    }
+
+    public void _on_timer_timeout()
+    {
+        QueueFree();
     }
 
     public void _on_body_entered(Node2D body)

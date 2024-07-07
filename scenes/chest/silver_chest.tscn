@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://dqixpykwpcnya"]
+
+[ext_resource type="PackedScene" uid="uid://bxsd1akipkk11" path="res://scenes/chest/gold_chest.tscn" id="1_bpa2r"]
+[ext_resource type="Texture2D" uid="uid://l1nv676a4ru2" path="res://assets/chests/silver_chest.png" id="2_nl766"]
+[ext_resource type="Texture2D" uid="uid://bw2ctnri421s6" path="res://assets/chests/silver_chest_open.png" id="3_dvqnq"]
+
+[node name="SilverChest" instance=ExtResource("1_bpa2r")]
+Cost = 500
+chestType = 3
+
+[node name="closed_Sprite2D" parent="." index="0"]
+texture = ExtResource("2_nl766")
+
+[node name="open_Sprite2D" parent="." index="1"]
+visible = true
+position = Vector2(2.08165e-12, 2.08165e-12)
+texture = ExtResource("3_dvqnq")
+
+[node name="CollisionShape2D" parent="purchase_Area2D" index="0"]
+visible = false

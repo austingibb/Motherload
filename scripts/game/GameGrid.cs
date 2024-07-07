@@ -5,34 +5,51 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 
-public partial class DrillableGrid : TileMap
+public partial class GameGrid : TileMap
 {
     [Export]
     public int Width = 40;
     [Export]
     public int StartingRows = 200;
+
+    [Export]
+    public int ChunkSize = 8;
+
     [Export]
     public NoiseTexture2D EmptyTileNoiseTexture;
     [Export]
     Godot.Collections.Array<DrillableType> drillableType = new Godot.Collections.Array<DrillableType>();
     [Export]
-    Godot.Collections.Array<Curve> toCurve = new Godot.Collections.Array<Curve>();
+    Godot.Collections.Array<Curve> toDrillableProbabilityCurve = new Godot.Collections.Array<Curve>();
     [Export]
-    Godot.Collections.Array<Vector2I> depthRanges = new Godot.Collections.Array<Vector2I>();
+    Godot.Collections.Array<Vector2I> drillableTypeDepthRanges = new Godot.Collections.Array<Vector2I>();
+
+    [Export]
+    Godot.Collections.Array<ChestType> chestType = new Godot.Collections.Array<ChestType>();
+    [Export]
+    Godot.Collections.Array<Curve> toChestProbabilityCurve = new Godot.Collections.Array<Curve>();
+    [Export]
+    Godot.Collections.Array<Vector2I> chestTypedepthRanges = new Godot.Collections.Array<Vector2I>();
 
     [Signal]
     public delegate void drillableDugEventHandler(Drillable drillable);
-    
-    private DrillableGridProbability drillableGridProbability;
+    [Signal]
+    public delegate void itemSpawnedEventHandler(GameGridItemType gameGridItemType, Node2D gameGridItem);
+
+    private GameGridProbability<DrillableType> drillableGridProbability;
+    private GameGridProbability<ChestType> chestGridProbability;
+
     private FastNoiseLite emptyTileNoise;
     private List<List<Node2D>> positionToNode2D = new List<List<Node2D>>();
+    private List<List<GameGridItem>> gridItems = new List<List<GameGridItem>>();
 
     public override void _Ready()
     {
         emptyTileNoise = EmptyTileNoiseTexture.Noise as FastNoiseLite;
         emptyTileNoise.Seed = (int) (new RandomNumberGenerator().Randi() % Mathf.Pow(2, 25));
 
-        drillableGridProbability = new DrillableGridProbability(drillableType, toCurve, depthRanges);
+        drillableGridProbability = new GameGridProbability<DrillableType>(drillableType, DrillableType.DIRT, toDrillableProbabilityCurve, drillableTypeDepthRanges);
+        chestGridProbability = new GameGridProbability<ChestType>(chestType, ChestType.None, toChestProbabilityCurve, chestTypedepthRanges);
     }
 
     public void Init(List<Node2D> buildings = null)
@@ -45,7 +62,7 @@ public partial class DrillableGrid : TileMap
             Vector2I childCoord = LocalToMap(((Node2D) child).Position);
             Vector2I childGridCoord = TileMapPositionToGridPosition(childCoord);
 
-            // Only register drillable tiles
+            // Only register non-background tiles
             if (tile.tileType == TileType.Drillable || tile.tileType == TileType.NonDrillable)
             {
                 positionToNode2D[childGridCoord.X][childGridCoord.Y] = (Node2D) child;
@@ -63,6 +80,9 @@ public partial class DrillableGrid : TileMap
                     DrillableShaderManager.UpdateDrillableSide((Node2D) child, DrillableSurface.Top, false);
                 }
                 tile.ZIndex = -2;
+            } else if (tile.tileType == TileType.GameGridItem)
+            {
+                gridItems[childGridCoord.X][childGridCoord.Y] = (GameGridItem) child;
             }
         }
         UpdateAllDrillableEdges();
@@ -74,25 +94,43 @@ public partial class DrillableGrid : TileMap
         for (int i = 0; i < Width; i++)
         {
             positionToNode2D.Add(new List<Node2D>());
+            gridItems.Add(new List<GameGridItem>());
             for (int j = 0; j < StartingRows; j++)
             {
-                SetCell(0, GridPositionToTileMapPosition(new Vector2I(i, j)), 1, new Vector2I(0, 0), DrillableConstants.DIRT_BACKGROUND_TILE_SET_ID);
+                SetCell(0, GridPositionToTileMapPosition(new Vector2I(i, j)), 1, new Vector2I(0, 0), GameGridConstants.DIRT_BACKGROUND_TILE_SET_ID);
                 // clear any tiles left from editor
                 EraseCell(1, GridPositionToTileMapPosition(new Vector2I(i, j)));
 
                 if (i == 0 || i == Width - 1)
                 {
-                    SetCell(1, GridPositionToTileMapPosition(new Vector2I(i, j)), 1, new Vector2I(0, 0), DrillableConstants.DIRT_NON_DRILLABLE_TILE_SET_ID);
+                    SetCell(1, GridPositionToTileMapPosition(new Vector2I(i, j)), 1, new Vector2I(0, 0), GameGridConstants.DIRT_NON_DRILLABLE_TILE_SET_ID);
                     positionToNode2D[i].Add(null);
                     continue;
                 }
 
                 int tileSetId;
-                var emptyTileNoiseValue = emptyTileNoise.GetNoise2D(i, j);
+                int chestTileSetId;
+                var emptyTileNoiseValue = emptyTileNoise.GetNoise2D(i, j);                
+
                 if (emptyTileNoiseValue < -0.3) {
                     tileSetId = -1;
+                    chestTileSetId = -1;
                 } else {
-                    tileSetId = DrillableConstants.MapDrillableTypeToTileSetId(drillableGridProbability.GetDrillableTypeForDepth((uint) j));
+                    ChestType chestType = chestGridProbability.GetTypeForDepth((uint) j);
+                    if (chestType == ChestType.None) 
+                    {
+                        DrillableType type = drillableGridProbability.GetTypeForDepth((uint) j);
+                        tileSetId = GameGridConstants.MapDrillableTypeToTileSetId(type);
+                        if (tileSetId > 1)
+                        {
+                            GD.Print("Tileset id: " + tileSetId + " at depth: " + j);
+                        }
+                        chestTileSetId = -1;
+                    } else
+                    {
+                        tileSetId = GameGridConstants.DIRT_TILE_SET_ID;
+                        chestTileSetId = GameGridConstants.MapChestTypeToTileSetId(chestType);
+                    }
                 }
 
                 bool tileOverlapsBuilding = j == 0 && buildings != null && buildings.Any((building) => {
@@ -105,14 +143,21 @@ public partial class DrillableGrid : TileMap
                 });
                 if (tileOverlapsBuilding)
                 {
-                    tileSetId = DrillableConstants.DIRT_NON_DRILLABLE_STONE_TOP_TILE_SET_ID;
+                    tileSetId = GameGridConstants.DIRT_NON_DRILLABLE_STONE_TOP_TILE_SET_ID;
+                    chestTileSetId = -1;
                 }
 
                 if (tileSetId != -1) {
                     SetCell(1, GridPositionToTileMapPosition(new Vector2I(i, j)), 1, new Vector2I(0, 0), tileSetId);
                 }
 
+                if (chestTileSetId != -1)
+                {
+                    SetCell(2, GridPositionToTileMapPosition(new Vector2I(i, j)), 1, new Vector2I(0, 0), chestTileSetId);
+                }
+
                 positionToNode2D[i].Add(null);
+                gridItems[i].Add(null);
             }
         }
     }
@@ -188,7 +233,7 @@ public partial class DrillableGrid : TileMap
 
         DrillableCornerShape drillableCornerShape = DrillableCornerShape.None;
         int tileSetId = GetCellAlternativeTile(1, GridPositionToTileMapPosition(gridPos));
-        if (hasDrillableAbove || (tileSetId == DrillableConstants.DIRT_NON_DRILLABLE_STONE_TOP_TILE_SET_ID && (corner == DrillableCorner.TopLeft || corner == DrillableCorner.TopRight)))
+        if (hasDrillableAbove || (tileSetId == GameGridConstants.DIRT_NON_DRILLABLE_STONE_TOP_TILE_SET_ID && (corner == DrillableCorner.TopLeft || corner == DrillableCorner.TopRight)))
         {
             drillableCornerShape = DrillableCornerShape.Straight;
         } else {
@@ -313,5 +358,16 @@ public partial class DrillableGrid : TileMap
         Vector2I gridPosition = TileMapPositionToGridPosition(tileMapPosition);
         positionToNode2D[gridPosition.X][gridPosition.Y] = null;
         UpdateSurroundingDrillableEdges(gridPosition, drillable);
+
+        GameGridItem gameGridItem = gridItems[gridPosition.X][gridPosition.Y];
+        if (Common.ValidTile(gameGridItem))
+        {
+            Node2D spawnedItem = gameGridItem.SpawnItem();
+            if (spawnedItem != null)
+            {
+                gridItems[gridPosition.X][gridPosition.Y] = null;
+                EmitSignal(SignalName.itemSpawned, (int) gameGridItem.gameGridItemType, spawnedItem);
+            }
+        }
     }
 }
