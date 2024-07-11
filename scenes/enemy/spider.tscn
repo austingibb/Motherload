@@ -1,0 +1,289 @@
+[gd_scene load_steps=7 format=3 uid="uid://bsubg7ltoyh2a"]
+
+[ext_resource type="Script" path="res://scripts/enemy/Spider.cs" id="1_011ln"]
+[ext_resource type="Texture2D" uid="uid://dfvph0mltviss" path="res://assets/enemy/spider_body.png" id="1_o53vu"]
+[ext_resource type="Texture2D" uid="uid://4w2ltsih7u7s" path="res://assets/enemy/spider_leg.png" id="2_x6p6e"]
+
+[sub_resource type="Animation" id="Animation_pfgj7"]
+resource_name = "walk"
+length = 0.8
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("legs/right1:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, -0.349066, 3.48787e-16, 0.349066, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("legs/right2:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.523599, 0.872665, 0.523599, 0.174533, 0.523599]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("legs/right3:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [1.0472, 0.698132, 1.0472, 1.39626, 1.0472]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("legs/right4:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [1.5708, 1.91986, 1.5708, 1.22173, 1.5708]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("legs/left1:rotation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [-1.5708, -1.22173, -1.5708, -1.91986, -1.5708]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("legs/left2:rotation")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [-2.0944, -2.44346, -2.0944, -1.74533, -2.0944]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("legs/left3:rotation")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [-2.61799, -2.26893, -2.61799, -2.96706, -2.61799]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("legs/left4:rotation")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [-3.14159, -3.49066, -3.14159, -2.79253, -3.14159]
+}
+
+[sub_resource type="Animation" id="Animation_thu17"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("legs/right1:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("legs/right2:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.523599]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("legs/right3:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [1.0472]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("legs/right4:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [1.5708]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("legs/left1:rotation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [-1.5708]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("legs/left2:rotation")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [-2.0944]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("legs/left3:rotation")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [-2.61799]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("legs/left4:rotation")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [-3.14159]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_rjc8r"]
+_data = {
+"RESET": SubResource("Animation_thu17"),
+"walk": SubResource("Animation_pfgj7")
+}
+
+[node name="Spider" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 260
+script = ExtResource("1_011ln")
+
+[node name="body" type="Sprite2D" parent="."]
+texture = ExtResource("1_o53vu")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_rjc8r")
+}
+autoplay = "walk"
+
+[node name="legs" type="Node2D" parent="."]
+
+[node name="right1" type="Sprite2D" parent="legs"]
+z_index = -1
+position = Vector2(3, 0)
+texture = ExtResource("2_x6p6e")
+offset = Vector2(-4, 5)
+
+[node name="right2" type="Sprite2D" parent="legs"]
+z_index = -1
+position = Vector2(5, 2)
+rotation = 0.523599
+texture = ExtResource("2_x6p6e")
+offset = Vector2(-4, 5)
+
+[node name="right3" type="Sprite2D" parent="legs"]
+z_index = -1
+position = Vector2(5, 6)
+rotation = 1.0472
+texture = ExtResource("2_x6p6e")
+offset = Vector2(-4, 5)
+
+[node name="right4" type="Sprite2D" parent="legs"]
+z_index = -1
+position = Vector2(3, 9)
+rotation = 1.5708
+texture = ExtResource("2_x6p6e")
+offset = Vector2(-4, 5)
+
+[node name="left1" type="Sprite2D" parent="legs"]
+z_index = -1
+position = Vector2(-3, 0)
+rotation = -1.5708
+texture = ExtResource("2_x6p6e")
+offset = Vector2(-4, 5)
+
+[node name="left2" type="Sprite2D" parent="legs"]
+z_index = -1
+position = Vector2(-5, 2)
+rotation = -2.0944
+texture = ExtResource("2_x6p6e")
+offset = Vector2(-4, 5)
+
+[node name="left3" type="Sprite2D" parent="legs"]
+z_index = -1
+position = Vector2(-5, 6)
+rotation = -2.61799
+texture = ExtResource("2_x6p6e")
+offset = Vector2(-4, 5)
+
+[node name="left4" type="Sprite2D" parent="legs"]
+z_index = -1
+position = Vector2(-3, 9)
+rotation = -3.14159
+texture = ExtResource("2_x6p6e")
+offset = Vector2(-4, 5)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(-3, -3, -3, -11, 3, -11, 3, -3, 5, 1, 5, 7, 1, 11, -1, 11, -5, 7, -5, 1, -3, -3)
+
+[node name="RayCast2D" type="RayCast2D" parent="."]
+target_position = Vector2(2.08165e-12, -13)
+collision_mask = 256
