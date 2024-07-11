@@ -31,13 +31,13 @@ public class PlayerDrillables
 
     public Drillable ActiveDrillable = null;
     private const double TimeToStartDrilling = 0.1;
-    private Dictionary<string, DrillableDictValue> drillables = new();
+    private Dictionary<DrillFromDirection, DrillableDictValue> drillables = new();
     DrillFromDirection currentPendingDirection = DrillFromDirection.NONE;
 
     public Node2D DirectionHeld(DrillFromDirection direction, double delta)
     {
         if (currentPendingDirection != direction) {
-            foreach (KeyValuePair<string, DrillableDictValue> kvp in drillables)
+            foreach (KeyValuePair<DrillFromDirection, DrillableDictValue> kvp in drillables)
             {
                 kvp.Value.ResetDrillableTime();
             }
@@ -51,7 +51,7 @@ public class PlayerDrillables
             return null;
         }
 
-        foreach (KeyValuePair<string, DrillableDictValue> kvp in drillables)
+        foreach (KeyValuePair<DrillFromDirection, DrillableDictValue> kvp in drillables)
         {
             DrillableDictValue drillableDictValue = kvp.Value;
             if (drillableDictValue.Direction == currentPendingDirection) 
@@ -73,11 +73,22 @@ public class PlayerDrillables
 
     public void RegisterDrillable(Drillable drillable, DrillFromDirection direction)
     {
-        drillables.Add(drillable.GetPath(), new(direction, drillable));
+        if (!drillables.ContainsKey(direction))
+        {
+            drillables[direction] = new DrillableDictValue(direction, drillable);
+        } else {
+            if (drillable.GetPath() != drillables[direction].Drillable.GetPath())
+            {
+                drillables[direction] = new DrillableDictValue(direction, drillable);
+            }
+        }
     }
 
-	public void UnregisterDrillable(Node2D drillable) 
+	public void UnregisterDrillable(DrillFromDirection direction) 
     {
-        drillables.Remove(drillable.GetPath());
+        if (drillables.ContainsKey(direction))
+        {
+            drillables.Remove(direction);
+        }
     }
 }

@@ -1,6 +1,6 @@
-[gd_scene load_steps=22 format=3 uid="uid://4dp3owa1a7k"]
+[gd_scene load_steps=19 format=3 uid="uid://4dp3owa1a7k"]
 
-[ext_resource type="Script" path="res://scripts/drillable/Drillable.cs" id="1_00jve"]
+[ext_resource type="Script" path="res://scripts/tile/Drillable.cs" id="1_t3otb"]
 [ext_resource type="PackedScene" uid="uid://cv7j1lqpv7dyr" path="res://scenes/tiles/dirt_animated_sprite_2d.tscn" id="2_aes2i"]
 [ext_resource type="Shader" path="res://scripts/shaders/drillable_dynamic_sprite.gdshader" id="3_fy1h1"]
 [ext_resource type="Texture2D" uid="uid://dud4q44sj7tp7" path="res://assets/tiles/covers/dirt_bottom_cover.png" id="4_e3cdm"]
@@ -244,18 +244,9 @@ shader_parameter/dig_side = ExtResource("8_tnkgg")
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ocdpi"]
 size = Vector2(31.8344, 31.5045)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_5ou57"]
-size = Vector2(3.92079, 13.8187)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_kb6at"]
-size = Vector2(20.5461, 2.49688)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_in7ko"]
-size = Vector2(4.38098, 13.4997)
-
 [node name="dirt" type="StaticBody2D"]
-collision_layer = 7
-script = ExtResource("1_00jve")
+collision_layer = 263
+script = ExtResource("1_t3otb")
 tileType = 1
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
@@ -274,31 +265,4 @@ position = Vector2(0, -0.0606699)
 scale = Vector2(1.16208, 1.16949)
 shape = SubResource("RectangleShape2D_ocdpi")
 
-[node name="RightDrillZone" type="Area2D" parent="."]
-visible = false
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RightDrillZone"]
-position = Vector2(18.6055, 5.48537)
-shape = SubResource("RectangleShape2D_5ou57")
-
-[node name="TopDrillZone" type="Area2D" parent="."]
-visible = false
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="TopDrillZone"]
-position = Vector2(0.0801616, -18.6083)
-shape = SubResource("RectangleShape2D_kb6at")
-
-[node name="LeftDrillZone" type="Area2D" parent="."]
-visible = false
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftDrillZone"]
-position = Vector2(-18.527, 5.66005)
-shape = SubResource("RectangleShape2D_in7ko")
-
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
-[connection signal="body_entered" from="RightDrillZone" to="." method="_on_right_drill_zone_entered"]
-[connection signal="body_exited" from="RightDrillZone" to="." method="_on_right_drill_zone_exited"]
-[connection signal="body_entered" from="TopDrillZone" to="." method="_on_top_drill_zone_entered"]
-[connection signal="body_exited" from="TopDrillZone" to="." method="_on_top_drill_zone_exited"]
-[connection signal="body_entered" from="LeftDrillZone" to="." method="_on_left_drill_zone_entered"]
-[connection signal="body_exited" from="LeftDrillZone" to="." method="_on_left_drill_zone_exited"]

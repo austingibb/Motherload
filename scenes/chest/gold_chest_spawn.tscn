@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://d4hktp3q7gvtg"]
 
-[ext_resource type="Script" path="res://scripts/game/GameGridItem.cs" id="1_o3dwh"]
+[ext_resource type="Script" path="res://scripts/game/GameGridItemTile.cs" id="1_o3dwh"]
 [ext_resource type="PackedScene" uid="uid://bxsd1akipkk11" path="res://scenes/chest/gold_chest.tscn" id="2_68cxe"]
 [ext_resource type="Texture2D" uid="uid://b10sm1lifebt6" path="res://assets/chests/gold_chest.png" id="2_o38gm"]
 

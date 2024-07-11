@@ -23,12 +23,12 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 	public float DrillDownSpeed = 70.0f;	
 	public const float VerticalFlightSpeed = -900.0f;
 	public const float CatchVerticalFlightSpeed = -1100.0f;
-
 	public const float HorizontalFlightSpeed = 300.0f;
 	public const float MaxHorozontalSpeed = 300.0f;
 	public const float TiltAmount = 0.174533f;
 	public const float DragConstant = 0.011f;
-	public const float EnergyLossScale = 3.0f;
+	public const float OriginalEnergyLossScale = 3.0f;
+	public float EnergyLossScale = OriginalEnergyLossScale;
 	public const float NoEnergyHealthLoss = 10.0f;
 	private PlayerState playerState = PlayerState.None;
 	private PlayerDrillables playerDrillables = new();
@@ -36,6 +36,11 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 	public AnimatedSprite2D bodyAnimation;
 	public AnimatedSprite2D frontHeadAnimation;
 	public AnimatedSprite2D sideHeadAnimation;
+
+	public RayCast2D leftRay;
+	public RayCast2D rightRay;
+	public RayCast2D downRay;
+
 	public Node2D flipper;
 	public Marker2D projectileSpawnPoint;
 
@@ -60,6 +65,11 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		AnimatedSprite2D bodyAnimation = GetNode<AnimatedSprite2D>("%body_AnimatedSprite2D");
 		AnimatedSprite2D frontHeadAnimation = GetNode<AnimatedSprite2D>("%front_head_AnimatedSprite2D");
 		AnimatedSprite2D sideHeadAnimation = GetNode<AnimatedSprite2D>("%side_head_AnimatedSprite2D");
+
+		leftRay = GetNode<RayCast2D>("raycasts/left_RayCast2D");
+		rightRay = GetNode<RayCast2D>("raycasts/right_RayCast2D");
+		downRay = GetNode<RayCast2D>("raycasts/down_RayCast2D");
+
 		this.bodyAnimation = bodyAnimation;
 		this.frontHeadAnimation = frontHeadAnimation;
 		this.sideHeadAnimation = sideHeadAnimation;
@@ -93,6 +103,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		Vector2 velocity = Velocity;
 
 		HandleEnergy((float)delta);
+		HandleRaycastChecks();
 		battery.SetCharge(Energy/100.0f);
 		HandleHead((float)delta, frontHeadAnimation);
 		HandleHead((float)delta, sideHeadAnimation);
@@ -307,6 +318,30 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		prevVelocity = velocity;
 	}
 
+	private void HandleRaycastChecks()
+	{
+		HandleRaycastCheck(leftRay, DrillFromDirection.RIGHT);
+		HandleRaycastCheck(rightRay, DrillFromDirection.LEFT);
+		HandleRaycastCheck(downRay, DrillFromDirection.UP);
+	}
+
+	private void HandleRaycastCheck(RayCast2D ray, DrillFromDirection direction)
+	{
+		if (ray.IsColliding())
+		{
+			Drillable drillable = (Drillable) ray.GetCollider();
+			if (direction != DrillFromDirection.UP || Mathf.Abs(drillable.GlobalPosition.X - GlobalPosition.X) < 8.0f)
+			{
+				playerDrillables.RegisterDrillable(drillable, direction);
+			} else {
+				playerDrillables.UnregisterDrillable(direction);
+			}
+		} else if (!ray.IsColliding())
+		{
+			playerDrillables.UnregisterDrillable(direction);
+		}
+	}
+
 	private void HandleHead(float delta, Node2D headAnimation) 
 	{
 		bool isPlayerFacingMouse = ((IsFacingLeft() && (GetGlobalMousePosition().X < this.GlobalPosition.X)) || (!IsFacingLeft() && (GetGlobalMousePosition().X > this.GlobalPosition.X)));
@@ -338,7 +373,12 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 	{
 		if (Input.IsActionJustPressed("test6"))
 		{
-			Energy = 100f;
+			if (EnergyLossScale == OriginalEnergyLossScale)
+			{
+				EnergyLossScale = 0.0f;
+			} else {
+				EnergyLossScale = OriginalEnergyLossScale;
+			}
 		}
 
 		Energy -= delta / 4.0f * EnergyLossScale;
@@ -403,15 +443,6 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 			drag.Y *= -1;
 		drag *= DragConstant;
 		return new(velocity.X + drag.X, velocity.Y + drag.Y);
-	}
-
-
-	public void RegisterDrillable(Drillable drillable, DrillFromDirection direction) {
-		playerDrillables.RegisterDrillable(drillable, direction);
-	}
-
-	public void UnregisterDrillable(Drillable drillable) {
-		playerDrillables.UnregisterDrillable(drillable);
 	}
 
 	public void HandleDrillUpgrade(DrillUpgrade drillUpgrade)

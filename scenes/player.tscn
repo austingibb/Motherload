@@ -4796,6 +4796,20 @@ b_armorColorReplacements = PackedColorArray(0.956863, 0.737255, 0.368627, 1, 1, 
 
 [node name="drillColorReplacements" parent="flipper/body_AnimatedSprite2D/shaderManager" instance=ExtResource("50_258eg")]
 
+[node name="raycasts" type="Node2D" parent="."]
+
+[node name="right_RayCast2D" type="RayCast2D" parent="raycasts"]
+target_position = Vector2(10, 2.08165e-12)
+collision_mask = 256
+
+[node name="left_RayCast2D" type="RayCast2D" parent="raycasts"]
+target_position = Vector2(-10, 2.08165e-12)
+collision_mask = 256
+
+[node name="down_RayCast2D" type="RayCast2D" parent="raycasts"]
+target_position = Vector2(2.08165e-12, 15)
+collision_mask = 256
+
 [connection signal="animation_finished" from="flipper/body_AnimatedSprite2D/player_AnimationPlayer" to="." method="_on_player_animation_player_animation_finished"]
 
 [editable path="flipper/body_AnimatedSprite2D/Battery/Battery1"]

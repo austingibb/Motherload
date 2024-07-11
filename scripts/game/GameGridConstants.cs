@@ -13,6 +13,30 @@ public enum DrillableType
     NONE
 }
 
+public enum TileSetId
+{
+    // non-resources, backgrounds, non-drillables
+    DIRT = 1,
+    DIRT_NON_DRILLABLE = 2,
+    DIRT_NON_DRILLABLE_STONE_TOP = 3,
+    DIRT_BACKGROUND = 4,
+
+    // drillable resources
+    IRON = 100,
+    COPPER = 101,
+    SILVER = 102,
+    GOLD = 103,
+    DIAMOND = 104,
+    LITHIUM = 105,
+
+    // items
+    GOLD_CHEST = 200,
+    SILVER_CHEST = 201,
+    RED_CHEST = 202,
+    GREEN_CHEST = 203,
+    BROWN_CHEST = 204
+}
+
 public class GameGridConstants
 {
     // tile ids
@@ -33,7 +57,6 @@ public class GameGridConstants
     public const int RED_CHEST_TILE_SET_ID = 16;
     public const int GREEN_CHEST_TILE_SET_ID = 15;
     public const int BROWN_CHEST_TILE_SET_ID = 14;
-
 
     public static Dictionary<DrillableType, int> itemPrices = new Dictionary<DrillableType, int>
     {
@@ -67,6 +90,35 @@ public class GameGridConstants
                 return -1;
             default:
                 return DIRT_TILE_SET_ID;
+        }
+    }
+
+    public static TileType MapTileSetIdToTileType(int tileSetId)
+    {
+        switch (tileSetId)
+        {
+            case DIRT_TILE_SET_ID:
+                return TileType.Drillable;
+            case IRON_TILE_SET_ID:
+                return TileType.Drillable;
+            case SILVER_TILE_SET_ID:
+                return TileType.Drillable;
+            case GOLD_TILE_SET_ID:
+                return TileType.Drillable;
+            case DIAMOND_TILE_SET_ID:
+                return TileType.Drillable;
+            case LITHIUM_TILE_SET_ID:
+                return TileType.Drillable;
+            case COPPER_TILE_SET_ID:
+                return TileType.Drillable;
+            case DIRT_NON_DRILLABLE_TILE_SET_ID:
+                return TileType.NonDrillable;
+            case DIRT_BACKGROUND_TILE_SET_ID:
+                return TileType.Background;
+            case DIRT_NON_DRILLABLE_STONE_TOP_TILE_SET_ID:
+                return TileType.NonDrillable;
+            default:
+                return TileType.NonDrillable;
         }
     }
 

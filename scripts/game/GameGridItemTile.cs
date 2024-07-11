@@ -2,10 +2,18 @@ using Godot;
 
 public enum GameGridItemType
 {
-	Chest
+	Chest, 
+    None
 }
 
-public partial class GameGridItem : Tile
+public interface GameGridItem
+{
+    public GameGridItemType gameGridItemType { get; }
+    public void Disable();
+    public void Enable();
+}
+
+public partial class GameGridItemTile : Tile
 {
 	public GameGridItemType gameGridItemType;
 
@@ -15,6 +23,7 @@ public partial class GameGridItem : Tile
 	public override void _Ready()
 	{
 		this.tileType = TileType.GameGridItem;
+		base._Ready();
 	}
 
 	public Node2D SpawnItem()

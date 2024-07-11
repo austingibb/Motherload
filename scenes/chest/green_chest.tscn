@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://bl7nn33xyajki" path="res://assets/chests/green_chest_open.png" id="3_aii0d"]
 
 [node name="Chest" instance=ExtResource("1_b2u8a")]
+collision_layer = 2147483652
 Cost = 300
 chestType = 1
 

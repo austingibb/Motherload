@@ -11,7 +11,7 @@ public enum ChestType
     None
 }
 
-public partial class Chest : CharacterBody2D
+public partial class Chest : CharacterBody2D, GameGridItem
 {
     // nodes
     public Sprite2D closedSprite;
@@ -27,9 +27,13 @@ public partial class Chest : CharacterBody2D
     [Export]
     public ChestType chestType;
     public bool isPlayerNearby = false;
+    public bool isDisabled = false;
 
     // signals
     MoneyAuthorization moneyAuthorization;
+
+    public GameGridItemType gameGridItemType => GameGridItemType.Chest;
+
     [Signal]
     public delegate void chestOpenedEventHandler(Chest chest);
 
@@ -50,6 +54,11 @@ public partial class Chest : CharacterBody2D
 
     public override void _PhysicsProcess(double delta)
     {
+        if (isDisabled)
+        {
+            return;
+        }
+
         Vector2 velocity = Velocity;
         if (!IsOnFloor())
         {
@@ -109,5 +118,21 @@ public partial class Chest : CharacterBody2D
     public void RegisterMoneyAuthorization(MoneyAuthorization moneyAuthorization)
     {
         this.moneyAuthorization = moneyAuthorization;
+    }
+
+    public void Disable()
+    {
+        this.Visible = false;
+        this.isDisabled = true;
+        this.openCollisionShape2D.Disabled = true;
+        this.closedCollisionShape2D.Disabled = true;
+    }
+
+    public void Enable()
+    {
+        this.Visible = true;
+        this.isDisabled = false;
+        this.openCollisionShape2D.Disabled = false;
+        this.closedCollisionShape2D.Disabled = false;
     }
 }

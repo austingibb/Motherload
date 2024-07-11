@@ -24,7 +24,7 @@ public partial class DrillableAnimation
     public void StartAnimation(DrillFromDirection drillFromDirection) 
     {
         this.drillFromDirection = drillFromDirection;
-        DrillableShaderManager.SetupAnimation(drillable, drillFromDirection);
+        SolidTileShaderManager.SetupAnimation(drillable, drillFromDirection);
     }
 
     public bool UpdateAnimationFromPosition(Node2D drillingEntity)
@@ -48,7 +48,7 @@ public partial class DrillableAnimation
         if (progress < 0.0f)
             progress = 0.0f;
 
-        DrillableShaderManager.SetAnimationProgress(drillable, progress);
+        SolidTileShaderManager.SetAnimationProgress(drillable, progress);
         
         return progress >= FinishThreshold;
     }

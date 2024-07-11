@@ -1,6 +1,6 @@
 using Godot;
 
-public enum DrillableSurface
+public enum SolidTileSurface
 {
     Top,
     Bottom,
@@ -8,7 +8,7 @@ public enum DrillableSurface
     Right
 }
 
-public enum DrillableCorner 
+public enum SolidTileCorner 
 {
     TopLeft,
     TopRight,
@@ -17,7 +17,7 @@ public enum DrillableCorner
     None
 }
 
-public enum DrillableCornerShape
+public enum SolidTileCornerShape
 {
     Straight,
     Convex,
@@ -25,7 +25,7 @@ public enum DrillableCornerShape
     None
 }
 
-public partial class DrillableShaderManager : GodotObject
+public partial class SolidTileShaderManager : GodotObject
 {
     public static void SetupAnimation(Node2D drillable, DrillFromDirection drillFromDirection) 
     {
@@ -60,46 +60,46 @@ public partial class DrillableShaderManager : GodotObject
         shaderMaterial.SetShaderParameter("dig_offset", digOffset);
     }
 
-    public static void UpdateDrillableSide(Node2D drillable, DrillableSurface surface, bool isExposed)
+    public static void UpdateSolidTileSide(Tile solidTile, SolidTileSurface surface, bool isExposed)
     {
-        AnimatedSprite2D animatedSprite2D = drillable.GetNode<AnimatedSprite2D>("Dirt_AnimatedSprite2D");
+        AnimatedSprite2D animatedSprite2D = solidTile.GetNode<AnimatedSprite2D>("Dirt_AnimatedSprite2D");
         ShaderMaterial shaderMaterial = animatedSprite2D.Material as ShaderMaterial;
 
-        if (surface == DrillableSurface.Top)
+        if (surface == SolidTileSurface.Top)
         {
             shaderMaterial.SetShaderParameter("show_top_cover", isExposed);
         }
-        else if (surface == DrillableSurface.Bottom)
+        else if (surface == SolidTileSurface.Bottom)
         {
             shaderMaterial.SetShaderParameter("show_bottom_cover", isExposed);
         }
-        else if (surface == DrillableSurface.Left)
+        else if (surface == SolidTileSurface.Left)
         {
             shaderMaterial.SetShaderParameter("show_left_cover", isExposed);
         }
-        else if (surface == DrillableSurface.Right)
+        else if (surface == SolidTileSurface.Right)
         {
             shaderMaterial.SetShaderParameter("show_right_cover", isExposed);
         }
     }
 
-    public static void UpdateDrillableCorner(Node2D drillable, DrillableCorner corner, DrillableCornerShape cornerShape)
+    public static void UpdateSolidTileCorner(Tile solidTile, SolidTileCorner corner, SolidTileCornerShape cornerShape)
     {
-        AnimatedSprite2D animatedSprite2D = drillable.GetNode<AnimatedSprite2D>("Dirt_AnimatedSprite2D");
+        AnimatedSprite2D animatedSprite2D = solidTile.GetNode<AnimatedSprite2D>("Dirt_AnimatedSprite2D");
         ShaderMaterial shaderMaterial = animatedSprite2D.Material as ShaderMaterial;
 
         Vector4 cornerStates = (Vector4) shaderMaterial.GetShaderParameter("corner_states");
 
-        if (corner == DrillableCorner.TopLeft)
+        if (corner == SolidTileCorner.TopLeft)
         {
             cornerStates.X = GetCornerStateForShape(cornerShape);
-        } else if (corner == DrillableCorner.TopRight)
+        } else if (corner == SolidTileCorner.TopRight)
         {
             cornerStates.Y = GetCornerStateForShape(cornerShape);
-        } else if (corner == DrillableCorner.BottomLeft)
+        } else if (corner == SolidTileCorner.BottomLeft)
         {
             cornerStates.Z = GetCornerStateForShape(cornerShape);
-        } else if (corner == DrillableCorner.BottomRight)
+        } else if (corner == SolidTileCorner.BottomRight)
         {
             cornerStates.W = GetCornerStateForShape(cornerShape);
         }
@@ -107,17 +107,17 @@ public partial class DrillableShaderManager : GodotObject
         shaderMaterial.SetShaderParameter("corner_states", cornerStates);
     }
 
-    private static float GetCornerStateForShape(DrillableCornerShape cornerShape)
+    private static float GetCornerStateForShape(SolidTileCornerShape cornerShape)
     {
-        if (cornerShape == DrillableCornerShape.Straight)
+        if (cornerShape == SolidTileCornerShape.Straight)
         {
             return 0.0f;
         }
-        else if (cornerShape == DrillableCornerShape.Convex)
+        else if (cornerShape == SolidTileCornerShape.Convex)
         {
             return 1.0f;
         }
-        else if (cornerShape == DrillableCornerShape.Concave)
+        else if (cornerShape == SolidTileCornerShape.Concave)
         {
             return -1.0f;
         }

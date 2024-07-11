@@ -8,12 +8,16 @@ using System.Numerics;
 public partial class GameGrid : TileMap
 {
     [Export]
-    public int Width = 40;
-    [Export]
-    public int StartingRows = 200;
+    public int ChunkWidth = 8;
 
     [Export]
-    public int ChunkSize = 8;
+    public int ChunkSize = 4;
+
+    [Export]
+    public int ChunkPadding = 2;
+
+    public int Width;
+    public int Seed;
 
     [Export]
     public NoiseTexture2D EmptyTileNoiseTexture;
@@ -38,228 +42,341 @@ public partial class GameGrid : TileMap
 
     private GameGridProbability<DrillableType> drillableGridProbability;
     private GameGridProbability<ChestType> chestGridProbability;
+    private List<Node2D> buildings;
 
     private FastNoiseLite emptyTileNoise;
-    private List<List<Node2D>> positionToNode2D = new List<List<Node2D>>();
-    private List<List<GameGridItem>> gridItems = new List<List<GameGridItem>>();
+    private Dictionary<Vector2I, GameGridChunk> gameGridChunks = new Dictionary<Vector2I, GameGridChunk>(); 
+    private Dictionary<Vector2I, GameGridChunk> activeGameGridChunks = new Dictionary<Vector2I, GameGridChunk>(); 
+
+    private Dictionary<Vector2I, int> positionToTileSetId = new Dictionary<Vector2I, int>();
+    private Dictionary<Vector2I, int> positionToItemTileSetId = new Dictionary<Vector2I, int>();
+    private Dictionary<Vector2I, Tile> positionToSolidTile = new Dictionary<Vector2I, Tile>();
+    private Dictionary<Vector2I, GameGridItemTile> positionToGridItems = new Dictionary<Vector2I, GameGridItemTile>();
 
     public override void _Ready()
     {
+        Width = ChunkSize * ChunkWidth;
+        RandomNumberGenerator rngSeedGen = new RandomNumberGenerator();
+        rngSeedGen.Seed = 123234232;
+        // rngSeedGen.Randomize();
+        Seed = (int) (rngSeedGen.Randi() % Mathf.Pow(2, 25));
+        GD.Print("World seed: " + Seed);
+
         emptyTileNoise = EmptyTileNoiseTexture.Noise as FastNoiseLite;
-        emptyTileNoise.Seed = (int) (new RandomNumberGenerator().Randi() % Mathf.Pow(2, 25));
+        emptyTileNoise.Seed = Seed;
 
-        drillableGridProbability = new GameGridProbability<DrillableType>(drillableType, DrillableType.DIRT, toDrillableProbabilityCurve, drillableTypeDepthRanges);
-        chestGridProbability = new GameGridProbability<ChestType>(chestType, ChestType.None, toChestProbabilityCurve, chestTypedepthRanges);
-    }
+        drillableGridProbability = new GameGridProbability<DrillableType>(drillableType, DrillableType.DIRT, toDrillableProbabilityCurve, drillableTypeDepthRanges, Seed);
+        chestGridProbability = new GameGridProbability<ChestType>(chestType, ChestType.None, toChestProbabilityCurve, chestTypedepthRanges, Seed);
 
-    public void Init(List<Node2D> buildings = null)
-    {
-        GenerateWorld(buildings);
         UpdateInternals();
-        foreach (var child in GetChildren())
+        foreach (KeyValuePair<Vector2I, Tile> entry in positionToSolidTile)
         {
-            Tile tile = (Tile) child;
-            Vector2I childCoord = LocalToMap(((Node2D) child).Position);
-            Vector2I childGridCoord = TileMapPositionToGridPosition(childCoord);
-
-            // Only register non-background tiles
-            if (tile.tileType == TileType.Drillable || tile.tileType == TileType.NonDrillable)
+            Vector2I gridPosition = entry.Key;
+            Tile tile = entry.Value;
+            if (Common.ValidTile(tile))
             {
-                positionToNode2D[childGridCoord.X][childGridCoord.Y] = (Node2D) child;
-                if (tile.tileType == TileType.Drillable)
-                {
-                    ((Drillable) child).dug += _on_drillable_dug;
-                    ((Drillable) child).preDug += _on_drillable_pre_dug;
-                }
-            } else if (tile.tileType == TileType.Background)
-            {
-                if (childGridCoord.Y == 0)
-                {
-                    DrillableShaderManager.UpdateDrillableSide((Node2D) child, DrillableSurface.Top, true);
-                } else {
-                    DrillableShaderManager.UpdateDrillableSide((Node2D) child, DrillableSurface.Top, false);
-                }
-                tile.ZIndex = -2;
-            } else if (tile.tileType == TileType.GameGridItem)
-            {
-                gridItems[childGridCoord.X][childGridCoord.Y] = (GameGridItem) child;
+                EraseCell(1, GridPositionToTileMapPosition(gridPosition));
+                positionToSolidTile.Remove(gridPosition);
             }
         }
-        UpdateAllDrillableEdges();
     }
 
-    public void GenerateWorld(List<Node2D> buildings = null)
+    public void Update(Godot.Vector2 playerPosition)
     {
-        List<List<int>> grid = new List<List<int>>();
-        for (int i = 0; i < Width; i++)
-        {
-            positionToNode2D.Add(new List<Node2D>());
-            gridItems.Add(new List<GameGridItem>());
-            for (int j = 0; j < StartingRows; j++)
-            {
-                SetCell(0, GridPositionToTileMapPosition(new Vector2I(i, j)), 1, new Vector2I(0, 0), GameGridConstants.DIRT_BACKGROUND_TILE_SET_ID);
-                // clear any tiles left from editor
-                EraseCell(1, GridPositionToTileMapPosition(new Vector2I(i, j)));
+        Vector2I playerChunkPos;
+        Vector2I playerChunkOffset;
+        TileMapPositionToChunkPos(LocalToMap(playerPosition), out playerChunkPos, out playerChunkOffset);
 
-                if (i == 0 || i == Width - 1)
+        foreach (KeyValuePair<Vector2I, GameGridChunk> entry in activeGameGridChunks)
+        {
+            Vector2I chunkPos = entry.Key;
+            if (Math.Abs(chunkPos.X - playerChunkPos.X) > ChunkPadding || Math.Abs(chunkPos.Y - playerChunkPos.Y) > ChunkPadding)
+            {
+                DespawnChunk(chunkPos);
+            }
+        }
+
+        for (int i = -ChunkPadding; i <= ChunkPadding; i++)
+        {
+            for (int j = -ChunkPadding; j <= ChunkPadding; j++)
+            {
+                Vector2I chunkPos = playerChunkPos + new Vector2I(i, j);
+                if (!activeGameGridChunks.ContainsKey(chunkPos))
                 {
-                    SetCell(1, GridPositionToTileMapPosition(new Vector2I(i, j)), 1, new Vector2I(0, 0), GameGridConstants.DIRT_NON_DRILLABLE_TILE_SET_ID);
-                    positionToNode2D[i].Add(null);
-                    continue;
+                    SpawnChunk(chunkPos);
+                }
+            }
+        }
+    }
+
+    public void SetBuildings(List<Node2D> buildings = null)
+    {
+        this.buildings = buildings;   
+    }
+
+    public GameGridChunk GenerateChunk(Vector2I chunkPosition)
+    {
+        GameGridChunk gameGridChunk = new GameGridChunk(ChunkSize);
+        for (int i = 0; i < ChunkSize; i++)
+        {
+            for (int j = 0; j < ChunkSize; j++)
+            {
+                int tileId;
+                int itemTileSetId;
+                Vector2I gridPos = ChunkPosToGridPosition(chunkPosition, new Vector2I(i, j));
+                PopulateTile(gridPos, out tileId, out itemTileSetId);
+                gameGridChunk.SetTile(new Vector2I(i, j), tileId, itemTileSetId);
+                positionToTileSetId.Add(gridPos, tileId);
+                positionToItemTileSetId.Add(gridPos, itemTileSetId);
+            }
+        }
+        return gameGridChunk;
+    }
+
+    public void SpawnChunk(Vector2I chunkPosition)
+    {
+        if (chunkPosition.X < 0 || chunkPosition.X >= ChunkWidth || chunkPosition.Y < 0)
+        {
+            return;
+        }
+
+        GameGridChunk chunk;
+        if (!gameGridChunks.ContainsKey(chunkPosition))
+        {
+            chunk = GenerateChunk(chunkPosition);
+            gameGridChunks.Add(chunkPosition, chunk);
+        } else {
+            chunk = gameGridChunks[chunkPosition];
+        }
+
+        for (int i = 0; i < ChunkSize; i++)
+        {
+            for (int j = 0; j < ChunkSize; j++)
+            {
+                Vector2I tileMapPos = ChunkPosToTileMapPosition(chunkPosition, new Vector2I(i, j));
+                SetCell(0, tileMapPos, 1, new Vector2I(0, 0), GameGridConstants.DIRT_BACKGROUND_TILE_SET_ID);
+
+                int? tileSetId;
+                int? itemTileSetId;
+                chunk.GetTile(new Vector2I(i, j), out tileSetId, out itemTileSetId);
+                if (tileSetId != null && tileSetId != -1)
+                {
+                    SetCell(1, tileMapPos, 1, new Vector2I(0, 0), (int) tileSetId);
                 }
 
-                int tileSetId;
-                int chestTileSetId;
-                var emptyTileNoiseValue = emptyTileNoise.GetNoise2D(i, j);                
+                if (itemTileSetId != null && itemTileSetId != -1)
+                {
+                    SetCell(2, tileMapPos, 1, new Vector2I(0, 0), (int) itemTileSetId);
+                }
+            }
+        }
 
-                if (emptyTileNoiseValue < -0.3) {
-                    tileSetId = -1;
-                    chestTileSetId = -1;
-                } else {
-                    ChestType chestType = chestGridProbability.GetTypeForDepth((uint) j);
-                    if (chestType == ChestType.None) 
+        UpdateInternals();
+        UpdateSpawnedChunkDrillableEdges(chunkPosition);
+        activeGameGridChunks.Add(chunkPosition, chunk);
+    }
+
+    public void DespawnChunk(Vector2I chunkPosition)
+    {
+        if (!gameGridChunks.ContainsKey(chunkPosition))
+        {
+            return;
+        }
+
+        GameGridChunk chunk = gameGridChunks[chunkPosition];
+        for (int i = 0; i < ChunkSize; i++)
+        {
+            for (int j = 0; j < ChunkSize; j++)
+            {
+                Vector2I tileMapPos = ChunkPosToTileMapPosition(chunkPosition, new Vector2I(i, j));
+                Vector2I gridPos = ChunkPosToGridPosition(chunkPosition, new Vector2I(i, j));
+                if (positionToSolidTile.ContainsKey(gridPos))
+                {
+                    positionToSolidTile.Remove(gridPos);
+                }
+
+                if (positionToGridItems.ContainsKey(gridPos))
+                {
+                    positionToGridItems.Remove(gridPos);
+                }
+                
+                EraseCell(0, tileMapPos);
+                EraseCell(1, tileMapPos);
+                EraseCell(2, tileMapPos);
+            }
+        }
+        activeGameGridChunks.Remove(chunkPosition);
+    }
+
+    public void UpdateSpawnedChunkDrillableEdges(Vector2I chunkPosition)
+    {
+        for (int i = -1; i < ChunkSize + 1; i++)
+        {
+            for (int j = -1; j < ChunkSize + 1; j++)
+            {
+                Vector2I gridPos = ChunkPosToGridPosition(chunkPosition, new Vector2I(i, j));
+                if (positionToSolidTile.ContainsKey(gridPos))
+                {
+                    Tile drillable = positionToSolidTile[gridPos];
+                    if (Common.ValidTile(drillable))
                     {
-                        DrillableType type = drillableGridProbability.GetTypeForDepth((uint) j);
-                        tileSetId = GameGridConstants.MapDrillableTypeToTileSetId(type);
-                        if (tileSetId > 1)
-                        {
-                            GD.Print("Tileset id: " + tileSetId + " at depth: " + j);
-                        }
-                        chestTileSetId = -1;
-                    } else
-                    {
-                        tileSetId = GameGridConstants.DIRT_TILE_SET_ID;
-                        chestTileSetId = GameGridConstants.MapChestTypeToTileSetId(chestType);
+                        UpdateSolidTileCorner(drillable, gridPos, SolidTileCorner.TopLeft);
+                        UpdateSolidTileCorner(drillable, gridPos, SolidTileCorner.TopRight);
+                        UpdateSolidTileCorner(drillable, gridPos, SolidTileCorner.BottomLeft);
+                        UpdateSolidTileCorner(drillable, gridPos, SolidTileCorner.BottomRight);
                     }
                 }
-
-                bool tileOverlapsBuilding = j == 0 && buildings != null && buildings.Any((building) => {
-                    RectangleShape2D buildingShape = (RectangleShape2D) building.GetNode<CollisionShape2D>("CollisionShape2D").Shape;
-                    Godot.Vector2 buildingPosition = building.Position;
-                    float xPos = TileSet.TileSize.X * (i - Width / 2);
-                    float overlap = Common.LineOverlap(buildingPosition.X - buildingShape.Size.X / 2, buildingPosition.X + buildingShape.Size.X / 2, 
-                        xPos, xPos + TileSet.TileSize.X);
-                    return overlap >= TileSet.TileSize.X / 3;
-                });
-                if (tileOverlapsBuilding)
-                {
-                    tileSetId = GameGridConstants.DIRT_NON_DRILLABLE_STONE_TOP_TILE_SET_ID;
-                    chestTileSetId = -1;
-                }
-
-                if (tileSetId != -1) {
-                    SetCell(1, GridPositionToTileMapPosition(new Vector2I(i, j)), 1, new Vector2I(0, 0), tileSetId);
-                }
-
-                if (chestTileSetId != -1)
-                {
-                    SetCell(2, GridPositionToTileMapPosition(new Vector2I(i, j)), 1, new Vector2I(0, 0), chestTileSetId);
-                }
-
-                positionToNode2D[i].Add(null);
-                gridItems[i].Add(null);
             }
         }
     }
 
-    public void UpdateAllDrillableEdges()
+    public void PopulateTile(Vector2I position, out int tileSetId, out int itemTileSetId)
     {
-        for (int i = 0; i < Width; i++)
+        int posX = position.X;
+        int posY = position.Y;
+
+        if (posX == 0 || posX == ChunkWidth * ChunkSize - 1)
         {
-            for (int j = 0; j < StartingRows; j++)
+            tileSetId = GameGridConstants.DIRT_NON_DRILLABLE_TILE_SET_ID;
+            itemTileSetId = -1;
+            return;
+        }
+
+        var emptyTileNoiseValue = emptyTileNoise.GetNoise2D(posX, posY);                
+
+        if (emptyTileNoiseValue < -0.3) {
+            tileSetId = -1;
+            itemTileSetId = -1;
+        } else {
+            ChestType chestType = chestGridProbability.GetTypeForDepth((uint) posY);
+            if (chestType == ChestType.None) 
             {
-                Node2D node2D = positionToNode2D[i][j];
-                if (node2D != null && GodotObject.IsInstanceValid(node2D))
-                {
-                    UpdateDrillableCorner(node2D, new Vector2I(i, j), DrillableCorner.TopLeft);
-                    UpdateDrillableCorner(node2D, new Vector2I(i, j), DrillableCorner.TopRight);
-                    UpdateDrillableCorner(node2D, new Vector2I(i, j), DrillableCorner.BottomLeft);
-                    UpdateDrillableCorner(node2D, new Vector2I(i, j), DrillableCorner.BottomRight);
-                }
+                DrillableType type = drillableGridProbability.GetTypeForDepth((uint) posY);
+                tileSetId = GameGridConstants.MapDrillableTypeToTileSetId(type);
+                itemTileSetId = -1;
+            } else
+            {
+                tileSetId = GameGridConstants.DIRT_TILE_SET_ID;
+                itemTileSetId = GameGridConstants.MapChestTypeToTileSetId(chestType);
             }
-        }    
+        }
+
+        bool tileOverlapsBuilding = posY == 0 && buildings != null && buildings.Any((building) => {
+            RectangleShape2D buildingShape = (RectangleShape2D) building.GetNode<CollisionShape2D>("CollisionShape2D").Shape;
+            Godot.Vector2 buildingPosition = building.Position;
+            float xPos = TileSet.TileSize.X * (posX - Width / 2);
+            float overlap = Common.LineOverlap(buildingPosition.X - buildingShape.Size.X / 2, buildingPosition.X + buildingShape.Size.X / 2, 
+                xPos, xPos + TileSet.TileSize.X);
+            return overlap >= TileSet.TileSize.X / 3;
+        });
+
+        if (tileOverlapsBuilding)
+        {
+            tileSetId = GameGridConstants.DIRT_NON_DRILLABLE_STONE_TOP_TILE_SET_ID;
+            itemTileSetId = -1;
+        }
     }
 
-    public void UpdateSurroundingDrillableEdges(Vector2I gridPosition, Node2D drillable)
+    public void UpdateSurroundingSolidTileEdges(Vector2I gridPosition)
     {
         for(int i = gridPosition.X - 1; i <= gridPosition.X + 1; i++)
         {
             for(int j = gridPosition.Y - 1; j <= gridPosition.Y + 1; j++)
             {
-                if (i < 0 || i >= Width || j < 0 || j >= StartingRows)
-                {
-                    continue;
-                }
-
-                Node2D node2D = positionToNode2D[i][j];
-                // Animation for drillable finishes and reveals the corners prior to animation transparancy mask covering them
-                // as such, now that the animation is over set the corners to straigth to match the dug out area
-                if (i == gridPosition.X && j == gridPosition.Y)
-                {
-                    DrillableShaderManager.UpdateDrillableCorner(drillable, DrillableCorner.TopLeft, DrillableCornerShape.Straight);
-                    DrillableShaderManager.UpdateDrillableCorner(drillable, DrillableCorner.TopRight, DrillableCornerShape.Straight);
-                    DrillableShaderManager.UpdateDrillableCorner(drillable, DrillableCorner.TopLeft, DrillableCornerShape.Straight);
-                    DrillableShaderManager.UpdateDrillableCorner(drillable, DrillableCorner.TopRight, DrillableCornerShape.Straight);
-                } else if (node2D != null && GodotObject.IsInstanceValid(node2D))
-                {
-                    UpdateDrillableCorner(node2D, new Vector2I(i, j), DrillableCorner.TopLeft);
-                    UpdateDrillableCorner(node2D, new Vector2I(i, j), DrillableCorner.TopRight);
-                    UpdateDrillableCorner(node2D, new Vector2I(i, j), DrillableCorner.BottomLeft);
-                    UpdateDrillableCorner(node2D, new Vector2I(i, j), DrillableCorner.BottomRight);
+                Vector2I surroundingGridPosition = new Vector2I(i, j);
+                if (positionToSolidTile.ContainsKey(new Vector2I(i, j)))
+                { 
+                    Tile neighborSolidTile = positionToSolidTile[surroundingGridPosition];
+                    if (!Common.ValidTile(neighborSolidTile))
+                    {
+                        continue;
+                    }
+                    // Animation for drillable finishes and reveals the corners prior to animation transparancy mask covering them
+                    // as such, now that the animation is over set the corners to straigth to match the dug out area
+                    if (i == gridPosition.X && j == gridPosition.Y)
+                    {
+                        SolidTileShaderManager.UpdateSolidTileCorner(neighborSolidTile, SolidTileCorner.TopLeft, SolidTileCornerShape.Straight);
+                        SolidTileShaderManager.UpdateSolidTileCorner(neighborSolidTile, SolidTileCorner.TopRight, SolidTileCornerShape.Straight);
+                        SolidTileShaderManager.UpdateSolidTileCorner(neighborSolidTile, SolidTileCorner.TopLeft, SolidTileCornerShape.Straight);
+                        SolidTileShaderManager.UpdateSolidTileCorner(neighborSolidTile, SolidTileCorner.TopRight, SolidTileCornerShape.Straight);
+                    } else 
+                    {
+                        UpdateSolidTileCorner(neighborSolidTile, new Vector2I(i, j), SolidTileCorner.TopLeft);
+                        UpdateSolidTileCorner(neighborSolidTile, new Vector2I(i, j), SolidTileCorner.TopRight);
+                        UpdateSolidTileCorner(neighborSolidTile, new Vector2I(i, j), SolidTileCorner.BottomLeft);
+                        UpdateSolidTileCorner(neighborSolidTile, new Vector2I(i, j), SolidTileCorner.BottomRight);
+                    }
                 }
             }
         }   
     }
 
-    private void UpdateDrillableCorner(Node2D drillable, Vector2I gridPos, DrillableCorner corner)
+    private void UpdateSolidTileCorner(Tile solidTile, Vector2I gridPos, SolidTileCorner corner)
     {
         int yFlip = 1;
-        if (corner == DrillableCorner.BottomLeft || corner == DrillableCorner.BottomRight)
+        if (corner == SolidTileCorner.BottomLeft || corner == SolidTileCorner.BottomRight)
         {
             yFlip = -1;
         }
         int xFlip = 1;
-        if (corner == DrillableCorner.TopRight || corner == DrillableCorner.BottomRight)
+        if (corner == SolidTileCorner.TopRight || corner == SolidTileCorner.BottomRight)
         {
             xFlip = -1;
         }
 
-        bool hasDrillableAbove = HasNeighbor(new Vector2I(0, -1 * yFlip), gridPos);
-        bool hasDrillableDiagonal = HasNeighbor(new Vector2I(-1 * xFlip, -1 * yFlip), gridPos);
-        bool hasDrillableSide = HasNeighbor(new Vector2I(-1 * xFlip, 0), gridPos);
+        bool hasSolidTileAbove = HasNeighbor(new Vector2I(0, -1 * yFlip), gridPos);
+        bool hasSolidTileDiagonal = HasNeighbor(new Vector2I(-1 * xFlip, -1 * yFlip), gridPos);
+        bool hasSolidTileSide = HasNeighbor(new Vector2I(-1 * xFlip, 0), gridPos);
         
-        DrillableShaderManager.UpdateDrillableSide(drillable, (xFlip == 1) ? DrillableSurface.Left : DrillableSurface.Right, !hasDrillableSide);
-        DrillableShaderManager.UpdateDrillableSide(drillable, (yFlip == 1) ? DrillableSurface.Top : DrillableSurface.Bottom, !hasDrillableAbove);
+        SolidTileShaderManager.UpdateSolidTileSide(solidTile, (xFlip == 1) ? SolidTileSurface.Left : SolidTileSurface.Right, !hasSolidTileSide);
+        SolidTileShaderManager.UpdateSolidTileSide(solidTile, (yFlip == 1) ? SolidTileSurface.Top : SolidTileSurface.Bottom, !hasSolidTileAbove);
 
-        DrillableCornerShape drillableCornerShape = DrillableCornerShape.None;
+        SolidTileCornerShape solidTileCornerShape = SolidTileCornerShape.None;
         int tileSetId = GetCellAlternativeTile(1, GridPositionToTileMapPosition(gridPos));
-        if (hasDrillableAbove || (tileSetId == GameGridConstants.DIRT_NON_DRILLABLE_STONE_TOP_TILE_SET_ID && (corner == DrillableCorner.TopLeft || corner == DrillableCorner.TopRight)))
+        if (hasSolidTileAbove || (tileSetId == GameGridConstants.DIRT_NON_DRILLABLE_STONE_TOP_TILE_SET_ID && (corner == SolidTileCorner.TopLeft || corner == SolidTileCorner.TopRight)))
         {
-            drillableCornerShape = DrillableCornerShape.Straight;
+            solidTileCornerShape = SolidTileCornerShape.Straight;
         } else {
-            if (hasDrillableDiagonal) 
+            if (hasSolidTileDiagonal) 
             {
-                drillableCornerShape = DrillableCornerShape.Concave;
+                solidTileCornerShape = SolidTileCornerShape.Concave;
             } else
             {
-                drillableCornerShape = hasDrillableSide ? DrillableCornerShape.Straight : DrillableCornerShape.Convex;
+                solidTileCornerShape = hasSolidTileSide ? SolidTileCornerShape.Straight : SolidTileCornerShape.Convex;
             }
         }
 
-        DrillableShaderManager.UpdateDrillableCorner(drillable, corner, drillableCornerShape);
+        SolidTileShaderManager.UpdateSolidTileCorner(solidTile, corner, solidTileCornerShape);
     }
 
-    public void AddRows(int numRows)
+    public void TileMapPositionToChunkPos(Vector2I tileMapPosition, out Vector2I chunkPos, out Vector2I chunkOffset)
     {
-
+        Vector2I gridPosition = TileMapPositionToGridPosition(tileMapPosition);
+        GridPositionToChunkPos(gridPosition, out chunkPos, out chunkOffset);
     }
 
-    private Vector2I GridPositionToTileMapPosition(Vector2I gridPosition)
+    public void GridPositionToChunkPos(Vector2I gridPosition, out Vector2I chunkPos, out Vector2I chunkOffset)
+    {
+        chunkPos = new Vector2I(gridPosition.X / ChunkSize, gridPosition.Y / ChunkSize);
+        chunkOffset = new Vector2I(gridPosition.X % ChunkSize, gridPosition.Y % ChunkSize);
+    }
+
+    public Vector2I ChunkPosToTileMapPosition(Vector2I chunkPos, Vector2I chunkOffset)
+    {
+        return GridPositionToTileMapPosition(ChunkPosToGridPosition(chunkPos, chunkOffset));
+    }
+
+    public Vector2I ChunkPosToGridPosition(Vector2I chunkPos, Vector2I chunkOffset)
+    {
+        return new Vector2I(chunkPos.X * ChunkSize + chunkOffset.X, chunkPos.Y * ChunkSize + chunkOffset.Y);
+    }
+
+    public Vector2I GridPositionToTileMapPosition(Vector2I gridPosition)
     {
         return new Vector2I(gridPosition.X - Width / 2, gridPosition.Y);
     }
 
-    private Vector2I TileMapPositionToGridPosition(Vector2I tileMapPosition)
+    public Vector2I TileMapPositionToGridPosition(Vector2I tileMapPosition)
     {
         return new Vector2I(tileMapPosition.X + Width / 2, tileMapPosition.Y);
     }
@@ -270,17 +387,27 @@ public partial class GameGrid : TileMap
         if (neighborPosition.X < 0 || neighborPosition.X >= Width)
         {
             return true;
-        } else  if(neighborPosition.Y < 0 || neighborPosition.Y >= StartingRows)
-        {
-            return false;
         }
 
-        return positionToNode2D[neighborPosition.X][neighborPosition.Y] != null && GodotObject.IsInstanceValid(positionToNode2D[neighborPosition.X][neighborPosition.Y]);
+        bool containsKey = positionToSolidTile.ContainsKey(neighborPosition);
+
+        return containsKey && Common.ValidTile(positionToSolidTile[neighborPosition]);
     }
-    
-    private bool IsValidGridPosition(Vector2I gridPos)
+
+    private Tile GetNeighbor(Vector2I relativePosition, Vector2I gridPosition)
     {
-        return gridPos.X >= 0 && gridPos.X < Width && gridPos.Y >= 0 && gridPos.Y < StartingRows;
+        Vector2I neighborPosition = gridPosition + relativePosition;
+        if (neighborPosition.X < 0 || neighborPosition.X >= Width)
+        {
+            return null;
+        }
+
+        if (positionToSolidTile.ContainsKey(neighborPosition) && Common.ValidTile(positionToSolidTile[neighborPosition]))
+        {
+            return positionToSolidTile[neighborPosition];
+        } else {
+            return null;
+        }
     }
 
     public void GetSurroundingDrillables(Godot.Vector2 position, List<List<Drillable>> surroundingDrillables)
@@ -292,15 +419,11 @@ public partial class GameGrid : TileMap
             for (int j = -1; j <= 1; j++)
             {
                 Vector2I surroundingGridPos = gridPos + new Vector2I(i, j);
-                if (IsValidGridPosition(surroundingGridPos) && !(i == 0 && j == 0) && positionToNode2D[surroundingGridPos.X][surroundingGridPos.Y] != null
-                    && GodotObject.IsInstanceValid(positionToNode2D[surroundingGridPos.X][surroundingGridPos.Y]))
+                if (positionToSolidTile.ContainsKey(surroundingGridPos) && positionToSolidTile[surroundingGridPos].tileType == TileType.Drillable
+                    && Common.ValidTile(positionToSolidTile[surroundingGridPos]))
                 {
-                    Tile tile = (Tile) positionToNode2D[surroundingGridPos.X][surroundingGridPos.Y];
-                    if (tile.tileType == TileType.Drillable)
-                    {
-                        surroundingDrillables[i+1][j+1] = (Drillable) tile;
-                        continue;
-                    }
+                    surroundingDrillables[i+1][j+1] = (Drillable) positionToSolidTile[surroundingGridPos];
+                    continue;
                 }
                 surroundingDrillables[i+1][j+1] = null;
             }
@@ -318,56 +441,96 @@ public partial class GameGrid : TileMap
         return depth;
     }
 
-    public void _on_drillable_pre_dug(Node2D drillable, DrillFromDirection direction)
+    public void _on_drillable_pre_dug(Drillable drillable, DrillFromDirection direction)
     {
         Vector2I gridPos = TileMapPositionToGridPosition(LocalToMap(drillable.Position));
 
+        Tile aboveTile = null;
+        Tile belowTile = null;
+        SolidTileCorner? bottomCorner = null;
+        SolidTileCorner? topCorner = null;
+
         if (direction == DrillFromDirection.LEFT)
         {
-            Node2D aboveNode = gridPos.Y - 1 >= 0 && gridPos.X - 1 >= 0 ? positionToNode2D[gridPos.X - 1][gridPos.Y - 1] : null;
-            Node2D belowNode = gridPos.Y + 1 < StartingRows && gridPos.X - 1 >= 0 ? positionToNode2D[gridPos.X - 1][gridPos.Y + 1] : null;
-
-            if (aboveNode != null && GodotObject.IsInstanceValid(aboveNode))
-            {
-                DrillableShaderManager.UpdateDrillableCorner(aboveNode, DrillableCorner.BottomRight, DrillableCornerShape.Straight);
-            }
-            if (belowNode != null && GodotObject.IsInstanceValid(belowNode))
-            {
-                DrillableShaderManager.UpdateDrillableCorner(belowNode, DrillableCorner.TopRight, DrillableCornerShape.Straight);
-            }
+            aboveTile = GetNeighbor(new Vector2I(-1, -1), gridPos);
+            belowTile = GetNeighbor(new Vector2I(-1, 1), gridPos);
+            bottomCorner = SolidTileCorner.BottomRight;
+            topCorner = SolidTileCorner.TopRight;
         } else if (direction == DrillFromDirection.RIGHT)
         {
-            Node2D aboveNode = gridPos.Y - 1 >= 0 && gridPos.X + 1 < StartingRows ? positionToNode2D[gridPos.X + 1][gridPos.Y - 1] : null;
-            Node2D belowNode = gridPos.Y + 1 < StartingRows && gridPos.X + 1 < StartingRows ? positionToNode2D[gridPos.X + 1][gridPos.Y + 1] : null;
+            aboveTile = GetNeighbor(new Vector2I(1, -1), gridPos);
+            belowTile = GetNeighbor(new Vector2I(1, 1), gridPos);
+            bottomCorner = SolidTileCorner.BottomLeft;
+            topCorner = SolidTileCorner.TopLeft;
+        }
 
-            if (aboveNode != null && GodotObject.IsInstanceValid(aboveNode))
-            {
-                DrillableShaderManager.UpdateDrillableCorner(aboveNode, DrillableCorner.BottomLeft, DrillableCornerShape.Straight);
-            }
-            if (belowNode != null && GodotObject.IsInstanceValid(belowNode))
-            {
-                DrillableShaderManager.UpdateDrillableCorner(belowNode, DrillableCorner.TopLeft, DrillableCornerShape.Straight);
-            }
+        if (aboveTile != null && bottomCorner != null)
+        {
+            SolidTileShaderManager.UpdateSolidTileCorner(aboveTile, (SolidTileCorner) bottomCorner, SolidTileCornerShape.Straight);
+        }
+        if (belowTile != null && topCorner != null)
+        {
+            SolidTileShaderManager.UpdateSolidTileCorner(belowTile, (SolidTileCorner) topCorner, SolidTileCornerShape.Straight);
         }
     }
 
-    public void _on_drillable_dug(Node2D drillable)
+    public void ClearGridPosition(Vector2I gridPosition)
+    {
+        Vector2I chunkPos;
+        Vector2I chunkOffset;
+        GridPositionToChunkPos(gridPosition, out chunkPos, out chunkOffset);
+        GameGridChunk chunk = gameGridChunks[chunkPos];
+        chunk.SetTile(chunkOffset, -1, -1);
+
+        positionToTileSetId.Remove(gridPosition);
+        positionToItemTileSetId.Remove(gridPosition);
+        positionToSolidTile.Remove(gridPosition);
+        positionToGridItems.Remove(gridPosition);
+    }
+
+    public void _on_drillable_dug(Drillable drillable)
     {
         EmitSignal(SignalName.drillableDug, (Drillable) drillable);
         Vector2I tileMapPosition = LocalToMap(drillable.Position);
         Vector2I gridPosition = TileMapPositionToGridPosition(tileMapPosition);
-        positionToNode2D[gridPosition.X][gridPosition.Y] = null;
-        UpdateSurroundingDrillableEdges(gridPosition, drillable);
 
-        GameGridItem gameGridItem = gridItems[gridPosition.X][gridPosition.Y];
-        if (Common.ValidTile(gameGridItem))
+        if (positionToGridItems.ContainsKey(gridPosition)) 
         {
-            Node2D spawnedItem = gameGridItem.SpawnItem();
-            if (spawnedItem != null)
+            GameGridItemTile gameGridItem = positionToGridItems[gridPosition];
+            if (Common.ValidTile(gameGridItem))
             {
-                gridItems[gridPosition.X][gridPosition.Y] = null;
-                EmitSignal(SignalName.itemSpawned, (int) gameGridItem.gameGridItemType, spawnedItem);
+                Node2D spawnedItem = gameGridItem.SpawnItem();
+                if (spawnedItem != null)
+                {
+                    positionToGridItems[gridPosition] = null;
+                    EmitSignal(SignalName.itemSpawned, (int) gameGridItem.gameGridItemType, spawnedItem);
+                }
             }
+        }
+
+        ClearGridPosition(gridPosition);
+        UpdateSurroundingSolidTileEdges(gridPosition);
+    }
+
+    public void _on_tile_ready(Tile tile)
+    {
+        Vector2I gridPosition = TileMapPositionToGridPosition(LocalToMap(tile.Position));
+        if (tile.tileType == TileType.Drillable)
+        {
+            Drillable drillable = tile as Drillable;
+            positionToSolidTile[gridPosition] = drillable;
+            drillable.dug += _on_drillable_dug;
+            drillable.preDug += _on_drillable_pre_dug;
+        } else if (tile.tileType == TileType.GameGridItem)
+        {
+            GameGridItemTile gameGridItemTile = tile as GameGridItemTile;
+            positionToGridItems[gridPosition] = gameGridItemTile;
+        } else if (tile.tileType == TileType.Background)
+        {
+            tile.ZIndex = -2;
+        } else if (tile.tileType == TileType.NonDrillable)
+        {
+            positionToSolidTile[gridPosition] = tile;
         }
     }
 }

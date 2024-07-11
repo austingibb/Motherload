@@ -20,6 +20,7 @@ collision_mask = 4
 script = ExtResource("1_0mfqd")
 Cost = 1000
 chestType = 2
+metadata/SpawnedGridItem = true
 
 [node name="closed_Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_xle5e")

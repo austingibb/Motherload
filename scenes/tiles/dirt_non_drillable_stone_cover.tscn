@@ -1,6 +1,6 @@
 [gd_scene load_steps=14 format=3 uid="uid://pb4g2nqwkegp"]
 
-[ext_resource type="Script" path="res://scripts/drillable/Tile.cs" id="1_ridka"]
+[ext_resource type="Script" path="res://scripts/tile/Tile.cs" id="1_ridka"]
 [ext_resource type="PackedScene" uid="uid://cv7j1lqpv7dyr" path="res://scenes/tiles/dirt_animated_sprite_2d.tscn" id="2_o5fc2"]
 [ext_resource type="Shader" path="res://scripts/shaders/drillable_dynamic_sprite.gdshader" id="3_5aggu"]
 [ext_resource type="Texture2D" uid="uid://dud4q44sj7tp7" path="res://assets/tiles/covers/dirt_bottom_cover.png" id="4_n7236"]

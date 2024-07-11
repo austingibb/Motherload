@@ -8,15 +8,25 @@ public partial class GameGridProbability<[MustBeVariant] T>
     public Godot.Collections.Array<T> types;
     public T defaultType;
     public Godot.Collections.Array<Curve> probabilityCurves;
-    private RandomNumberGenerator rng = new RandomNumberGenerator();
+    private RandomNumberGenerator rng;
     Godot.Collections.Array<Vector2I> depthRanges;
 
-    public GameGridProbability(Godot.Collections.Array<T> types, T defaultType, Godot.Collections.Array<Curve> probabilityCurves, Godot.Collections.Array<Vector2I> depthRanges)
+    public GameGridProbability(Godot.Collections.Array<T> types, T defaultType, Godot.Collections.Array<Curve> probabilityCurves, Godot.Collections.Array<Vector2I> depthRanges, int seed = -1)
     {
         this.types = types;
         this.probabilityCurves = probabilityCurves;
         this.depthRanges = depthRanges;
         this.defaultType = defaultType;
+
+        rng = new RandomNumberGenerator();
+        if (seed == -1)
+        {
+            rng.Randomize();
+        }
+        else
+        {
+            rng.Seed = (ulong) seed;
+        }
     }    
 
     public T GetTypeForDepth(uint depth)

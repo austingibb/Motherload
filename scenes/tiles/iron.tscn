@@ -56,6 +56,3 @@ DrillableType = 1
 [node name="Dirt_AnimatedSprite2D" parent="." index="1"]
 material = SubResource("ShaderMaterial_rcn5w")
 sprite_frames = SubResource("SpriteFrames_v1k1d")
-
-[node name="RightDrillZone" parent="." index="3"]
-position = Vector2(0, -0.074255)

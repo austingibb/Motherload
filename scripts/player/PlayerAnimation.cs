@@ -109,8 +109,6 @@ public partial class PlayerAnimation : GodotObject
         _currentState = state;
         animationPlayer.SpeedScale = 4.0f;
 
-        GD.Print("Switch to state:", state);
-
         if (forwardFacingStates.Contains(state))
         {
             frontSprites.Visible = true;

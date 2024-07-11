@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.Text;
 using System.Collections.Generic;
+using System.Linq;
 
 public partial class Game : Node2D
 {
@@ -29,6 +30,9 @@ public partial class Game : Node2D
 
     // Member variables
     public int Money;
+
+    public int ChunkRows = 3;
+    public Queue<Vector2I> chunksToSpawn = new Queue<Vector2I>();
 
     public override void _Ready()
     {
@@ -68,8 +72,16 @@ public partial class Game : Node2D
             chargeStation,
             upgradeStation
         };
-        gameGrid.Init(buildings);
+        gameGrid.SetBuildings(buildings);
 
+        for (int i = 0; i < gameGrid.ChunkWidth; i++)
+        {
+            for (int j = 0; j < ChunkRows; j++)
+            {
+                gameGrid.SpawnChunk(new Vector2I(i, j));
+            }
+        }
+        
         int tileWidth = gameGrid.TileSet.TileSize.X;
         Camera2D camera = GetNode<Camera2D>("%Camera2D");
         camera.LimitLeft = -tileWidth* gameGrid.Width / 2 + tileWidth/2;
@@ -81,7 +93,7 @@ public partial class Game : Node2D
         rightBoundary.Position = new Vector2(tileWidth* gameGrid.Width / 2 - tileWidth/2, 0);
     }
 
-    public override void _PhysicsProcess(double delta)
+    public override void _Process(double delta)
 	{
         if (Input.IsActionPressed("reset"))
         {
@@ -116,6 +128,8 @@ public partial class Game : Node2D
         {
             energyBarAnimator.Stop();
         }
+
+        gameGrid.Update(playerCharacter.GlobalPosition);
     }
 
     public string GetMoneyString()
@@ -190,7 +204,6 @@ public partial class Game : Node2D
 
     public void _on_chest_opened(Chest chest)
     {
-        GD.Print("Chest opened: " + chest.chestType);
         Money -= chest.Cost;
         moneyLabel.Text = GetMoneyString();
     }
