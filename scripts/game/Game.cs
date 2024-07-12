@@ -32,7 +32,6 @@ public partial class Game : Node2D
     public int Money;
 
     public int ChunkRows = 3;
-    public Queue<Vector2I> chunksToSpawn = new Queue<Vector2I>();
 
     public override void _Ready()
     {

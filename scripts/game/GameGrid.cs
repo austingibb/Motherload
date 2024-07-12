@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Numerics;
 
@@ -47,7 +48,7 @@ public partial class GameGrid : TileMap
     private FastNoiseLite emptyTileNoise;
     private Dictionary<Vector2I, GameGridChunk> gameGridChunks = new Dictionary<Vector2I, GameGridChunk>(); 
     private Dictionary<Vector2I, GameGridChunk> activeGameGridChunks = new Dictionary<Vector2I, GameGridChunk>(); 
-
+    private Dictionary<Vector2I, Object> chunksToSpawn = new Dictionary<Vector2I, object>();
     private Dictionary<Vector2I, int> positionToTileSetId = new Dictionary<Vector2I, int>();
     private Dictionary<Vector2I, int> positionToItemTileSetId = new Dictionary<Vector2I, int>();
     private Dictionary<Vector2I, Tile> positionToSolidTile = new Dictionary<Vector2I, Tile>();
@@ -100,12 +101,27 @@ public partial class GameGrid : TileMap
         {
             for (int j = -ChunkPadding; j <= ChunkPadding; j++)
             {
+
                 Vector2I chunkPos = playerChunkPos + new Vector2I(i, j);
+                if (chunkPos.X < 0 || chunkPos.X >= ChunkWidth || chunkPos.Y < 0)
+                {
+                    continue;
+                }
+
                 if (!activeGameGridChunks.ContainsKey(chunkPos))
                 {
-                    SpawnChunk(chunkPos);
+                    chunksToSpawn[chunkPos] = null;
                 }
             }
+        }
+
+        if (chunksToSpawn.Count > 0)
+        {
+            var chunksToSpawnEnumerator = chunksToSpawn.GetEnumerator();
+            chunksToSpawnEnumerator.MoveNext();
+            Vector2I chunkToSpawn = chunksToSpawnEnumerator.Current.Key;
+            SpawnChunk(chunkToSpawn);
+            chunksToSpawn.Remove(chunkToSpawn);
         }
     }
 
