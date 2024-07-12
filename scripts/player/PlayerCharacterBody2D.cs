@@ -330,7 +330,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		if (ray.IsColliding())
 		{
 			Drillable drillable = (Drillable) ray.GetCollider();
-			if (direction != DrillFromDirection.UP || Mathf.Abs(drillable.GlobalPosition.X - GlobalPosition.X) < 8.0f)
+			if (direction != DrillFromDirection.UP || Mathf.Abs(drillable.GlobalPosition.X - GlobalPosition.X) < 12.0f)
 			{
 				playerDrillables.RegisterDrillable(drillable, direction);
 			} else {

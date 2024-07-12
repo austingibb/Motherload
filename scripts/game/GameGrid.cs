@@ -206,6 +206,8 @@ public partial class GameGrid : TileMap
             {
                 Vector2I tileMapPos = ChunkPosToTileMapPosition(chunkPosition, new Vector2I(i, j));
                 Vector2I gridPos = ChunkPosToGridPosition(chunkPosition, new Vector2I(i, j));
+                Vector2I chunkOffset = new Vector2I(i, j);
+
                 if (positionToSolidTile.ContainsKey(gridPos))
                 {
                     positionToSolidTile.Remove(gridPos);
@@ -217,8 +219,17 @@ public partial class GameGrid : TileMap
                 }
                 
                 EraseCell(0, tileMapPos);
-                EraseCell(1, tileMapPos);
-                EraseCell(2, tileMapPos);
+                int? tileSetId;
+                int? itemTileSetId;
+                chunk.GetTile(chunkOffset, out tileSetId, out itemTileSetId);
+                if (tileSetId != null && tileSetId != -1)
+                {
+                    EraseCell(1, tileMapPos);
+                }
+                if (itemTileSetId != null && itemTileSetId != -1)
+                {
+                    EraseCell(2, tileMapPos);
+                }
             }
         }
         activeGameGridChunks.Remove(chunkPosition);
