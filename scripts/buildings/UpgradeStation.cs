@@ -19,4 +19,10 @@ public partial class UpgradeStation : StaticBody2D
 		EmitSignal(SignalName.upgrade);
         upgradeMenu.Visible = true;
 	}
+
+    private void _on_upgrade_zone_exited(Node2D body)
+	{
+		EmitSignal(SignalName.upgrade);
+        upgradeMenu.Visible = false;
+	}
 }
