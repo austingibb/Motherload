@@ -1,21 +1,8 @@
 using Godot;
 
-public enum GameGridItemType
-{
-	Chest, 
-    None
-}
-
-public interface GameGridItem
-{
-    public GameGridItemType gameGridItemType { get; }
-    public void Disable();
-    public void Enable();
-}
-
 public partial class GameGridItemTile : Tile
 {
-	public GameGridItemType gameGridItemType;
+	public ChunkItemType gameGridItemType;
 
 	[Export]
 	public PackedScene SpawnableItem;

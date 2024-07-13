@@ -18,11 +18,11 @@ public enum PlayerState {
 public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 {
 	public const float WalkSpeed = 120.0f;
-	public const float BaseDrillSpeed = 70.0f;
-	public float DrillSideSpeed = 70.0f;
-	public float DrillDownSpeed = 70.0f;	
-	public const float VerticalFlightSpeed = -900.0f;
-	public const float CatchVerticalFlightSpeed = -1100.0f;
+	public const float BaseDrillSpeed = 80.0f;
+	public float DrillSideSpeed = 80.0f;
+	public float DrillDownSpeed = 80.0f;	
+	public float VerticalFlightSpeed = -900.0f;
+	public  float CatchVerticalFlightSpeed = -1100.0f;
 	public const float HorizontalFlightSpeed = 300.0f;
 	public const float MaxHorozontalSpeed = 300.0f;
 	public const float TiltAmount = 0.174533f;
@@ -102,6 +102,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 	{
 		Vector2 velocity = Velocity;
 
+		HandleTestInput();
 		HandleEnergy((float)delta);
 		HandleRaycastChecks();
 		battery.SetCharge(Energy/100.0f);
@@ -273,6 +274,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 					else if (playerAnimation.GetCurrentState() == PlayerAnimationState.DrillDown) 
 					{
 						velocity.Y = DrillDownSpeed;
+						velocity.Y += Game.GRAVITY * (float)delta;
 						playerDrillables.ActiveDrillable.UpdateDrillAnimationFromPosition(this);
 						if (playerDrillables.ActiveDrillable.IsDug)
 						{
@@ -369,9 +371,33 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		}
 	}
 
+	private void HandleTestInput()
+	{
+		if (Input.IsActionJustPressed("test4"))
+		{
+			VerticalFlightSpeed = -900.0f;
+			CatchVerticalFlightSpeed = -1100.0f;
+		}
+		if (Input.IsActionJustPressed("test5"))
+		{
+			VerticalFlightSpeed = -1100.0f;
+			CatchVerticalFlightSpeed = -1300.0f;
+		}
+		if (Input.IsActionJustPressed("test6"))
+		{
+			VerticalFlightSpeed = -1300.0f;
+			CatchVerticalFlightSpeed = -1500.0f;
+		}
+		if (Input.IsActionJustPressed("test7"))
+		{
+			VerticalFlightSpeed = -1500.0f;
+			CatchVerticalFlightSpeed = -1700.0f;
+		}
+	}
+
 	private void HandleEnergy(float delta)
 	{
-		if (Input.IsActionJustPressed("test6"))
+		if (Input.IsActionJustPressed("test0"))
 		{
 			if (EnergyLossScale == OriginalEnergyLossScale)
 			{

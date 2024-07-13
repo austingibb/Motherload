@@ -11,7 +11,7 @@ public enum ChestType
     None
 }
 
-public partial class Chest : CharacterBody2D, GameGridItem
+public partial class Chest : CharacterBody2D, ChunkItem
 {
     // nodes
     public Sprite2D closedSprite;
@@ -32,7 +32,7 @@ public partial class Chest : CharacterBody2D, GameGridItem
     // signals
     MoneyAuthorization moneyAuthorization;
 
-    public GameGridItemType gameGridItemType => GameGridItemType.Chest;
+    public ChunkItemType gameGridItemType => ChunkItemType.Chest;
 
     [Signal]
     public delegate void chestOpenedEventHandler(Chest chest);
@@ -134,5 +134,10 @@ public partial class Chest : CharacterBody2D, GameGridItem
         this.isDisabled = false;
         this.openCollisionShape2D.Disabled = false;
         this.closedCollisionShape2D.Disabled = false;
+    }
+
+    public Vector2 GetPosition()
+    {
+        return this.GlobalPosition;
     }
 }

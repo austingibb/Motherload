@@ -10,7 +10,7 @@ public partial class DrillableAnimation
     private const float HorozontalAnimationOffset = -10.0f;
     private const float VerticalAnimationOffset = 3.0f;
     private const float ProgressScale = 1.0f;
-    private const float FinishThreshold = 0.95f;
+    private const float FinishThreshold = 0.94f;
 
     public DrillableAnimation(Drillable drillable)
     {
@@ -47,7 +47,7 @@ public partial class DrillableAnimation
 
         if (progress < 0.0f)
             progress = 0.0f;
-
+        
         SolidTileShaderManager.SetAnimationProgress(drillable, progress);
         
         return progress >= FinishThreshold;

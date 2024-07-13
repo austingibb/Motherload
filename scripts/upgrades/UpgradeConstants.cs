@@ -17,7 +17,7 @@ public class UpgradeConstants
         {
             upgradeType = UpgradeType.Drill,
             drillType = DrillType.Steel,
-            cost = 1000,
+            cost = 1_000,
             description = "Increase drill speed by 25%",
             name = "Steel Drill",
             drillSpeedMultiplier = 1.25f
@@ -26,7 +26,7 @@ public class UpgradeConstants
         {
             upgradeType = UpgradeType.Drill,
             drillType = DrillType.Topaz,
-            cost = 2000,
+            cost = 5_000,
             description = "Increase drill speed by 50%",
             name = "Topaz Drill",
             drillSpeedMultiplier = 1.5f
@@ -35,7 +35,7 @@ public class UpgradeConstants
         {
             upgradeType = UpgradeType.Drill,
             drillType = DrillType.Sapphire,
-            cost = 10_000,
+            cost = 20_000,
             description = "Increase drill speed by 75%",
             name = "Saphphire Drill",
             drillSpeedMultiplier = 1.75f
@@ -53,10 +53,10 @@ public class UpgradeConstants
         {
             upgradeType = UpgradeType.Drill,
             drillType = DrillType.QCarbon,
-            cost = 500_000,
+            cost = 200_000,
             description = "Increase drill speed by 150%",
             name = "QCarbon Drill",
-            drillSpeedMultiplier = 2.5f
+            drillSpeedMultiplier = 2.25f
         }
     };
 }

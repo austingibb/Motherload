@@ -191,9 +191,9 @@ public partial class Game : Node2D
         inventoryLabel.Text = GetInventoryString();
     }
 
-    public void _on_item_spawned(GameGridItemType gameGridItemType, Node2D item)
+    public void _on_item_spawned(ChunkItemType chunkItemType, Node2D item)
     {
-        if (gameGridItemType == GameGridItemType.Chest)
+        if (chunkItemType == ChunkItemType.Chest)
         {
             Chest chest = (Chest) item;
             chest.RegisterMoneyAuthorization(CanAfford);

@@ -39,7 +39,7 @@ public partial class GameGrid : TileMap
     [Signal]
     public delegate void drillableDugEventHandler(Drillable drillable);
     [Signal]
-    public delegate void itemSpawnedEventHandler(GameGridItemType gameGridItemType, Node2D gameGridItem);
+    public delegate void itemSpawnedEventHandler(ChunkItemType gameGridItemType, Node2D gameGridItem);
 
     private GameGridProbability<DrillableType> drillableGridProbability;
     private GameGridProbability<ChestType> chestGridProbability;
@@ -53,6 +53,7 @@ public partial class GameGrid : TileMap
     private Dictionary<Vector2I, int> positionToItemTileSetId = new Dictionary<Vector2I, int>();
     private Dictionary<Vector2I, Tile> positionToSolidTile = new Dictionary<Vector2I, Tile>();
     private Dictionary<Vector2I, GameGridItemTile> positionToGridItems = new Dictionary<Vector2I, GameGridItemTile>();
+    private List<ChunkItem> chunkItems = new List<ChunkItem>();
 
     public override void _Ready()
     {
@@ -190,6 +191,12 @@ public partial class GameGrid : TileMap
         UpdateInternals();
         UpdateSpawnedChunkDrillableEdges(chunkPosition);
         activeGameGridChunks.Add(chunkPosition, chunk);
+
+        foreach (ChunkItem chunkItem in chunk.chunkItems)
+        {
+            chunkItem.Enable();
+        }
+        chunk.ClearChunkItems();
     }
 
     public void DespawnChunk(Vector2I chunkPosition)
@@ -233,6 +240,19 @@ public partial class GameGrid : TileMap
             }
         }
         activeGameGridChunks.Remove(chunkPosition);
+
+
+        foreach (ChunkItem chunkItem in chunkItems)
+        {
+            Vector2I chunkItemChunkPosition;
+            Vector2I chunkItemChunkOffset;
+            TileMapPositionToChunkPos(LocalToMap(chunkItem.GetPosition()), out chunkItemChunkPosition, out chunkItemChunkOffset);
+            if (chunkItemChunkPosition == chunkPosition)
+            {
+                chunkItem.Disable();
+                chunk.AddChunkItem(chunkItem);
+            }
+        }
     }
 
     public void UpdateSpawnedChunkDrillableEdges(Vector2I chunkPosition)
@@ -532,6 +552,11 @@ public partial class GameGrid : TileMap
                     positionToGridItems[gridPosition] = null;
                     EmitSignal(SignalName.itemSpawned, (int) gameGridItem.gameGridItemType, spawnedItem);
                 }
+
+                if (spawnedItem is ChunkItem)
+                {
+                    chunkItems.Add(spawnedItem as ChunkItem);
+                }
             }
         }
 
@@ -541,7 +566,8 @@ public partial class GameGrid : TileMap
 
     public void _on_tile_ready(Tile tile)
     {
-        Vector2I gridPosition = TileMapPositionToGridPosition(LocalToMap(tile.Position));
+        Vector2I tileMapPosition = LocalToMap(tile.Position);
+        Vector2I gridPosition = TileMapPositionToGridPosition(tileMapPosition);
         if (tile.tileType == TileType.Drillable)
         {
             Drillable drillable = tile as Drillable;
@@ -555,6 +581,12 @@ public partial class GameGrid : TileMap
         } else if (tile.tileType == TileType.Background)
         {
             tile.ZIndex = -2;
+            if (tileMapPosition.Y == 0)
+            {
+                SolidTileShaderManager.UpdateSolidTileCorner(tile, SolidTileCorner.TopLeft, SolidTileCornerShape.Straight);
+                SolidTileShaderManager.UpdateSolidTileCorner(tile, SolidTileCorner.TopRight, SolidTileCornerShape.Straight);
+                SolidTileShaderManager.UpdateSolidTileSide(tile, SolidTileSurface.Top, true);
+            }
         } else if (tile.tileType == TileType.NonDrillable)
         {
             positionToSolidTile[gridPosition] = tile;

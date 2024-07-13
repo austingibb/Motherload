@@ -7,6 +7,8 @@ public class GameGridChunk
     public List<List<int?>> tileSetIds;
     public List<List<int?>> itemTileSetIds;
 
+    public List<ChunkItem> chunkItems = new List<ChunkItem>();
+
     public GameGridChunk(int size)
     {
         tileSetIds = new List<List<int?>>();
@@ -34,5 +36,15 @@ public class GameGridChunk
     {
         tileSetIds[pos.X][pos.Y] = tileSetId;
         itemTileSetIds[pos.X][pos.Y] = itemTileSetId;
+    }
+
+    public void AddChunkItem(ChunkItem chunkItem)
+    {
+        chunkItems.Add(chunkItem);
+    }
+
+    public void ClearChunkItems()
+    {
+        chunkItems.Clear();
     }
 }

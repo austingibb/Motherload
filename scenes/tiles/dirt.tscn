@@ -260,7 +260,6 @@ material = SubResource("ShaderMaterial_rcn5w")
 position = Vector2(2.08165e-12, 2.08165e-12)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-visible = false
 position = Vector2(0, -0.0606699)
 scale = Vector2(1.16208, 1.16949)
 shape = SubResource("RectangleShape2D_ocdpi")
