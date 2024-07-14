@@ -60,7 +60,7 @@ public partial class GameGrid : TileMap
         Width = ChunkSize * ChunkWidth;
         RandomNumberGenerator rngSeedGen = new RandomNumberGenerator();
         rngSeedGen.Seed = 123234232;
-        // rngSeedGen.Randomize();
+        rngSeedGen.Randomize();
         Seed = (int) (rngSeedGen.Randi() % Mathf.Pow(2, 25));
         GD.Print("World seed: " + Seed);
 

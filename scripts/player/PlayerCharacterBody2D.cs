@@ -10,7 +10,9 @@ public enum PlayerState {
 	Landing,
 	Flying,
 	Falling,
+	EndDrillingUp,
 	Drilling,
+	DrillingUp,
 	Dead,
 	None
 }
@@ -20,7 +22,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 	public const float WalkSpeed = 120.0f;
 	public const float BaseDrillSpeed = 80.0f;
 	public float DrillSideSpeed = 80.0f;
-	public float DrillDownSpeed = 80.0f;	
+	public float DrillVerticalSpeed = 80.0f;	
 	public float VerticalFlightSpeed = -900.0f;
 	public  float CatchVerticalFlightSpeed = -1100.0f;
 	public const float HorizontalFlightSpeed = 300.0f;
@@ -39,6 +41,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 
 	public RayCast2D leftRay;
 	public RayCast2D rightRay;
+	public RayCast2D upRay;
 	public RayCast2D downRay;
 
 	public Node2D flipper;
@@ -69,6 +72,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		leftRay = GetNode<RayCast2D>("raycasts/left_RayCast2D");
 		rightRay = GetNode<RayCast2D>("raycasts/right_RayCast2D");
 		downRay = GetNode<RayCast2D>("raycasts/down_RayCast2D");
+		upRay = GetNode<RayCast2D>("raycasts/up_RayCast2D");
 
 		this.bodyAnimation = bodyAnimation;
 		this.frontHeadAnimation = frontHeadAnimation;
@@ -124,33 +128,74 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		}
 		else if (!IsOnPlayerOnFloor())
 		{
-			velocity.Y += Game.GRAVITY * (float)delta;
+			if (playerState == PlayerState.DrillingUp)
+			{
+				velocity.Y = -DrillVerticalSpeed;
+				if (playerAnimation.GetCurrentState() == PlayerAnimationState.DrillUp)
+				{
+					playerDrillables.ActiveDrillable.UpdateDrillAnimationFromPosition(this);
+					if (playerDrillables.ActiveDrillable.IsDug)
+					{
+						Drillable aboveDrillable = SurroundingDrillables[1][0];
+						if (Health > 0 && Input.IsActionPressed("fly") && Common.ValidTile(aboveDrillable))
+						{
+							playerDrillables.ActiveDrillable = aboveDrillable;
+							aboveDrillable.StartDrillAnimation(DrillFromDirection.DOWN);
+						} else {
+							playerState = PlayerState.EndDrillingUp;
+							playerAnimation.UpdateAnimation(PlayerAnimationState.DrillStandupUp);
+						}
+					}
+				}
+			} else 
+			{
+				velocity.Y += Game.GRAVITY * (float)delta;
 
-			Vector2 direction = Input.GetVector("move_left", "move_right", "ui_up", "ui_down");
-			if (direction.X < 0)
-			{
-				velocity.X -= HorizontalFlightSpeed * (float)delta;
-				this.Rotation = -TiltAmount;
-			}
-			else if (direction.X > 0)
-			{
-				velocity.X += HorizontalFlightSpeed * (float)delta;
-				this.Rotation = TiltAmount;
-			}
-			else 
-			{
-				this.Rotation = 0;
-			}
+				Vector2 direction = Input.GetVector("move_left", "move_right", "ui_up", "ui_down");
+				if (direction.X < 0)
+				{
+					velocity.X -= HorizontalFlightSpeed * (float)delta;
+					this.Rotation = -TiltAmount;
+				}
+				else if (direction.X > 0)
+				{
+					velocity.X += HorizontalFlightSpeed * (float)delta;
+					this.Rotation = TiltAmount;
+				}
+				else 
+				{
+					this.Rotation = 0;
+				}
 
-			if (Input.IsActionPressed("fly"))
-			{
-				playerState = PlayerState.Flying;
-				playerAnimation.UpdateAnimation(PlayerAnimationState.Launch);
-			}
-			else if (velocity.Y >= 0)
-			{
-				playerState = PlayerState.Falling;
-				playerAnimation.UpdateAnimation(PlayerAnimationState.Fall);
+				if (playerState != PlayerState.EndDrillingUp)
+				{
+					DrillFromDirection directionHeld = DrillFromDirection.NONE;
+					if (Input.IsActionPressed("fly"))
+					{
+						playerState = PlayerState.Flying;
+						playerAnimation.UpdateAnimation(PlayerAnimationState.Launch);
+						directionHeld = DrillFromDirection.DOWN;
+					}
+					else if (velocity.Y >= 0)
+					{
+						if (playerAnimation.GetCurrentState() == PlayerAnimationState.DrillStandupUp || playerAnimation.GetPreviousState() == PlayerAnimationState.DrillStandupUp){
+							playerAnimation.UpdateAnimation(PlayerAnimationState.FallStatic);
+						} else {
+							playerAnimation.UpdateAnimation(PlayerAnimationState.Fall);
+						}
+
+						playerState = PlayerState.Falling;
+					}
+
+					Node2D readyDrillable = playerDrillables.DirectionHeld(directionHeld, delta);
+					if (readyDrillable != null)
+					{
+						velocity.X = velocity.X / 5;
+						playerState = PlayerState.DrillingUp;
+						playerAnimation.UpdateAnimation(PlayerAnimationState.SetupDrillUp);
+						this.Rotation = 0;
+					}
+				}
 			}
 		} else 
 		{
@@ -273,7 +318,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 					}
 					else if (playerAnimation.GetCurrentState() == PlayerAnimationState.DrillDown) 
 					{
-						velocity.Y = DrillDownSpeed;
+						velocity.Y = DrillVerticalSpeed;
 						velocity.Y += Game.GRAVITY * (float)delta;
 						playerDrillables.ActiveDrillable.UpdateDrillAnimationFromPosition(this);
 						if (playerDrillables.ActiveDrillable.IsDug)
@@ -284,7 +329,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 								belowDrillable.StartDrillAnimation(DrillFromDirection.UP);
 							} else 
 							{
-								playerAnimation.UpdateAnimation(PlayerAnimationState.DrillStandup);
+								playerAnimation.UpdateAnimation(PlayerAnimationState.DrillStandupDown);
 							}
 						}
 					}
@@ -293,7 +338,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		}
 
 		// Handle flight.
-		if (Input.IsActionPressed("fly") && !(playerState == PlayerState.HurtLanding || playerState == PlayerState.Drilling || playerState == PlayerState.Dead))
+		if (Input.IsActionPressed("fly") && !(playerState == PlayerState.HurtLanding || playerState == PlayerState.Drilling || playerState == PlayerState.DrillingUp || playerState == PlayerState.Dead))
 		{
 			playerAnimation.SetFlightState(true);
 			if (velocity.Y < 0) 
@@ -303,7 +348,11 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 			{
 				velocity.Y += CatchVerticalFlightSpeed * (float)delta;
 			}
-		} else
+		} else if (playerState == PlayerState.DrillingUp) 
+		{
+			playerAnimation.SetFlightState(true);
+		}
+		else
 		{
 			playerAnimation.SetFlightState(false);
 		}
@@ -325,6 +374,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		HandleRaycastCheck(leftRay, DrillFromDirection.RIGHT);
 		HandleRaycastCheck(rightRay, DrillFromDirection.LEFT);
 		HandleRaycastCheck(downRay, DrillFromDirection.UP);
+		HandleRaycastCheck(upRay, DrillFromDirection.DOWN);
 	}
 
 	private void HandleRaycastCheck(RayCast2D ray, DrillFromDirection direction)
@@ -352,7 +402,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 			this.flipper.Scale = new Vector2(this.flipper.Scale.X * -1, this.flipper.Scale.Y);
 		}
 
-		bool allowRotation = isPlayerFacingMouse && (playerState != PlayerState.Drilling) && (playerState != PlayerState.Dead);
+		bool allowRotation = false && isPlayerFacingMouse && (playerState != PlayerState.Drilling) && (playerState != PlayerState.Dead) && (playerState != PlayerState.DrillingUp);
 
 		if (allowRotation)
 		{
@@ -474,7 +524,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 	public void HandleDrillUpgrade(DrillUpgrade drillUpgrade)
     {
 		DrillSideSpeed = BaseDrillSpeed * drillUpgrade.drillSpeedMultiplier;
-		DrillDownSpeed = BaseDrillSpeed * drillUpgrade.drillSpeedMultiplier;
+		DrillVerticalSpeed = BaseDrillSpeed * drillUpgrade.drillSpeedMultiplier;
 		playerShaderManager.UpdateDrills(drillUpgrade.drillType);
     }
 
@@ -507,11 +557,21 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 			{
 				playerDrillables.ActiveDrillable.StartDrillAnimation(DrillFromDirection.UP);
 			}
-
+		} else if (anim_name == "mine_up_setup")
+		{
+			playerAnimation.UpdateAnimation(PlayerAnimationState.DrillUp);
+			if (playerDrillables.ActiveDrillable != null)
+			{
+				playerDrillables.ActiveDrillable.StartDrillAnimation(DrillFromDirection.DOWN);
+			}
 		} else if (anim_name == "drill_standup" || anim_name == "drill_down_standup")
 		{
 			playerState = PlayerState.Grounded;
+		} else if (anim_name == "mine_up_standup")
+		{
+			playerState = PlayerState.Falling;
 		}
+
 	}
 
 	private bool IsFacingLeft() 

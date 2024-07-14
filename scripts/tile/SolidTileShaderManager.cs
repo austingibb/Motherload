@@ -50,6 +50,12 @@ public partial class SolidTileShaderManager : GodotObject
             shaderMaterial.SetShaderParameter("flip_dig_animation_v", false);
             shaderMaterial.SetShaderParameter("dig_offset", 33);
         }
+        else if (drillFromDirection == DrillFromDirection.DOWN) 
+        {
+            shaderMaterial.SetShaderParameter("dig_orientation", false);
+            shaderMaterial.SetShaderParameter("flip_dig_animation_v", true);
+            shaderMaterial.SetShaderParameter("dig_offset", 33);
+        }
     }
 
     public static void SetAnimationProgress(Node2D drillable, float progress) 

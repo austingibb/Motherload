@@ -8,15 +8,19 @@ public enum PlayerAnimationState
     SetupDrillLeft,
     SetupDrillRight,
     SetupDrillDown,
+    SetupDrillUp,
     DrillLeft,
     DrillRight,
     DrillDown,
+    DrillUp,
     DrillStandupLeft,
     DrillStandupRight,
-    DrillStandup,
+    DrillStandupDown,
+    DrillStandupUp,
     WalkLeft,
     WalkRight,
     Fall,
+    FallStatic,
     Launch,
     LandHard,
     LandSoft,
@@ -35,12 +39,14 @@ public partial class PlayerAnimation : GodotObject
     public AnimationPlayer animationPlayer;
     public AnimationPlayer shaderAnimationPlayer;
     public PlayerAnimationState _currentState;
+    public PlayerAnimationState _previousState;
     public Battery battery;
 
     public HashSet<PlayerAnimationState> forwardFacingStates = new HashSet<PlayerAnimationState>
     {
         PlayerAnimationState.Idle,
         PlayerAnimationState.Fall,
+        PlayerAnimationState.FallStatic,
         PlayerAnimationState.Launch,
         PlayerAnimationState.LandHard,
         PlayerAnimationState.LandSoft,
@@ -48,8 +54,11 @@ public partial class PlayerAnimation : GodotObject
         PlayerAnimationState.FlyRight,
         PlayerAnimationState.SetupDrillDown,
         PlayerAnimationState.DrillDown,
-        PlayerAnimationState.DrillStandup,
-        PlayerAnimationState.PowerDown
+        PlayerAnimationState.DrillStandupDown,
+        PlayerAnimationState.PowerDown,
+        PlayerAnimationState.SetupDrillUp,
+        PlayerAnimationState.DrillUp,
+        PlayerAnimationState.DrillStandupUp
     };
 
     public HashSet<PlayerAnimationState> sideFacingStates = new HashSet<PlayerAnimationState>
@@ -76,6 +85,12 @@ public partial class PlayerAnimation : GodotObject
         this.shaderAnimationPlayer = shaderAnimationPlayer;
         this.battery = battery;
         this._currentState = PlayerAnimationState.Idle;
+        this._previousState = PlayerAnimationState.Idle;
+    }
+
+    public PlayerAnimationState GetPreviousState()
+    {
+        return _previousState;
     }
 
     public PlayerAnimationState GetCurrentState()
@@ -106,6 +121,7 @@ public partial class PlayerAnimation : GodotObject
             bodyAnimation.Position = new Vector2(0, 0);
         }
         
+        _previousState = _currentState;
         _currentState = state;
         animationPlayer.SpeedScale = 4.0f;
 
@@ -137,6 +153,9 @@ public partial class PlayerAnimation : GodotObject
                 break;
             case PlayerAnimationState.Fall:
                 animationPlayer.Play("fall");
+                break;
+            case PlayerAnimationState.FallStatic:
+                animationPlayer.Play("fall_static");
                 break;
             case PlayerAnimationState.Launch:
                 animationPlayer.Play("launch");
@@ -174,6 +193,14 @@ public partial class PlayerAnimation : GodotObject
                 animationPlayer.SpeedScale = 4.0f;
                 animationPlayer.Play("mine_down_drill");
                 break;
+            case PlayerAnimationState.SetupDrillUp:
+                animationPlayer.SpeedScale = 3.0f;
+                animationPlayer.Play("mine_up_setup");
+                break;
+            case PlayerAnimationState.DrillUp:
+                animationPlayer.SpeedScale = 5.0f;
+                animationPlayer.Play("mine_up_drill");
+                break;
             case PlayerAnimationState.DrillLeft:
                 flipper.Scale = new Vector2(1, 1);
                 animationPlayer.Play("mine_forward_walk");
@@ -190,9 +217,13 @@ public partial class PlayerAnimation : GodotObject
                 flipper.Scale = new Vector2(-1, 1);
                 animationPlayer.Play("drill_standup");
                 break;
-            case PlayerAnimationState.DrillStandup:
+            case PlayerAnimationState.DrillStandupDown:
                 animationPlayer.SpeedScale = 3.0f;
                 animationPlayer.Play("drill_down_standup");
+                break;
+            case PlayerAnimationState.DrillStandupUp:
+                animationPlayer.SpeedScale = 4.0f;
+                animationPlayer.Play("mine_up_standup");
                 break;
             case PlayerAnimationState.PowerDown:
                 animationPlayer.SpeedScale = 1.0f;

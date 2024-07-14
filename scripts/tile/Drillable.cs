@@ -5,6 +5,7 @@ public enum DrillFromDirection
 {
 	LEFT,
 	UP,
+	DOWN,
 	RIGHT,
 	NONE
 }

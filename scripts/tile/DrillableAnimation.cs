@@ -41,6 +41,11 @@ public partial class DrillableAnimation
             float yDiff = Mathf.Abs(((drillingEntity.GlobalPosition.Y - VerticalAnimationOffset) - drillable.GlobalPosition.Y));
             float yDiffWithinDrillable = yDiff/33;
             progress = 1.0f - (yDiffWithinDrillable * ProgressScale);
+        } else if (drillFromDirection == DrillFromDirection.DOWN)
+        {
+            float yDiff = Mathf.Abs(((drillingEntity.GlobalPosition.Y + VerticalAnimationOffset) - drillable.GlobalPosition.Y));
+            float yDiffWithinDrillable = yDiff/33;
+            progress = 1.0f - (yDiffWithinDrillable * ProgressScale);
         } else {
             progress = 0.0f;
         }

@@ -19,11 +19,15 @@ public partial class Game : Node2D
     public ProgressBarNinePatch energyBar;
     public AnimationPlayer energyBarAnimator;
     public ProgressBarNinePatch healthBar;
+    public Sky sky;
 
     // Buildings
     public SellStation sellStation;
     public ChargeStation chargeStation;
     public UpgradeStation upgradeStation;
+
+    // Other
+    public TimeManager timeManager;
 
     // UI
     public UpgradeMenu upgradeMenu;
@@ -51,6 +55,7 @@ public partial class Game : Node2D
         upgradeMenu = GetNode<UpgradeMenu>("%UpgradeMenu") as UpgradeMenu;
         upgradeMenu.RegisterMoneyAuthorization(CanAfford);
         upgradeMenu.upgrade += UpgradePurchased;
+        sky = GetNode<Sky>("%Sky") as Sky;
 
         Money = 0;
 
@@ -90,6 +95,10 @@ public partial class Game : Node2D
         leftBoundary.Position = new Vector2(-tileWidth * gameGrid.Width / 2 + tileWidth/2, 0);
         StaticBody2D rightBoundary = GetNode<StaticBody2D>("%RightBoundary");
         rightBoundary.Position = new Vector2(tileWidth* gameGrid.Width / 2 - tileWidth/2, 0);
+
+        // load other
+        timeManager = new TimeManager();
+        timeManager.Start();
     }
 
     public override void _Process(double delta)
@@ -129,6 +138,9 @@ public partial class Game : Node2D
         }
 
         gameGrid.Update(playerCharacter.GlobalPosition);
+
+        timeManager.UpdateTime(delta);
+        sky.UpdateSky(timeManager.GameTime);
     }
 
     public string GetMoneyString()
