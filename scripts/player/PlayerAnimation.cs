@@ -194,7 +194,7 @@ public partial class PlayerAnimation : GodotObject
                 animationPlayer.Play("mine_down_drill");
                 break;
             case PlayerAnimationState.SetupDrillUp:
-                animationPlayer.SpeedScale = 3.0f;
+                animationPlayer.SpeedScale = 5.0f;
                 animationPlayer.Play("mine_up_setup");
                 break;
             case PlayerAnimationState.DrillUp:

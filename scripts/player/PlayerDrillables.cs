@@ -31,7 +31,7 @@ public class PlayerDrillables
 
     public Drillable ActiveDrillable = null;
     private const double TimeToStartDrilling = 0.1;
-    private const double TimeToStartDrillingUp = 0.2;
+    private const double TimeToStartDrillingUp = 0.3;
     private Dictionary<DrillFromDirection, DrillableDictValue> drillables = new();
     DrillFromDirection currentPendingDirection = DrillFromDirection.NONE;
 
@@ -60,7 +60,7 @@ public class PlayerDrillables
                 drillableDictValue.AddToDrillableTime(delta);
             }
 
-            double targetTime = (currentPendingDirection == DrillFromDirection.UP) ? TimeToStartDrillingUp : TimeToStartDrilling;
+            double targetTime = (currentPendingDirection == DrillFromDirection.DOWN) ? TimeToStartDrillingUp : TimeToStartDrilling;
 
             if (drillableDictValue.TimeActive > targetTime)
             {
