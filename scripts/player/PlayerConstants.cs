@@ -16,3 +16,12 @@ public enum ArmorType
     D,
     F
 }
+
+
+class PlayerConstants
+{
+    public const float TiltAmount = 0.174533f;
+    public const float DragConstant = 0.011f;
+    public const float BaseDrillSpeed = 80.0f;
+    public const float BaseEnergyLossScale = 3.0f;
+}

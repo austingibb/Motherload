@@ -26,6 +26,8 @@ public enum PlayerAnimationState
     LandSoft,
     FlyLeft,
     FlyRight,
+    DeploySolarPanel,
+    RetractSolarPanel,
     PowerDown
 }
 
@@ -58,7 +60,9 @@ public partial class PlayerAnimation : GodotObject
         PlayerAnimationState.PowerDown,
         PlayerAnimationState.SetupDrillUp,
         PlayerAnimationState.DrillUp,
-        PlayerAnimationState.DrillStandupUp
+        PlayerAnimationState.DrillStandupUp,
+        PlayerAnimationState.DeploySolarPanel,
+        PlayerAnimationState.RetractSolarPanel
     };
 
     public HashSet<PlayerAnimationState> sideFacingStates = new HashSet<PlayerAnimationState>
@@ -115,6 +119,8 @@ public partial class PlayerAnimation : GodotObject
         if (_currentState == state)
             return;
         
+        GD.Print("Switching to state: ", state);
+
         if (state != PlayerAnimationState.DrillLeft && state != PlayerAnimationState.DrillRight && state != PlayerAnimationState.SetupDrillLeft && state != PlayerAnimationState.SetupDrillRight)
         {
             bodyAnimation.Rotation = 0;
@@ -224,6 +230,12 @@ public partial class PlayerAnimation : GodotObject
             case PlayerAnimationState.DrillStandupUp:
                 animationPlayer.SpeedScale = 4.0f;
                 animationPlayer.Play("mine_up_standup");
+                break;
+            case PlayerAnimationState.DeploySolarPanel:
+                animationPlayer.Play("deploy_solar_panel");
+                break;
+            case PlayerAnimationState.RetractSolarPanel:
+                animationPlayer.Play("deploy_solar_panel");
                 break;
             case PlayerAnimationState.PowerDown:
                 animationPlayer.SpeedScale = 1.0f;

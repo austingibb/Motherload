@@ -5870,6 +5870,7 @@ _data = {
 script = ExtResource("1_m1nbs")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 z_index = 2
 position = Vector2(0.0349426, 0.763586)
 shape = SubResource("CapsuleShape2D_jark5")
