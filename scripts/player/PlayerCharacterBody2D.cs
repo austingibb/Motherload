@@ -107,7 +107,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		HandleHead((float)delta, frontHeadAnimation);
 		HandleHead((float)delta, sideHeadAnimation);
 
-		if (Input.IsActionJustPressed("fire"))
+		if (Input.IsActionJustPressed("fire") && playerStateManager.CanShoot())
 		{
 			Shoot();
 		}
@@ -152,8 +152,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 			this.flipper.Scale = new Vector2(this.flipper.Scale.X * -1, this.flipper.Scale.Y);
 		}
 
-		bool allowRotation = false && isPlayerFacingMouse && (playerState != PlayerState.Drilling) 
-			&& (playerState != PlayerState.Dead);
+		bool allowRotation = isPlayerFacingMouse && playerStateManager.CanShoot();
 
 		if (allowRotation)
 		{

@@ -33,4 +33,9 @@ public class PlayerStateManager
     {
         playerStateProcessors[currentState].AnimationFinished(animationName);
     }
+
+    public bool CanShoot()
+    {
+        return (currentState == PlayerState.Airborne || currentState == PlayerState.Grounded);
+    }
 }

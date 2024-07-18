@@ -161,7 +161,7 @@ script = ExtResource("19_kbbim")
 [node name="Camera2D" type="Camera2D" parent="."]
 unique_name_in_owner = true
 position = Vector2(0, -22.4105)
-zoom = Vector2(10, 10)
+zoom = Vector2(7, 7)
 process_callback = 0
 limit_left = -620
 limit_right = 620
