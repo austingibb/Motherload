@@ -4,14 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-public enum PlayerState {
-	Grounded,
-	Airborne,
-	Drilling,
-	Dead,
-	None
-}
-
 public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 {
 	public float WalkSpeed = 120.0f;
@@ -25,7 +17,6 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 	
 	public float EnergyLossScale = PlayerConstants.BaseEnergyLossScale;
 	public float NoEnergyHealthLoss = 10.0f;
-	public PlayerState playerState = PlayerState.Airborne;
 	public PlayerDrillables playerDrillables = new();
 	public Vector2 prevVelocity = new(0, 0);
 	public AnimatedSprite2D bodyAnimation;
@@ -163,9 +154,9 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 				headAnimation.Rotation -= Mathf.DegToRad(360); 
 			}
 
-			if (headAnimation.Rotation < Mathf.DegToRad(-35))
+			if (headAnimation.Rotation < Mathf.DegToRad(-75))
 			{
-				headAnimation.Rotation = Mathf.DegToRad(-35);
+				headAnimation.Rotation = Mathf.DegToRad(-75);
 			}
 		} else {
 			headAnimation.Rotation = 0;
@@ -209,13 +200,13 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		}
 
 		Energy -= delta / 4.0f * EnergyLossScale;
-		if (playerState == PlayerState.Airborne)
+		if (playerStateManager.currentState == PlayerState.Airborne)
 		{
 			Energy -= delta * EnergyLossScale;
-		} else if (playerState == PlayerState.Drilling)
+		} else if (playerStateManager.currentState == PlayerState.Drilling)
 		{
 			Energy -= delta * EnergyLossScale;
-		} else if (playerState == PlayerState.Grounded)
+		} else if (playerStateManager.currentState == PlayerState.Grounded)
 		{
 			if (Input.IsActionPressed("move_left") || Input.IsActionPressed("move_right"))
 			{
@@ -240,7 +231,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		Laser laser = laserScene.Instantiate() as Laser;
 		laser.transformSource = projectileSpawnPoint;
 		laser.flipDirection = true;
-		laser.ZIndex = -1;
+		laser.ZIndex = 2;
 		Node2D projectiles = GetParent().GetNode<Node2D>("Projectiles");
 		projectiles.AddChild(laser);
 	}
@@ -266,6 +257,15 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 	private void _on_player_animation_player_animation_finished(String anim_name) 
 	{
 		playerStateManager.AnimationFinished(anim_name);
+	}
+
+	private void _on_hit_box_body_entered(Node2D node)
+	{
+		if (node is Enemy enemy)
+		{
+			Health -= enemy.Damage;
+			playerAnimation.PlayHurt();
+		}
 	}
 
 	private bool IsFacingLeft() 

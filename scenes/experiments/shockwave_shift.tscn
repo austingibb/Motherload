@@ -1,0 +1,20 @@
+[gd_scene load_steps=6 format=3 uid="uid://cp2f6dtp74vk6"]
+
+[ext_resource type="Shader" path="res://scripts/shaders/shockwave.gdshader" id="1_ln63y"]
+[ext_resource type="Texture2D" uid="uid://djgxg6dhhmjgk" path="res://assets/other/shockwave_shape.png" id="2_cxplb"]
+[ext_resource type="Texture2D" uid="uid://cjjjtlx5drxhc" path="res://assets/tiles/lithium.png" id="3_b6fbo"]
+[ext_resource type="Script" path="res://scripts/experiments/Shockwave.cs" id="4_ht2wx"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1nokw"]
+shader = ExtResource("1_ln63y")
+shader_parameter/center = Vector2(4, 4)
+shader_parameter/gray_divide = 1.0
+shader_parameter/shockwave_shape = ExtResource("2_cxplb")
+
+[node name="Sprite2D" type="Sprite2D"]
+material = SubResource("ShaderMaterial_1nokw")
+texture = ExtResource("3_b6fbo")
+script = ExtResource("4_ht2wx")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(20, 20)

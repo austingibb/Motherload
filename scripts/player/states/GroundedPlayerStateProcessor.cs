@@ -15,7 +15,7 @@ public class GroundedPlayerStateProcessor : PlayerStateProcessor
     public GroundedPlayerStates groundedPlayerState = GroundedPlayerStates.NONE;
     public GroundedPlayerStateProcessor(PlayerCharacterBody2D playerCharacterBody2D) : base(playerCharacterBody2D) {}
 
-    public override void SetupState(PlayerStateTransition transition)
+    public override void SetupState(StateTransition transition)
     {
         Vector2 velocity = player.Velocity;
         
@@ -48,22 +48,22 @@ public class GroundedPlayerStateProcessor : PlayerStateProcessor
         player.Velocity = velocity;
     }
 
-    public override PlayerStateTransition ProcessState(double delta)
+    public override StateTransition ProcessState(double delta)
     {
         if (player.Health <= 0)
         {
-            return new PlayerStateTransition { ToState = PlayerState.Dead };
+            return new StateTransition { ToState = PlayerState.Dead };
         }
 
         if (!player.IsOnFloor())
         {
-            return new PlayerStateTransition { ToState = PlayerState.Airborne, TransitionData = null };
+            return new StateTransition { ToState = PlayerState.Airborne, TransitionData = null };
         }
 
         if (groundedPlayerState == GroundedPlayerStates.HARD_LAND)
         {
             // waiting for animation to finish before player can take action
-            return new PlayerStateTransition { ToState = PlayerState.None };
+            return new StateTransition { ToState = PlayerState.None };
         }
 
         player.Rotation = 0;
@@ -126,7 +126,7 @@ public class GroundedPlayerStateProcessor : PlayerStateProcessor
 
             player.Velocity = velocity;
         }
-        return new PlayerStateTransition { ToState = transitionState, TransitionData = drillFromDirection };
+        return new StateTransition { ToState = transitionState, TransitionData = drillFromDirection };
     }
 
     public override void AnimationFinished(string animationName)

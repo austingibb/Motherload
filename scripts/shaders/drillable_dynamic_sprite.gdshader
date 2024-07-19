@@ -91,11 +91,9 @@ void fragment() {
 		vec2 UV_offset = UV;
 		if (flip_dig_animation_h) {
 			UV_offset.x = 1.0 - UV_offset.x;
-			UV_offset.x = UV_offset.x - float(dig_offset)/float(width);
-		} else {
-			UV_offset.x = UV_offset.x - float(dig_offset)/float(width);
 		}
 
+		UV_offset.x = UV_offset.x - float(dig_offset)/float(width);
 		COLOR = apply_transparancy_mask(dig_side, UV_offset, COLOR);
 	} else {
 		int height = textureSize(dig_down, 0).y;
@@ -103,10 +101,9 @@ void fragment() {
 		vec2 UV_offset = UV;
 		if (flip_dig_animation_v) {
 			UV_offset.y = 1.0 - UV_offset.y;
-			UV_offset.y = UV_offset.y + float(dig_offset)/float(height);
-		} else {
-			UV_offset.y = UV_offset.y + float(dig_offset)/float(height);
-		}
+		} 
+
+		UV_offset.y = UV_offset.y + float(dig_offset)/float(height);
 
 		COLOR = apply_transparancy_mask(dig_down, UV_offset, COLOR);
 	}

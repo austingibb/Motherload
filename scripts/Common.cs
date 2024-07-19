@@ -25,4 +25,17 @@ public partial class Common
         }
         return children;
     }
+
+    public static void GetAngleDiff(float angle1, float angle2, out float direction, out float angleDiff)
+    {
+        angleDiff = angle2 - angle1;
+        direction = Mathf.Sign(angleDiff);
+        angleDiff = Mathf.Abs(angleDiff);
+
+        if (angleDiff > Mathf.Pi)
+        {
+            angleDiff = Mathf.Tau - angleDiff;
+            direction *= -1;
+        }
+    }
 }

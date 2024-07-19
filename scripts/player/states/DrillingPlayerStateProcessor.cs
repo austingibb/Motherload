@@ -18,7 +18,7 @@ public class DrillingPlayerStateProcessor : PlayerStateProcessor
     public bool FinishedDrilling = false;
     public DrillingPlayerStateProcessor(PlayerCharacterBody2D playerCharacterBody2D) : base(playerCharacterBody2D) {}
 
-    public override void SetupState(PlayerStateTransition transition)
+    public override void SetupState(StateTransition transition)
     {
         drillFromDirection = (DrillFromDirection) transition.TransitionData;
         FinishedDrilling = false;
@@ -41,7 +41,7 @@ public class DrillingPlayerStateProcessor : PlayerStateProcessor
         }
     }
 
-    public override PlayerStateTransition ProcessState(double delta)
+    public override StateTransition ProcessState(double delta)
     {
         player.Rotation = 0;
 
@@ -52,13 +52,13 @@ public class DrillingPlayerStateProcessor : PlayerStateProcessor
 
         if (FinishedDrilling) 
         {
-            return new PlayerStateTransition { ToState = PlayerState.Airborne, TransitionData = drillFromDirection};
+            return new StateTransition { ToState = PlayerState.Airborne, TransitionData = drillFromDirection};
         }
 
         // wait for drill setup animation to finish
         if (drillingPlayerState == DrillingPlayerStates.DRILL_SETUP || drillingPlayerState == DrillingPlayerStates.DRILL_END)
         {
-            return new PlayerStateTransition { ToState = PlayerState.None, TransitionData = null };
+            return new StateTransition { ToState = PlayerState.None, TransitionData = null };
         }
 
         Vector2 velocity = player.Velocity;
@@ -133,13 +133,13 @@ public class DrillingPlayerStateProcessor : PlayerStateProcessor
                     aboveDrillable.StartDrillAnimation(DrillFromDirection.DOWN);
                 } else 
                 {
-                    return new PlayerStateTransition { ToState = PlayerState.Airborne, TransitionData = drillFromDirection };
+                    return new StateTransition { ToState = PlayerState.Airborne, TransitionData = drillFromDirection };
                 }
             }
         }
 
         player.Velocity = velocity;
-        return new PlayerStateTransition { ToState = PlayerState.None, TransitionData = null };
+        return new StateTransition { ToState = PlayerState.None, TransitionData = null };
     }
 
     public override void AnimationFinished(string animationName)

@@ -39,7 +39,6 @@ size = Vector2(37.0111, 37.2386)
 
 [node name="dirt_non_drillable" type="StaticBody2D"]
 position = Vector2(2.08165e-12, 2.08165e-12)
-collision_layer = 3
 script = ExtResource("1_ridka")
 tileType = 3
 

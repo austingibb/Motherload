@@ -10,7 +10,7 @@ size = Vector2(71.9664, 2.38165)
 size = Vector2(16.9808, 11.4042)
 
 [node name="UpgradeStation" type="StaticBody2D"]
-collision_layer = 2
+collision_layer = 0
 collision_mask = 0
 script = ExtResource("1_gi511")
 

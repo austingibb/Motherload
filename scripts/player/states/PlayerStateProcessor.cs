@@ -1,14 +1,7 @@
 using System;
 using Godot;
 
-public struct PlayerStateTransition
-{
-    public PlayerState ToState;
-    public PlayerState FromState;
-    public Object TransitionData;
-}
-
-public abstract class PlayerStateProcessor
+public abstract class PlayerStateProcessor : StateProcessor<PlayerState>
 {
     public PlayerCharacterBody2D player;
     public PlayerDrillables playerDrillables;
@@ -20,10 +13,6 @@ public abstract class PlayerStateProcessor
         this.playerDrillables = player.playerDrillables;
         this.playerAnimation = player.playerAnimation;
     }
-
-    public abstract void SetupState(PlayerStateTransition transitionData);
-    public abstract PlayerStateTransition ProcessState(double delta);
-    public abstract void AnimationFinished(string animationName);
 
     public virtual void ApplyGravity(double delta) 
     {

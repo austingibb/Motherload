@@ -10,7 +10,7 @@ size = Vector2(24.9448, 40.796)
 size = Vector2(23.9437, 11.4854)
 
 [node name="ChargeStation" type="StaticBody2D"]
-collision_layer = 2
+collision_layer = 0
 collision_mask = 0
 script = ExtResource("1_x0ynl")
 

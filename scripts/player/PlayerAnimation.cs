@@ -102,6 +102,11 @@ public partial class PlayerAnimation : GodotObject
         return _currentState;
     }
 
+    public void PlayHurt()
+    {
+        shaderAnimationPlayer.Play("hurt");
+    }
+
     public void SetFlightState(bool isFlying)
     {
         if (isFlying)

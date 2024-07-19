@@ -1,4 +1,4 @@
-[gd_scene load_steps=48 format=3 uid="uid://c4n3nw1neoend"]
+[gd_scene load_steps=49 format=3 uid="uid://c4n3nw1neoend"]
 
 [ext_resource type="PackedScene" uid="uid://cwrufed6b0h7m" path="res://scenes/player.tscn" id="1_cpms4"]
 [ext_resource type="Script" path="res://scripts/game/Game.cs" id="1_jibs2"]
@@ -26,6 +26,7 @@
 [ext_resource type="PackedScene" uid="uid://dawbd1hptxxk8" path="res://scenes/buildings/upgrade_station.tscn" id="18_svd0m"]
 [ext_resource type="Script" path="res://scripts/enemy/EnemyManager.cs" id="19_kbbim"]
 [ext_resource type="PackedScene" uid="uid://p0424hsm5m6h" path="res://scenes/ui/upgrade_menu.tscn" id="20_2vh3i"]
+[ext_resource type="PackedScene" uid="uid://bsubg7ltoyh2a" path="res://scenes/enemy/spider.tscn" id="20_45y2o"]
 [ext_resource type="Script" path="res://scripts/other/Sky.cs" id="20_jn15f"]
 [ext_resource type="Shader" path="res://scripts/shaders/color_adjust.gdshader" id="21_h2kvx"]
 
@@ -157,11 +158,12 @@ chestTypedepthRanges = [Vector2i(0, 100), Vector2i(0, 100), Vector2i(0, 100), Ve
 
 [node name="EnemyManager" type="Node2D" parent="GameGrid"]
 script = ExtResource("19_kbbim")
+EnemyScene = ExtResource("20_45y2o")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 unique_name_in_owner = true
 position = Vector2(0, -22.4105)
-zoom = Vector2(7, 7)
+zoom = Vector2(8, 8)
 process_callback = 0
 limit_left = -620
 limit_right = 620

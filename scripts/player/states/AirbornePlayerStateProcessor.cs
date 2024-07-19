@@ -18,7 +18,7 @@ public class AirbornePlayerStateProcessor : PlayerStateProcessor
 
     public AirbornePlayerStateProcessor(PlayerCharacterBody2D playerCharacterBody2D) : base(playerCharacterBody2D) {}
 
-    public override void SetupState(PlayerStateTransition transition)
+    public override void SetupState(StateTransition transition)
     {
         airbornePlayerState = AirbornePlayerState.FALLING;
 
@@ -37,11 +37,11 @@ public class AirbornePlayerStateProcessor : PlayerStateProcessor
         }
     }
 
-    public override PlayerStateTransition ProcessState(double delta)
+    public override StateTransition ProcessState(double delta)
     {
         if (player.Health <= 0)
         {
-            return new PlayerStateTransition { ToState = PlayerState.Dead };
+            return new StateTransition { ToState = PlayerState.Dead };
         }
 
         ApplyGravity(delta);
@@ -51,7 +51,7 @@ public class AirbornePlayerStateProcessor : PlayerStateProcessor
 
         if (player.IsOnFloor())
         {
-            return new PlayerStateTransition { ToState = PlayerState.Grounded, TransitionData = player.prevVelocity };
+            return new StateTransition { ToState = PlayerState.Grounded, TransitionData = player.prevVelocity };
         }
 
         if (airbornePlayerState != AirbornePlayerState.AWAITING_TRANSITION)
@@ -76,11 +76,11 @@ public class AirbornePlayerStateProcessor : PlayerStateProcessor
             Node2D readyDrillable = playerDrillables.DirectionHeld(directionHeld, delta);
             if (readyDrillable != null)
             {
-                return new PlayerStateTransition { ToState = PlayerState.Drilling, TransitionData = directionHeld };
+                return new StateTransition { ToState = PlayerState.Drilling, TransitionData = directionHeld };
             }
         }
 
-        return new PlayerStateTransition { ToState = PlayerState.None };
+        return new StateTransition { ToState = PlayerState.None };
     }
 
     public override void AnimationFinished(string animationName)

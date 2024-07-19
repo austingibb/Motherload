@@ -10,7 +10,7 @@ size = Vector2(12.0577, 22.3493)
 size = Vector2(67.5408, 2.77382)
 
 [node name="SellStation" type="StaticBody2D"]
-collision_layer = 2
+collision_layer = 0
 collision_mask = 0
 script = ExtResource("1_bg4pi")
 

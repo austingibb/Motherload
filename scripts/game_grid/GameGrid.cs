@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Numerics;
 
 public partial class GameGrid : TileMap
 {
@@ -54,6 +53,7 @@ public partial class GameGrid : TileMap
     private Dictionary<Vector2I, Tile> positionToSolidTile = new Dictionary<Vector2I, Tile>();
     private Dictionary<Vector2I, GameGridItemTile> positionToGridItems = new Dictionary<Vector2I, GameGridItemTile>();
     private List<ChunkItem> chunkItems = new List<ChunkItem>();
+    private EnemyManager enemyManager;
 
     public override void _Ready()
     {
@@ -70,6 +70,8 @@ public partial class GameGrid : TileMap
         drillableGridProbability = new GameGridProbability<DrillableType>(drillableType, DrillableType.DIRT, toDrillableProbabilityCurve, drillableTypeDepthRanges, Seed);
         chestGridProbability = new GameGridProbability<ChestType>(chestType, ChestType.None, toChestProbabilityCurve, chestTypedepthRanges, Seed);
 
+        enemyManager = GetNode<Node2D>("EnemyManager") as EnemyManager;
+
         UpdateInternals();
         foreach (KeyValuePair<Vector2I, Tile> entry in positionToSolidTile)
         {
@@ -81,6 +83,8 @@ public partial class GameGrid : TileMap
                 positionToSolidTile.Remove(gridPosition);
             }
         }
+
+        enemyManager.SpawnEnemy(new Vector2(150, 0));
     }
 
     public void Update(Godot.Vector2 playerPosition)
@@ -197,6 +201,19 @@ public partial class GameGrid : TileMap
             chunkItem.Enable();
         }
         chunk.ClearChunkItems();
+
+        // List<ChunkItem> enemyItems = SpawnEnemiesForChunk(chunkPosition);
+        // chunkItems.AddRange(enemyItems);
+    }
+
+
+    public List<ChunkItem> SpawnEnemiesForChunk(Vector2I chunkPosition)
+    {
+        Vector2 topLeft = ChunkPosToTileMapPosition(chunkPosition, new Vector2I(0, 0));
+        topLeft.X = topLeft.X * TileSet.TileSize.X;
+        topLeft.Y = topLeft.Y * TileSet.TileSize.Y;
+        Vector2 spawnArea = new Vector2(ChunkSize * TileSet.TileSize.X, ChunkSize * TileSet.TileSize.Y);
+        return enemyManager.SpawnEnemies(topLeft, spawnArea);
     }
 
     public void DespawnChunk(Vector2I chunkPosition)

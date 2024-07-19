@@ -245,7 +245,7 @@ shader_parameter/dig_side = ExtResource("8_tnkgg")
 size = Vector2(31.8344, 31.5045)
 
 [node name="dirt" type="StaticBody2D"]
-collision_layer = 263
+collision_layer = 261
 script = ExtResource("1_t3otb")
 tileType = 1
 
