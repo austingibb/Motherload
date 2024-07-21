@@ -1,0 +1,161 @@
+[gd_scene load_steps=13 format=3 uid="uid://cs4kb0tgefauv"]
+
+[ext_resource type="Theme" uid="uid://be8trpkwegi15" path="res://assets/theme.tres" id="1_bu8vk"]
+[ext_resource type="FontFile" uid="uid://cf1shrgw3bt7c" path="res://assets/fonts/PixelOperator8.ttf" id="2_5talf"]
+[ext_resource type="Shader" path="res://scripts/shaders/player_color_adjust.gdshader" id="3_d51dk"]
+[ext_resource type="Texture2D" uid="uid://dbrp5o748u7yx" path="res://assets/other/ui_drill.png" id="4_saqak"]
+[ext_resource type="PackedScene" uid="uid://d18r5wobvw7gh" path="res://scenes/ui/upgrade_button.tscn" id="5_lvetf"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e87yg"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_pw7vu"]
+shader = ExtResource("3_d51dk")
+shader_parameter/hurt_strength = 0.0
+shader_parameter/colors_to_replace = PackedColorArray(0.494118, 0.321569, 0, 1, 0.862745, 0.564706, 0.00784314, 1, 0, 0, 0, 1)
+shader_parameter/replacement_colors = PackedColorArray(1, 1, 1, 0.776471, 0.917647, 0.917647, 0.917647, 0.807843, 1, 1, 1, 0.870588)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_edu6h"]
+resource_local_to_scene = true
+shader = ExtResource("3_d51dk")
+shader_parameter/hurt_strength = 0.0
+shader_parameter/colors_to_replace = PackedColorArray(0.494118, 0.321569, 0, 1, 0.862745, 0.564706, 0.00784314, 1, 0, 0, 0, 1)
+shader_parameter/replacement_colors = PackedColorArray(1, 1, 1, 0.776471, 0.917647, 0.917647, 0.917647, 0.807843, 1, 1, 1, 0.870588)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_e6qd7"]
+resource_local_to_scene = true
+shader = ExtResource("3_d51dk")
+shader_parameter/hurt_strength = 0.0
+shader_parameter/colors_to_replace = PackedColorArray(0.494118, 0.321569, 0, 1, 0.862745, 0.564706, 0.00784314, 1, 0, 0, 0, 1)
+shader_parameter/replacement_colors = PackedColorArray(1, 1, 1, 0.776471, 0.917647, 0.917647, 0.917647, 0.807843, 1, 1, 1, 0.870588)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_i3lrw"]
+resource_local_to_scene = true
+shader = ExtResource("3_d51dk")
+shader_parameter/hurt_strength = 0.0
+shader_parameter/colors_to_replace = PackedColorArray(0.494118, 0.321569, 0, 1, 0.862745, 0.564706, 0.00784314, 1, 0, 0, 0, 1)
+shader_parameter/replacement_colors = PackedColorArray(1, 1, 1, 0.776471, 0.917647, 0.917647, 0.917647, 0.807843, 1, 1, 1, 0.870588)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fsp38"]
+resource_local_to_scene = true
+shader = ExtResource("3_d51dk")
+shader_parameter/hurt_strength = 0.0
+shader_parameter/colors_to_replace = PackedColorArray(0.494118, 0.321569, 0, 1, 0.862745, 0.564706, 0.00784314, 1, 0, 0, 0, 1)
+shader_parameter/replacement_colors = PackedColorArray(1, 1, 1, 0.776471, 0.917647, 0.917647, 0.917647, 0.807843, 1, 1, 1, 0.870588)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rkt22"]
+resource_local_to_scene = true
+shader = ExtResource("3_d51dk")
+shader_parameter/hurt_strength = 0.0
+shader_parameter/colors_to_replace = PackedColorArray(0.494118, 0.321569, 0, 1, 0.862745, 0.564706, 0.00784314, 1, 0, 0, 0, 1)
+shader_parameter/replacement_colors = PackedColorArray(1, 1, 1, 0.776471, 0.917647, 0.917647, 0.917647, 0.807843, 1, 1, 1, 0.870588)
+
+[node name="UpgradeTab" type="Panel"]
+theme = ExtResource("1_bu8vk")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 2230.0
+offset_bottom = 1398.0
+
+[node name="CurrentUpgrade" type="GridContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+columns = 2
+
+[node name="CurrentUpgradeLabel" type="Label" parent="VBoxContainer/CurrentUpgrade"]
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_fonts/font = ExtResource("2_5talf")
+theme_override_font_sizes/font_size = 64
+text = "Current Upgrade:"
+
+[node name="Panel" type="Panel" parent="VBoxContainer/CurrentUpgrade"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_e87yg")
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/CurrentUpgrade/Panel"]
+material = SubResource("ShaderMaterial_pw7vu")
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -109.521
+offset_top = -115.076
+offset_right = 88.4795
+offset_bottom = 293.924
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_saqak")
+expand_mode = 4
+stretch_mode = 4
+
+[node name="InfoLabel" type="Label" parent="VBoxContainer/CurrentUpgrade/Panel"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -35.5
+offset_top = -49.3924
+offset_right = 35.5
+offset_bottom = -26.3924
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("2_5talf")
+theme_override_font_sizes/font_size = 32
+text = "Diamond: 100% Mining Speed
+"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 3.0
+mouse_filter = 2
+theme = ExtResource("1_bu8vk")
+
+[node name="Button1" parent="VBoxContainer/HBoxContainer" instance=ExtResource("5_lvetf")]
+layout_mode = 2
+theme = ExtResource("1_bu8vk")
+
+[node name="TextureRect" parent="VBoxContainer/HBoxContainer/Button1/VBoxContainer/Panel" index="0"]
+material = SubResource("ShaderMaterial_edu6h")
+
+[node name="Button2" parent="VBoxContainer/HBoxContainer" instance=ExtResource("5_lvetf")]
+layout_mode = 2
+
+[node name="TextureRect" parent="VBoxContainer/HBoxContainer/Button2/VBoxContainer/Panel" index="0"]
+material = SubResource("ShaderMaterial_e6qd7")
+
+[node name="Button3" parent="VBoxContainer/HBoxContainer" instance=ExtResource("5_lvetf")]
+layout_mode = 2
+
+[node name="TextureRect" parent="VBoxContainer/HBoxContainer/Button3/VBoxContainer/Panel" index="0"]
+material = SubResource("ShaderMaterial_i3lrw")
+
+[node name="Button4" parent="VBoxContainer/HBoxContainer" instance=ExtResource("5_lvetf")]
+layout_mode = 2
+
+[node name="TextureRect" parent="VBoxContainer/HBoxContainer/Button4/VBoxContainer/Panel" index="0"]
+material = SubResource("ShaderMaterial_fsp38")
+
+[node name="Button5" parent="VBoxContainer/HBoxContainer" instance=ExtResource("5_lvetf")]
+layout_mode = 2
+
+[node name="TextureRect" parent="VBoxContainer/HBoxContainer/Button5/VBoxContainer/Panel" index="0"]
+material = SubResource("ShaderMaterial_rkt22")
+
+[editable path="VBoxContainer/HBoxContainer/Button1"]
+[editable path="VBoxContainer/HBoxContainer/Button2"]
+[editable path="VBoxContainer/HBoxContainer/Button3"]
+[editable path="VBoxContainer/HBoxContainer/Button4"]
+[editable path="VBoxContainer/HBoxContainer/Button5"]

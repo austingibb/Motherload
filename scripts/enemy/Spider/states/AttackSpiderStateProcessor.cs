@@ -16,7 +16,7 @@ public class AttackSpiderStateProcessor : SpiderStateProcessor
     public AttackSpiderStateProcessor(Spider spider) : base(spider) {}
 
     public float RotationDir;
-    public double ActionDuration = 1.0f;
+    public double ActionDuration = 0.75f;
     public ulong ActionStartTime = 0;
 
     public override void SetupState(StateTransition transition) 

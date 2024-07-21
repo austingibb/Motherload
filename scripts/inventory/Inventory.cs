@@ -5,7 +5,6 @@ using System.Collections.Generic;
 public partial class Inventory : Node2D
 {
     public Dictionary<DrillableType, int> inventory = new();
-    public uint Capacity;
     private uint Count;
     private HashSet<DrillableType> nonSellableDrillableTypes = new HashSet<DrillableType>();
 
@@ -14,7 +13,6 @@ public partial class Inventory : Node2D
         nonSellableDrillableTypes.Add(DrillableType.DIRT);
         nonSellableDrillableTypes.Add(DrillableType.NONE);
         
-        Capacity = 10;
         Count = 0;
         foreach (DrillableType drillableType in Enum.GetValues(typeof(DrillableType)))
         {
@@ -27,23 +25,25 @@ public partial class Inventory : Node2D
         }
     }
 
-    public bool AddToInventory(DrillableType drillableType)
+    public void AddToInventory(DrillableType drillableType)
     {
         if (nonSellableDrillableTypes.Contains(drillableType))
         {
-            return false;
+            return;
         }
 
-        if(Count < Capacity)
+        inventory[drillableType] += 1;
+        Count += 1;
+    }
+
+    public int GetValue(Dictionary<DrillableType, int> itemPrices)
+    {
+        int total = 0;
+        foreach (KeyValuePair<DrillableType, int> kvp in inventory)
         {
-            inventory[drillableType] += 1;
-            Count += 1;
-            return true;
+            total += kvp.Value * itemPrices[kvp.Key];
         }
-        else
-        {
-            return false;
-        }
+        return total;
     }
 
     public int SellAll(Dictionary<DrillableType, int> itemPrices)

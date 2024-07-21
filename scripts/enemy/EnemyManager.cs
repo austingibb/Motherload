@@ -11,7 +11,7 @@ public partial class EnemyManager : Node2D
     {
         List<ChunkItem> enemies = new List<ChunkItem>();
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 1; i++)
         {
             if (GD.Randf() > 0.01)
             {

@@ -30,7 +30,8 @@ public partial class Game : Node2D
     public TimeManager timeManager;
 
     // UI
-    public UpgradeMenu upgradeMenu;
+    public UpgradeTab drillUpgradeTab;
+    public UpgradeTab batteryUpgradeTab;
 
     // Member variables
     public int Money;
@@ -52,9 +53,14 @@ public partial class Game : Node2D
         energyBar = GetNode<ProgressBarNinePatch>("%HUD/ProgressBars//Energy") as ProgressBarNinePatch;
         energyBarAnimator = GetNode<AnimationPlayer>("%HUD/ProgressBars/Energy/AnimationPlayer");
         healthBar = GetNode<ProgressBarNinePatch>("%HUD/ProgressBars/Health") as ProgressBarNinePatch;
-        upgradeMenu = GetNode<UpgradeMenu>("%UpgradeMenu") as UpgradeMenu;
-        upgradeMenu.RegisterMoneyAuthorization(CanAfford);
-        upgradeMenu.upgrade += UpgradePurchased;
+        drillUpgradeTab = GetNode<UpgradeTab>("%UpgradeMenu/PanelContainer/TabContainer/DrillUpgrades") as UpgradeTab;
+        drillUpgradeTab.RegisterMoneyAuthorization(CanAfford);
+        drillUpgradeTab.upgrade += DrillUpgradePurchased;
+
+        batteryUpgradeTab = GetNode<UpgradeTab>("%UpgradeMenu/PanelContainer/TabContainer/BatteryUpgrades") as UpgradeTab;
+        batteryUpgradeTab.RegisterMoneyAuthorization(CanAfford);
+        batteryUpgradeTab.upgrade += BatteryUpgradePurchased;
+
         sky = GetNode<Sky>("%Sky") as Sky;
 
         Money = 0;
@@ -151,7 +157,8 @@ public partial class Game : Node2D
     public string GetInventoryString()
     {
         StringBuilder inventoryStringBuilder = new StringBuilder();
-        inventoryStringBuilder.Append($"Inventory: ({inventory.GetCount()}/{inventory.Capacity})\n");
+        int inventoryValue = inventory.GetValue(GameGridConstants.itemPrices);
+        inventoryStringBuilder.Append($"Inventory:\nCount: {inventory.GetCount()}\nValue: {inventoryValue}\n");
         foreach (KeyValuePair<DrillableType, int> kvp in inventory.inventory)
         {
             if (kvp.Key != DrillableType.DIRT)
@@ -162,9 +169,9 @@ public partial class Game : Node2D
         return inventoryStringBuilder.ToString();
     }
 
-    public void UpgradePurchased(int upgradeIndex)
+    public void DrillUpgradePurchased(int upgradeIndex)
     {
-        Upgrade upgrade = UpgradeConstants.upgrades[upgradeIndex];
+        Upgrade upgrade = UpgradeConstants.drillUpgrades[upgradeIndex];
         Money -= upgrade.cost;
         moneyLabel.Text = GetMoneyString();
 
@@ -172,6 +179,19 @@ public partial class Game : Node2D
         {
             DrillUpgrade drillUpgrade = (DrillUpgrade)upgrade;
             playerCharacter.HandleDrillUpgrade(drillUpgrade);
+        }
+    }
+
+    public void BatteryUpgradePurchased(int upgradeIndex)
+    {
+        Upgrade upgrade = UpgradeConstants.batteryUpgrades[upgradeIndex];
+        Money -= upgrade.cost;
+        moneyLabel.Text = GetMoneyString();
+
+        if (upgrade.upgradeType == UpgradeType.Battery)
+        {
+            BatteryUpgrade batteryUpgrade = (BatteryUpgrade)upgrade;
+            playerCharacter.HandleBatteryUpgrade(batteryUpgrade);
         }
     }
 
@@ -189,7 +209,7 @@ public partial class Game : Node2D
 
     public void _on_charge()
     {
-        playerCharacter.Energy = 100.0f;
+        playerCharacter.Energy = playerCharacter.MaxEnergy;
     }
 
     public void _on_upgrade()

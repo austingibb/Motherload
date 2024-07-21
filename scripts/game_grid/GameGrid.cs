@@ -84,7 +84,7 @@ public partial class GameGrid : TileMap
             }
         }
 
-        enemyManager.SpawnEnemy(new Vector2(150, 0));
+        // enemyManager.SpawnEnemy(new Vector2(150, 0));
     }
 
     public void Update(Godot.Vector2 playerPosition)
@@ -202,8 +202,8 @@ public partial class GameGrid : TileMap
         }
         chunk.ClearChunkItems();
 
-        // List<ChunkItem> enemyItems = SpawnEnemiesForChunk(chunkPosition);
-        // chunkItems.AddRange(enemyItems);
+        List<ChunkItem> enemyItems = SpawnEnemiesForChunk(chunkPosition);
+        chunkItems.AddRange(enemyItems);
     }
 
 
@@ -261,6 +261,11 @@ public partial class GameGrid : TileMap
 
         foreach (ChunkItem chunkItem in chunkItems)
         {
+            if (!IsInstanceValid((GodotObject) chunkItem))
+            {
+                continue;
+            }
+
             Vector2I chunkItemChunkPosition;
             Vector2I chunkItemChunkOffset;
             TileMapPositionToChunkPos(LocalToMap(chunkItem.GetPosition()), out chunkItemChunkPosition, out chunkItemChunkOffset);

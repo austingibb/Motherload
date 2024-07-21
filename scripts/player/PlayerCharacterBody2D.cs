@@ -40,12 +40,13 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 	private PlayerStateManager playerStateManager;
 
 	public float Energy;
+	public float MaxEnergy = PlayerConstants.BaseEnergy;
 	public float Health;
 
     public override void _Ready()
     {
 		Node2D flipper = GetNode<Node2D>("%flipper");
-		battery = GetNode<Node2D>("%body_AnimatedSprite2D/Battery/Battery1") as Battery;
+		battery = GetNode<Node2D>("%body_AnimatedSprite2D/Battery/Battery0") as Battery;
 		this.flipper = flipper;
 		Marker2D projectileSpawnPoint = GetNode<Marker2D>("%player_projectile_spawn_point");
 		this.projectileSpawnPoint = projectileSpawnPoint;
@@ -253,6 +254,16 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		DrillVerticalSpeed = PlayerConstants.BaseDrillSpeed * drillUpgrade.drillSpeedMultiplier;
 		playerShaderManager.UpdateDrills(drillUpgrade.drillType);
     }
+
+	public void HandleBatteryUpgrade(BatteryUpgrade batteryUpgrade)
+	{
+		MaxEnergy = PlayerConstants.BaseEnergy * batteryUpgrade.capacity / 100.0f;
+		Energy = MaxEnergy;
+		battery.Visible = false;
+		battery = GetNode<Node2D>("%body_AnimatedSprite2D/Battery/Battery" + batteryUpgrade.Rank()) as Battery;
+		battery.Visible = true;
+		playerAnimation.UpdateBattery(battery);
+	}
 
 	private void _on_player_animation_player_animation_finished(String anim_name) 
 	{

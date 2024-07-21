@@ -1,0 +1,36 @@
+[gd_scene load_steps=5 format=3 uid="uid://88b6erah0yks"]
+
+[ext_resource type="Script" path="res://scripts/player/battery/Battery1.cs" id="1_yd0dx"]
+[ext_resource type="Texture2D" uid="uid://chomtdfulgguc" path="res://assets/player/battery/battery_0.png" id="2_nk8pg"]
+[ext_resource type="Texture2D" uid="uid://dmcqvhlce4vwl" path="res://assets/player/battery/battery_1_charge.png" id="3_bq483"]
+[ext_resource type="Texture2D" uid="uid://bhumqdvljrfwp" path="res://assets/player/battery/battery_0_side.png" id="4_4ustw"]
+
+[node name="Battery0" type="Node2D"]
+script = ExtResource("1_yd0dx")
+
+[node name="front_Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(2.5, -0.5)
+texture = ExtResource("2_nk8pg")
+
+[node name="front_Charge" type="TextureProgressBar" parent="."]
+offset_left = 2.0
+offset_top = -2.0
+offset_right = 3.0
+offset_bottom = 2.0
+max_value = 4.0
+value = 4.0
+fill_mode = 3
+texture_progress = ExtResource("3_bq483")
+
+[node name="side_Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(2.08165e-12, -0.5)
+texture = ExtResource("4_4ustw")
+
+[node name="side_Charge" type="TextureProgressBar" parent="."]
+offset_left = -1.0
+offset_top = -2.0
+offset_bottom = 2.0
+max_value = 4.0
+value = 4.0
+fill_mode = 3
+texture_progress = ExtResource("3_bq483")

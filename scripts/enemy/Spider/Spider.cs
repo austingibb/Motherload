@@ -1,15 +1,16 @@
-using System;
 using Godot;
 
 public partial class Spider : Enemy, ChunkItem
 {
     public Node2D player;
     public CollisionPolygon2D collisionPolygon2D;
-    public double Speed = 2500.0f;
+    public double Speed = 4000.0f;
     public double OscillationSpeed = 4.0f;
     public double RotationDir = 1.0f;
     public bool IsDisabled = false;
     public SpiderStateManager spiderStateManager;
+    public ProgressBar progressBar;
+    public AnimationPlayer shaderAnimationPlayer;
 
     public override void _Ready()
     {
@@ -18,6 +19,9 @@ public partial class Spider : Enemy, ChunkItem
         this.Damage = 10;
 
         collisionPolygon2D = GetNode<CollisionPolygon2D>("CollisionPolygon2D");
+        progressBar = GetNode<ProgressBar>("%ProgressBar");
+        shaderAnimationPlayer = GetNode<AnimationPlayer>("shader_AnimationPlayer");
+
         player = GetNode<Node>("/root/Game").GetNode<Node2D>("%Player");
         Rotation = Mathf.Tau*3 + Mathf.Pi/3;
         spiderStateManager = new SpiderStateManager(this);
@@ -32,6 +36,7 @@ public partial class Spider : Enemy, ChunkItem
 
         spiderStateManager.Update(delta);
 
+        progressBar.Value = (float)Health/MaxHealth * 100.0f;
         MoveAndSlide();
     }
 
@@ -52,5 +57,15 @@ public partial class Spider : Enemy, ChunkItem
     public override Vector2 GetPosition()
     {
         return GlobalPosition;
+    }
+
+    public override void TakeDamage(float damage)
+    {
+        Health -= damage;
+        shaderAnimationPlayer.Play("hurt");
+        if (Health <= 0)
+        {
+            QueueFree();
+        }
     }
 }

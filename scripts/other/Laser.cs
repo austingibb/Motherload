@@ -37,6 +37,11 @@ public partial class Laser : CharacterBody2D
 
     private void _on_body_entered(Node2D body)
     {
+        if (body is Enemy)
+        {
+            Enemy enemy = (Enemy)body;
+            enemy.TakeDamage(10);
+        }
         QueueFree();
     }
 }

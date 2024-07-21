@@ -107,6 +107,11 @@ public partial class PlayerAnimation : GodotObject
         shaderAnimationPlayer.Play("hurt");
     }
 
+    public void UpdateBattery(Battery battery)
+    {
+        this.battery = battery;
+    }
+
     public void SetFlightState(bool isFlying)
     {
         if (isFlying)

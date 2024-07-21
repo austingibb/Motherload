@@ -25,7 +25,7 @@ public class IdleSpiderStateProcessor : SpiderStateProcessor
 
     public override StateTransition ProcessState(double delta)
     {
-        if (spider.GlobalPosition.DistanceTo(spider.player.GlobalPosition) < 200)
+        if (spider.GlobalPosition.DistanceTo(spider.player.GlobalPosition) < 150)
         {
             return new StateTransition { ToState = SpiderState.FOLLOW, TransitionData = null };
         }
@@ -43,6 +43,19 @@ public class IdleSpiderStateProcessor : SpiderStateProcessor
             else
             {
                 action = GD.RandRange(0, 3);
+            }
+
+            if (spider.GlobalPosition.Y < 100.0f)
+            {
+                if (spider.Rotation > - Mathf.Pi/2 && spider.Rotation < Mathf.Pi/2) 
+                {
+                    if (action == 3 || action == 2)
+                    {
+                        action = GD.RandRange(0, 1);
+                    }
+                } else {
+                    action = 3;
+                }
             }
 
             switch (action)

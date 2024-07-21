@@ -1,4 +1,4 @@
-[gd_scene load_steps=436 format=3 uid="uid://cwrufed6b0h7m"]
+[gd_scene load_steps=441 format=3 uid="uid://cwrufed6b0h7m"]
 
 [ext_resource type="Script" path="res://scripts/player/PlayerCharacterBody2D.cs" id="1_m1nbs"]
 [ext_resource type="Shader" path="res://scripts/shaders/player_color_adjust.gdshader" id="2_4qksy"]
@@ -35,7 +35,6 @@
 [ext_resource type="Texture2D" uid="uid://dtilpsxox2v22" path="res://assets/player/front/mload_player_mining_down_drill_arms.png" id="30_6ixnh"]
 [ext_resource type="Texture2D" uid="uid://bfvg6gds5bld2" path="res://assets/player/front/mload_player_mining_down_setup_arms.png" id="31_e4bme"]
 [ext_resource type="Texture2D" uid="uid://cvt127gbcrers" path="res://assets/player/front/mload_player_power_down_arms.png" id="32_130en"]
-[ext_resource type="PackedScene" uid="uid://cytmaqam4uu4a" path="res://scenes/battery_1.tscn" id="33_0wiym"]
 [ext_resource type="Texture2D" uid="uid://2er8xp4lcl45" path="res://assets/player/side/mload_player_side_head.png" id="33_rojek"]
 [ext_resource type="Texture2D" uid="uid://bb8dythgladis" path="res://assets/player/side/mload_player_mining_forward_front_arm.png" id="34_nt4gb"]
 [ext_resource type="Texture2D" uid="uid://bm8eqr51josh0" path="res://assets/player/front/mload_player_front_solar_panel_deploy.png" id="34_og0hw"]
@@ -55,6 +54,12 @@
 [ext_resource type="Texture2D" uid="uid://b8s08b4sgidtj" path="res://assets/player/jets/foot_jets.png" id="46_1j81h"]
 [ext_resource type="Script" path="res://scripts/player/PlayerShaderManager.cs" id="49_ccio1"]
 [ext_resource type="PackedScene" uid="uid://bdbgvfmne2wld" path="res://scenes/drill_color_replacements.tscn" id="50_258eg"]
+[ext_resource type="PackedScene" uid="uid://88b6erah0yks" path="res://scenes/player/battery_0.tscn" id="53_k6py7"]
+[ext_resource type="PackedScene" uid="uid://bfy6hekafyppf" path="res://scenes/player/battery_1.tscn" id="54_hien0"]
+[ext_resource type="PackedScene" uid="uid://2fnl6nscgxpk" path="res://scenes/player/battery_2.tscn" id="55_drtwh"]
+[ext_resource type="PackedScene" uid="uid://cryoaby3gsnas" path="res://scenes/player/battery_3.tscn" id="56_h3ief"]
+[ext_resource type="PackedScene" uid="uid://eafjl4ghvsh4" path="res://scenes/player/battery_4.tscn" id="57_7jn0b"]
+[ext_resource type="PackedScene" uid="uid://cytmaqam4uu4a" path="res://scenes/player/battery_5.tscn" id="58_4fjaj"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4jutj"]
 
@@ -6082,12 +6087,21 @@ libraries = {
 [node name="Battery" type="Node2D" parent="flipper/body_AnimatedSprite2D"]
 position = Vector2(2.08165e-12, 1)
 
-[node name="Battery1" parent="flipper/body_AnimatedSprite2D/Battery" instance=ExtResource("33_0wiym")]
+[node name="Battery0" parent="flipper/body_AnimatedSprite2D/Battery" instance=ExtResource("53_k6py7")]
 
-[node name="side_Sprite2D" parent="flipper/body_AnimatedSprite2D/Battery/Battery1" index="2"]
+[node name="Battery1" parent="flipper/body_AnimatedSprite2D/Battery" instance=ExtResource("54_hien0")]
 visible = false
 
-[node name="side_Charge" parent="flipper/body_AnimatedSprite2D/Battery/Battery1" index="3"]
+[node name="Battery2" parent="flipper/body_AnimatedSprite2D/Battery" instance=ExtResource("55_drtwh")]
+visible = false
+
+[node name="Battery3" parent="flipper/body_AnimatedSprite2D/Battery" instance=ExtResource("56_h3ief")]
+visible = false
+
+[node name="Battery4" parent="flipper/body_AnimatedSprite2D/Battery" instance=ExtResource("57_7jn0b")]
+visible = false
+
+[node name="Battery5" parent="flipper/body_AnimatedSprite2D/Battery" instance=ExtResource("58_4fjaj")]
 visible = false
 
 [node name="shaderManager" type="Node2D" parent="flipper/body_AnimatedSprite2D"]
@@ -6126,5 +6140,3 @@ shape = ExtResource("2_h73lu")
 
 [connection signal="animation_finished" from="flipper/body_AnimatedSprite2D/player_AnimationPlayer" to="." method="_on_player_animation_player_animation_finished"]
 [connection signal="body_entered" from="HitBox" to="." method="_on_hit_box_body_entered"]
-
-[editable path="flipper/body_AnimatedSprite2D/Battery/Battery1"]

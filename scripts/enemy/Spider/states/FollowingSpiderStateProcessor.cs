@@ -14,15 +14,20 @@ public class FollowingSpiderStateProcessor : SpiderStateProcessor
 
     public override StateTransition ProcessState(double delta)
     {
-        if (spider.GlobalPosition.DistanceTo(spider.player.GlobalPosition) > 200)
+        if (spider.GlobalPosition.DistanceTo(spider.player.GlobalPosition) > 150)
         {
             return new StateTransition { ToState = SpiderState.IDLE, TransitionData = null };
-        } else if (spider.GlobalPosition.DistanceTo(spider.player.GlobalPosition) < 50)
+        } else if (spider.GlobalPosition.DistanceTo(spider.player.GlobalPosition) < 60 && spider.GlobalPosition.Y > 100.0f)
         {
             return new StateTransition { ToState = SpiderState.ATTACK, TransitionData = null };
         }
 
-        float angleToPlayer = spider.GlobalPosition.DirectionTo(spider.player.GlobalPosition).Angle();
+        Vector2 targetPosition = spider.player.GlobalPosition;
+        if (spider.GlobalPosition.Y < 100.0f)
+        {
+            targetPosition = new Vector2(spider.player.GlobalPosition.X, 100.0f);
+        }
+        float angleToPlayer = spider.GlobalPosition.DirectionTo(targetPosition).Angle();
         float angleDiff;
         float direction;
         Common.GetAngleDiff(spider.Rotation - Mathf.Pi/2, angleToPlayer, out direction, out angleDiff);

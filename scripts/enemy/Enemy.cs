@@ -11,4 +11,6 @@ public abstract partial class Enemy : Godot.CharacterBody2D, ChunkItem
     public abstract void Enable();
 
     public abstract Vector2 GetPosition();
+
+    public abstract void TakeDamage(float damage);
 }

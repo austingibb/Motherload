@@ -6,11 +6,11 @@ public partial class UpgradeStation : StaticBody2D
     [Signal]
     public delegate void upgradeEventHandler();
 
-    public UpgradeMenu upgradeMenu;
+    public CanvasLayer upgradeMenu;
 
     public override void _Ready()
     {
-        upgradeMenu = GetNode<UpgradeMenu>("%UpgradeMenu");
+        upgradeMenu = GetNode<CanvasLayer>("%UpgradeMenu");
         upgradeMenu.Visible = false;
     }
 

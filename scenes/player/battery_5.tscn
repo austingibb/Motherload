@@ -1,0 +1,56 @@
+[gd_scene load_steps=8 format=3 uid="uid://cytmaqam4uu4a"]
+
+[ext_resource type="Script" path="res://scripts/player/battery/Battery5.cs" id="1_3vp58"]
+[ext_resource type="Texture2D" uid="uid://cctk0kgnu86y8" path="res://assets/player/battery/battery_5_foreground.png" id="2_1ihkv"]
+[ext_resource type="Texture2D" uid="uid://dp75tu5s2lhbt" path="res://assets/player/battery/battery_5_charge.png" id="3_30ctw"]
+[ext_resource type="Texture2D" uid="uid://dctmxv3gtol12" path="res://assets/player/battery/battery_5_background.png" id="4_50puv"]
+[ext_resource type="Texture2D" uid="uid://b5miw3a2yexvc" path="res://assets/player/battery/battery_5_side_foreground.png" id="5_ou3ep"]
+[ext_resource type="Texture2D" uid="uid://caq72ni2k4626" path="res://assets/player/battery/battery_5_side_charge.png" id="6_grhhm"]
+[ext_resource type="Texture2D" uid="uid://b52htrxs3s1ue" path="res://assets/player/battery/battery_5_side_background.png" id="7_7x8pc"]
+
+[node name="Battery5" type="Node2D"]
+script = ExtResource("1_3vp58")
+
+[node name="front" type="Node2D" parent="."]
+
+[node name="front_Sprite2D" type="Sprite2D" parent="front"]
+z_index = 2
+position = Vector2(2.5, -0.5)
+texture = ExtResource("2_1ihkv")
+
+[node name="front_Charge" type="TextureProgressBar" parent="front"]
+z_index = 1
+offset_top = -4.0
+offset_right = 5.0
+offset_bottom = 3.0
+max_value = 7.0
+value = 6.0
+fill_mode = 3
+texture_progress = ExtResource("3_30ctw")
+
+[node name="back_Sprite2D" type="Sprite2D" parent="front"]
+position = Vector2(2.5, -0.5)
+texture = ExtResource("4_50puv")
+
+[node name="side" type="Node2D" parent="."]
+visible = false
+
+[node name="side_Sprite2D" type="Sprite2D" parent="side"]
+z_index = 2
+position = Vector2(2.08165e-12, -0.5)
+texture = ExtResource("5_ou3ep")
+
+[node name="side_Charge" type="TextureProgressBar" parent="side"]
+z_index = 1
+offset_left = -1.0
+offset_top = -4.0
+offset_right = 1.0
+offset_bottom = 3.0
+max_value = 7.0
+value = 5.0
+fill_mode = 3
+texture_progress = ExtResource("6_grhhm")
+
+[node name="side_back_Sprite2D" type="Sprite2D" parent="side"]
+position = Vector2(2.08165e-12, -0.5)
+texture = ExtResource("7_7x8pc")
