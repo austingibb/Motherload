@@ -165,6 +165,8 @@ public partial class GameGrid : TileMap
         if (!gameGridChunks.ContainsKey(chunkPosition))
         {
             chunk = GenerateChunk(chunkPosition);
+            List<ChunkItem> enemyItems = SpawnEnemiesForChunk(chunkPosition);
+            chunkItems.AddRange(enemyItems);
             gameGridChunks.Add(chunkPosition, chunk);
         } else {
             chunk = gameGridChunks[chunkPosition];
@@ -201,9 +203,6 @@ public partial class GameGrid : TileMap
             chunkItem.Enable();
         }
         chunk.ClearChunkItems();
-
-        List<ChunkItem> enemyItems = SpawnEnemiesForChunk(chunkPosition);
-        chunkItems.AddRange(enemyItems);
     }
 
 
@@ -508,6 +507,11 @@ public partial class GameGrid : TileMap
             return 0;
         }
         return depth;
+    }
+
+    public Vector2 GetTileDistanceBetweenPoints(Vector2 point1, Vector2 point2)
+    {
+        return new Vector2(Math.Abs(point1.X - point2.X)/TileSet.TileSize.X, Math.Abs(point1.Y - point2.Y)/TileSet.TileSize.Y);
     }
 
     public void _on_drillable_pre_dug(Drillable drillable, DrillFromDirection direction)

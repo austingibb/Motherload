@@ -4,7 +4,6 @@ using Godot.NativeInterop;
 
 public class AirbornePlayerStateProcessor : PlayerStateProcessor
 {
-
     public enum AirbornePlayerState 
     {
         FLYING,
@@ -15,6 +14,7 @@ public class AirbornePlayerStateProcessor : PlayerStateProcessor
     }
 
     public AirbornePlayerState airbornePlayerState = AirbornePlayerState.NONE;
+    public Vector2 launchPoint;
 
     public AirbornePlayerStateProcessor(PlayerCharacterBody2D playerCharacterBody2D) : base(playerCharacterBody2D) {}
 
@@ -35,6 +35,8 @@ public class AirbornePlayerStateProcessor : PlayerStateProcessor
                 airbornePlayerState = AirbornePlayerState.FALLING_STATIC;
             }
         }
+
+        launchPoint = player.GlobalPosition;
     }
 
     public override StateTransition ProcessState(double delta)
@@ -61,7 +63,14 @@ public class AirbornePlayerStateProcessor : PlayerStateProcessor
             if (Input.IsActionPressed("fly"))
             {
                 playerAnimation.UpdateAnimation(PlayerAnimationState.Launch);
-                directionHeld = DrillFromDirection.DOWN;
+                if (Input.IsActionPressed("move_left") || Input.IsActionPressed("move_right"))
+                {
+                    directionHeld = DrillFromDirection.NONE;
+                }
+                else
+                {
+                    directionHeld = DrillFromDirection.DOWN;
+                }   
                 airbornePlayerState = AirbornePlayerState.FLYING;
             }
             else if (player.Velocity.Y > 0)
@@ -73,7 +82,18 @@ public class AirbornePlayerStateProcessor : PlayerStateProcessor
                 }
             }
 
-            Node2D readyDrillable = playerDrillables.DirectionHeld(directionHeld, delta);
+            float verticalUnitDistance = player.getUnitDistanceBetweenPoints(launchPoint, player.GlobalPosition).Y;
+            float digUpResistance;
+            if (verticalUnitDistance < 3)
+            {
+                digUpResistance = 0;
+            }
+            else
+            {
+                digUpResistance = (verticalUnitDistance - 3) / PlayerConstants.UnitHeightDigUpResistance;
+            }
+            GD.Print("Vertical unit distance: " + verticalUnitDistance + " Dig up resistance: " + digUpResistance);
+            Node2D readyDrillable = playerDrillables.DirectionHeld(directionHeld, delta, digUpResistance);
             if (readyDrillable != null)
             {
                 return new StateTransition { ToState = PlayerState.Drilling, TransitionData = directionHeld };

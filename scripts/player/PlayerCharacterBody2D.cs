@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+public delegate Vector2 GetUnitDistanceBetweenPoints(Vector2 point1, Vector2 point2);
 
 public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 {
@@ -42,6 +43,8 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 	public float Energy;
 	public float MaxEnergy = PlayerConstants.BaseEnergy;
 	public float Health;
+
+	public GetUnitDistanceBetweenPoints getUnitDistanceBetweenPoints;
 
     public override void _Ready()
     {
@@ -201,7 +204,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		}
 
 		Energy -= delta / 4.0f * EnergyLossScale;
-		if (playerStateManager.currentState == PlayerState.Airborne)
+		if (playerStateManager.currentState == PlayerState.Airborne && Input.IsActionPressed("fly"))
 		{
 			Energy -= delta * EnergyLossScale;
 		} else if (playerStateManager.currentState == PlayerState.Drilling)
@@ -282,5 +285,10 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 	private bool IsFacingLeft() 
 	{
 		return this.flipper.Scale.X > 0;
+	}
+
+	public void SetUnitDistanceDelegate(GetUnitDistanceBetweenPoints getUnitDistanceBetweenPoints)
+	{
+		this.getUnitDistanceBetweenPoints = getUnitDistanceBetweenPoints;
 	}
 }

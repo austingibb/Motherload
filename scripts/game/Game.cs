@@ -44,6 +44,7 @@ public partial class Game : Node2D
         gameGrid = GetNode<TileMap>("%GameGrid") as GameGrid;
         gameGrid.drillableDug += _on_drillable_dug;
         gameGrid.itemSpawned += _on_item_spawned;
+        playerCharacter.SetUnitDistanceDelegate(gameGrid.GetTileDistanceBetweenPoints);
         inventory = GetNode<Inventory>("%Inventory") as Inventory;
         hud = GetNode<CanvasLayer>("%HUD") as CanvasLayer;
         hud.Visible = true;

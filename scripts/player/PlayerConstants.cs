@@ -35,4 +35,5 @@ class PlayerConstants
     public const float BaseDrillSpeed = 80.0f;
     public const float BaseEnergyLossScale = 3.0f;
     public const float BaseEnergy = 100.0f;
+    public const float UnitHeightDigUpResistance = 3;
 }

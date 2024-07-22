@@ -133,7 +133,7 @@ public class GroundedPlayerStateProcessor : PlayerStateProcessor
     {
         if (animationName == "land" || animationName == "land_soft")
         {
-            GD.Print("Grounded animation finished: " + animationName);
+            // GD.Print("Grounded animation finished: " + animationName);
             groundedPlayerState = GroundedPlayerStates.IDLE;
         }
     }

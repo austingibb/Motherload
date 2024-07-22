@@ -26,7 +26,7 @@ public class UpgradeConstants
         {
             upgradeType = UpgradeType.Battery,
             batteryType = BatteryType.PINK,
-            cost = 5_000,
+            cost = 2_000,
             description = "Increase battery capacity by 75%",
             name = "Overcharged Standard Battery",
             capacity = 175
@@ -35,7 +35,7 @@ public class UpgradeConstants
         {
             upgradeType = UpgradeType.Battery,
             batteryType = BatteryType.GOLD,
-            cost = 20_000,
+            cost = 5_000,
             description = "Increase battery capacity by 100%",
             name = "Gold Battery",
             capacity = 200
@@ -44,7 +44,7 @@ public class UpgradeConstants
         {
             upgradeType = UpgradeType.Battery,
             batteryType = BatteryType.TITANIUM,
-            cost = 50_000,
+            cost = 20_000,
             description = "Increase battery capacity by 150%",
             name = "Titanium Battery",
             capacity = 250
@@ -53,7 +53,7 @@ public class UpgradeConstants
         {
             upgradeType = UpgradeType.Battery,
             batteryType = BatteryType.HUGE,
-            cost = 200_000,
+            cost = 50_000,
             description = "Increase battery capacity by 200%",
             name = "Huge Battery",
             capacity = 300
@@ -84,7 +84,7 @@ public class UpgradeConstants
         {
             upgradeType = UpgradeType.Drill,
             drillType = DrillType.Topaz,
-            cost = 5_000,
+            cost = 2_000,
             description = "Increase drill speed by 50%",
             name = "Topaz Drill",
             drillSpeedMultiplier = 1.5f
@@ -93,7 +93,7 @@ public class UpgradeConstants
         {
             upgradeType = UpgradeType.Drill,
             drillType = DrillType.Sapphire,
-            cost = 20_000,
+            cost = 5_000,
             description = "Increase drill speed by 75%",
             name = "Saphphire Drill",
             drillSpeedMultiplier = 1.75f
@@ -102,7 +102,7 @@ public class UpgradeConstants
         {
             upgradeType = UpgradeType.Drill,
             drillType = DrillType.Diamond,
-            cost = 50_000,
+            cost = 20_000,
             description = "Increase drill speed by 100%",
             name = "Diamond Drill",
             drillSpeedMultiplier = 2.0f
@@ -111,7 +111,7 @@ public class UpgradeConstants
         {
             upgradeType = UpgradeType.Drill,
             drillType = DrillType.QCarbon,
-            cost = 200_000,
+            cost = 50_000,
             description = "Increase drill speed by 150%",
             name = "QCarbon Drill",
             drillSpeedMultiplier = 2.25f

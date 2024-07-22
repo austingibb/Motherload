@@ -129,7 +129,7 @@ public partial class PlayerAnimation : GodotObject
         if (_currentState == state)
             return;
         
-        GD.Print("Switching to state: ", state);
+        // GD.Print("Switching to state: ", state);
 
         if (state != PlayerAnimationState.DrillLeft && state != PlayerAnimationState.DrillRight && state != PlayerAnimationState.SetupDrillLeft && state != PlayerAnimationState.SetupDrillRight)
         {

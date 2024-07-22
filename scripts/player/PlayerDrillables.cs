@@ -31,11 +31,11 @@ public class PlayerDrillables
 
     public Drillable ActiveDrillable = null;
     private const double TimeToStartDrilling = 0.1;
-    private const double TimeToStartDrillingUp = 0.3;
+    private const double AdditionalTimeToStartDrillingUp = 0.3;
     private Dictionary<DrillFromDirection, DrillableDictValue> drillables = new();
     DrillFromDirection currentPendingDirection = DrillFromDirection.NONE;
 
-    public Node2D DirectionHeld(DrillFromDirection direction, double delta)
+    public Node2D DirectionHeld(DrillFromDirection direction, double delta, float digUpResistance = 0)
     {
         if (currentPendingDirection != direction) {
             foreach (KeyValuePair<DrillFromDirection, DrillableDictValue> kvp in drillables)
@@ -60,7 +60,13 @@ public class PlayerDrillables
                 drillableDictValue.AddToDrillableTime(delta);
             }
 
-            double targetTime = (currentPendingDirection == DrillFromDirection.DOWN) ? TimeToStartDrillingUp : TimeToStartDrilling;
+            double targetTime = TimeToStartDrilling;
+
+            if (currentPendingDirection == DrillFromDirection.DOWN)
+            {
+                targetTime = TimeToStartDrilling + digUpResistance * AdditionalTimeToStartDrillingUp;
+                targetTime = Mathf.Clamp(targetTime, TimeToStartDrilling, TimeToStartDrilling + AdditionalTimeToStartDrillingUp);
+            }
 
             if (drillableDictValue.TimeActive > targetTime)
             {
