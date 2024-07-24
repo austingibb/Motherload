@@ -92,7 +92,7 @@ public class AirbornePlayerStateProcessor : PlayerStateProcessor
             {
                 digUpResistance = (verticalUnitDistance - 3) / PlayerConstants.UnitHeightDigUpResistance;
             }
-            GD.Print("Vertical unit distance: " + verticalUnitDistance + " Dig up resistance: " + digUpResistance);
+
             Node2D readyDrillable = playerDrillables.DirectionHeld(directionHeld, delta, digUpResistance);
             if (readyDrillable != null)
             {

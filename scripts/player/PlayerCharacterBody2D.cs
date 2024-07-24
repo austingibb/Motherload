@@ -165,6 +165,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		} else {
 			headAnimation.Rotation = 0;
 		}
+		// GD.Print("Rotation: " + headAnimation.Rotation/Mathf.Pi);
 	}
 
 	private void HandleTestInput()

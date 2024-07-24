@@ -15,32 +15,22 @@ public class AttackSpiderStateProcessor : SpiderStateProcessor
 
     public AttackSpiderStateProcessor(Spider spider) : base(spider) {}
 
-    public float RotationDir;
+    public float Rotation;
     public double ActionDuration = 0.75f;
     public ulong ActionStartTime = 0;
 
     public override void SetupState(StateTransition transition) 
     {
+        Rotation = spider.Rotation;
         attackSpiderState = AttackSpiderState.ROTATE;
         spider.Velocity = Vector2.Zero;
-        float angleToPlayer = spider.GlobalPosition.DirectionTo(spider.player.GlobalPosition).Angle();
-        float angleDiff;
-        float direction;
-        Common.GetAngleDiff(spider.Rotation - Mathf.Pi/2, angleToPlayer, out direction, out angleDiff);
-        RotationDir = direction;
     }
 
     public override StateTransition ProcessState(double delta)
     {
         if (attackSpiderState == AttackSpiderState.ROTATE)
         {
-            float angleToPlayer = spider.GlobalPosition.DirectionTo(spider.player.GlobalPosition).Angle();
-            float angleDiff;
-            float direction;
-            Common.GetAngleDiff(spider.Rotation - Mathf.Pi/2, angleToPlayer, out direction, out angleDiff);
-            
-            spider.Rotation += (float) (spider.OscillationSpeed * delta * RotationDir);
-            if (Mathf.Abs(angleDiff) < 0.1)
+            if (FacePlayer(ref Rotation, delta))
             {
                 attackSpiderState = AttackSpiderState.ATTACK;
                 ActionStartTime = Time.GetTicksUsec();

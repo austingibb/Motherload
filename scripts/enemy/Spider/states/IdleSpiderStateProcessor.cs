@@ -18,10 +18,20 @@ public class IdleSpiderStateProcessor : SpiderStateProcessor
 
     public double ActionDuration = 0;
     public ulong ActionStartTime = 0;
+    public int StartAction = 3;
 
     public IdleSpiderStateProcessor(Spider spider) : base(spider) {}
 
-    public override void SetupState(StateTransition transition) {}
+    public override void SetupState(StateTransition transition) 
+    {
+        if (transition.FromState == SpiderState.FOLLOW || transition.FromState == SpiderState.ATTACK)
+        {
+            StartAction = 3;
+        } else
+        {
+            StartAction = -1;
+        }
+    }
 
     public override StateTransition ProcessState(double delta)
     {
@@ -35,14 +45,21 @@ public class IdleSpiderStateProcessor : SpiderStateProcessor
         if (timeElapsed > ActionDuration)
         {
             int action;
-            spider.Velocity = Vector2.Zero;
-            if (idleSpiderState == IdleSpiderState.TURN_LEFT || idleSpiderState == IdleSpiderState.TURN_RIGHT)
+            if (StartAction != -1)
             {
-                action = GD.RandRange(2, 3);
-            }
-            else
+                action = StartAction;
+                StartAction = -1;
+            } else
             {
-                action = GD.RandRange(0, 3);
+                spider.Velocity = Vector2.Zero;
+                if (idleSpiderState == IdleSpiderState.TURN_LEFT || idleSpiderState == IdleSpiderState.TURN_RIGHT)
+                {
+                    action = GD.RandRange(2, 3);
+                }
+                else
+                {
+                    action = GD.RandRange(0, 3);
+                }
             }
 
             if (spider.GlobalPosition.Y < 100.0f)
