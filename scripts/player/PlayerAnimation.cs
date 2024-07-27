@@ -31,6 +31,12 @@ public enum PlayerAnimationState
     PowerDown
 }
 
+public enum PlayerHeadState
+{
+    LookSide,
+    LookDown
+}
+
 public partial class PlayerAnimation : GodotObject
 {
     Node2D flipper;
@@ -39,8 +45,10 @@ public partial class PlayerAnimation : GodotObject
     public Node2D sideSprites;
     public AnimatedSprite2D jetAnimation;
     public AnimationPlayer animationPlayer;
+    public AnimationPlayer headAnimationPlayer;
     public AnimationPlayer shaderAnimationPlayer;
     public PlayerAnimationState _currentState;
+    public PlayerHeadState _currentHeadState;
     public PlayerAnimationState _previousState;
     public Battery battery;
 
@@ -78,7 +86,7 @@ public partial class PlayerAnimation : GodotObject
     };
 
     public PlayerAnimation(Node2D flipper, AnimatedSprite2D bodyAnimation, AnimatedSprite2D jetAnimation, Node2D frontSprites, Node2D sideSprites,
-        AnimationPlayer animationPlayer, AnimationPlayer shaderAnimationPlayer, Battery battery)
+        AnimationPlayer animationPlayer, AnimationPlayer headAnimationPlayer, AnimationPlayer shaderAnimationPlayer, Battery battery)
     {
         this.flipper = flipper;
         this.frontSprites = frontSprites;
@@ -86,6 +94,7 @@ public partial class PlayerAnimation : GodotObject
         this.bodyAnimation = bodyAnimation;
         this.jetAnimation = jetAnimation;
         this.animationPlayer = animationPlayer;
+        this.headAnimationPlayer = headAnimationPlayer;
         this.shaderAnimationPlayer = shaderAnimationPlayer;
         this.battery = battery;
         this._currentState = PlayerAnimationState.Idle;
@@ -122,6 +131,26 @@ public partial class PlayerAnimation : GodotObject
         {
             jetAnimation.Visible = false;
         }
+    }
+
+    public void SetHeadAnimation(PlayerHeadState playerHeadState)
+    {
+        if (_currentHeadState == playerHeadState)
+            return;
+
+        headAnimationPlayer.SpeedScale = 2.0f;
+
+        switch (playerHeadState)
+        {
+            case PlayerHeadState.LookSide:
+                headAnimationPlayer.Play("down_to_side");
+                break;
+            case PlayerHeadState.LookDown:
+                headAnimationPlayer.Play("side_to_down");
+                break;
+            
+        }
+        _currentHeadState = playerHeadState;
     }
 
     public void UpdateAnimation(PlayerAnimationState state)

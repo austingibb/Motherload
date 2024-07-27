@@ -38,4 +38,9 @@ public partial class Common
             direction *= -1;
         }
     }
+
+    public static float FlipAngleYAxis(float angle)
+    {
+        return (Mathf.Pi - Mathf.Abs(angle)) * Mathf.Sign(angle);
+    }
 }

@@ -23,6 +23,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 	public AnimatedSprite2D bodyAnimation;
 	public AnimatedSprite2D frontHeadAnimation;
 	public AnimatedSprite2D sideHeadAnimation;
+	public Vector2 sideHeadAnimationPosition;
 
 	public RayCast2D leftRay;
 	public RayCast2D rightRay;
@@ -30,7 +31,10 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 	public RayCast2D downRay;
 
 	public Node2D flipper;
-	public Marker2D projectileSpawnPoint;
+	public Node2D frontHeadProjectileParent;
+	public Marker2D projectileSpawnPointFront;
+	public Marker2D projectileSpawnPointSide;
+	public Marker2D activeProjectileSpawnPoint;
 
 	public Battery battery;
 
@@ -51,12 +55,16 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		Node2D flipper = GetNode<Node2D>("%flipper");
 		battery = GetNode<Node2D>("%body_AnimatedSprite2D/Battery/Battery0") as Battery;
 		this.flipper = flipper;
-		Marker2D projectileSpawnPoint = GetNode<Marker2D>("%player_projectile_spawn_point");
-		this.projectileSpawnPoint = projectileSpawnPoint;
+		frontHeadProjectileParent = GetNode<Node2D>("%front_head_projectile_spawn");
+		projectileSpawnPointFront = GetNode<Marker2D>("%player_front_head_projectile_spawn_point");
+		projectileSpawnPointSide = GetNode<Marker2D>("%player_side_head_projectile_spawn_point");
+		activeProjectileSpawnPoint = projectileSpawnPointFront;
+
 		laserScene = GD.Load<PackedScene>("res://scenes/laser.tscn");
 		AnimatedSprite2D bodyAnimation = GetNode<AnimatedSprite2D>("%body_AnimatedSprite2D");
 		AnimatedSprite2D frontHeadAnimation = GetNode<AnimatedSprite2D>("%front_head_AnimatedSprite2D");
 		AnimatedSprite2D sideHeadAnimation = GetNode<AnimatedSprite2D>("%side_head_AnimatedSprite2D");
+		sideHeadAnimationPosition = sideHeadAnimation.Position;
 
 		leftRay = GetNode<RayCast2D>("raycasts/left_RayCast2D");
 		rightRay = GetNode<RayCast2D>("raycasts/right_RayCast2D");
@@ -70,12 +78,13 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		Node2D sideSprites = GetNode<Node2D>("%body_AnimatedSprite2D/side");
 		AnimatedSprite2D jetAnimation = GetNode<AnimatedSprite2D>("%jet_AnimatedSprite2D");
 		AnimationPlayer animationPlayer = GetNode<AnimationPlayer>("%player_AnimationPlayer");
+		AnimationPlayer headAnimationPlayer = GetNode<AnimationPlayer>("%head_AnimationPlayer");
 		AnimationPlayer shaderAnimationPlayer = GetNode<AnimationPlayer>("%shader_AnimationPlayer");
 		playerShaderManager = GetNode<Node2D>("%shaderManager") as PlayerShaderManager;	
 		playerShaderManager.UpdateDrills(DrillType.Base);
 
 		playerAnimation = new PlayerAnimation(flipper, bodyAnimation, jetAnimation, frontSprites, sideSprites,
-			animationPlayer, shaderAnimationPlayer, battery);
+			animationPlayer, headAnimationPlayer, shaderAnimationPlayer, battery);
 
 		SurroundingDrillables = new List<List<Drillable>>();
 		for (int i = 0; i < 3; i++)
@@ -99,8 +108,16 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		HandleEnergy((float)delta);
 		HandleRaycastChecks();
 		battery.SetCharge(Energy/100.0f);
-		HandleHead((float)delta, frontHeadAnimation);
-		HandleHead((float)delta, sideHeadAnimation);
+		HandleSideHead((float) delta);
+		HandleFrontHead((float) delta);
+
+		if (playerAnimation.IsFacingForward())
+		{
+			activeProjectileSpawnPoint = projectileSpawnPointFront;
+		} else 
+		{
+			activeProjectileSpawnPoint = projectileSpawnPointSide;
+		}
 
 		if (Input.IsActionJustPressed("fire") && playerStateManager.CanShoot())
 		{
@@ -129,7 +146,8 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 			if (direction != DrillFromDirection.UP || Mathf.Abs(drillable.GlobalPosition.X - GlobalPosition.X) < 12.0f)
 			{
 				playerDrillables.RegisterDrillable(drillable, direction);
-			} else {
+			} else 
+			{
 				playerDrillables.UnregisterDrillable(direction);
 			}
 		} else if (!ray.IsColliding())
@@ -138,7 +156,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		}
 	}
 
-	private void HandleHead(float delta, Node2D headAnimation) 
+	private void HandleFrontHead(float delta) 
 	{
 		bool isPlayerFacingMouse = ((IsFacingLeft() && (GetGlobalMousePosition().X < this.GlobalPosition.X)) 
 		|| (!IsFacingLeft() && (GetGlobalMousePosition().X > this.GlobalPosition.X)));
@@ -147,25 +165,77 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 			this.flipper.Scale = new Vector2(this.flipper.Scale.X * -1, this.flipper.Scale.Y);
 		}
 
-		bool allowRotation = isPlayerFacingMouse && playerStateManager.CanShoot();
+		bool isFlipped = this.flipper.Scale.X < 0;
 
-		if (allowRotation)
+		if (playerStateManager.CanShoot())
 		{
-			headAnimation.GlobalRotation = headAnimation.GlobalPosition.AngleToPoint(GetGlobalMousePosition()) 
-			+ Mathf.DegToRad(180);
-			if (headAnimation.Rotation > Mathf.DegToRad(180))
+			float angleToMouse = frontHeadAnimation.Position.AngleToPoint(GetLocalMousePosition());
+			float angleToMouseLocal = angleToMouse -= Rotation;
+
+			if (!isFlipped) 
 			{
-				headAnimation.Rotation -= Mathf.DegToRad(360); 
+				angleToMouseLocal = Common.FlipAngleYAxis(angleToMouseLocal);
 			}
 
-			if (headAnimation.Rotation < Mathf.DegToRad(-75))
+			float targetRotation = 0;
+			if (angleToMouseLocal > Mathf.DegToRad(-90) && angleToMouseLocal < Mathf.DegToRad(50))
 			{
-				headAnimation.Rotation = Mathf.DegToRad(-75);
+				playerAnimation.SetHeadAnimation(PlayerHeadState.LookSide);
+				targetRotation = Common.FlipAngleYAxis(angleToMouseLocal + Mathf.Pi);
+			} else if (angleToMouseLocal >= Mathf.DegToRad(50) && angleToMouseLocal <= Mathf.DegToRad(90))
+			{
+				playerAnimation.SetHeadAnimation(PlayerHeadState.LookDown);
+				targetRotation = Common.FlipAngleYAxis(angleToMouseLocal + Mathf.Pi/2);
 			}
-		} else {
-			headAnimation.Rotation = 0;
+
+			float result = Common.MoveToward(frontHeadAnimation.Rotation, targetRotation, delta * 10.0f);
+			frontHeadAnimation.Rotation = result;
+			frontHeadProjectileParent.Rotation = Common.FlipAngleYAxis(angleToMouseLocal + Mathf.Pi);
+		} else 
+		{
+			frontHeadAnimation.Rotation = 0;
+			frontHeadProjectileParent.Rotation = 0;
 		}
-		// GD.Print("Rotation: " + headAnimation.Rotation/Mathf.Pi);
+	}
+
+	private void HandleSideHead(float delta)
+	{
+		bool isPlayerFacingMouse = ((IsFacingLeft() && (GetGlobalMousePosition().X < this.GlobalPosition.X)) 
+		|| (!IsFacingLeft() && (GetGlobalMousePosition().X > this.GlobalPosition.X)));
+
+		bool isFlipped = this.flipper.Scale.X < 0;
+		
+		float angleToMouse = frontHeadAnimation.Position.AngleToPoint(GetLocalMousePosition());
+		float angleToMouseLocal = angleToMouse -= Rotation;
+
+		if (!isFlipped) 
+		{
+			angleToMouseLocal = Common.FlipAngleYAxis(angleToMouseLocal);
+		}
+
+		if (isPlayerFacingMouse && playerStateManager.CanShoot())
+		{
+			float xOffset = 0;
+			float angleToMouseLocalLimited = angleToMouseLocal;
+			if (angleToMouseLocal > Mathf.DegToRad(65))
+			{
+				angleToMouseLocalLimited = Mathf.DegToRad(65);
+			}
+			
+			if (angleToMouseLocalLimited > Mathf.DegToRad(50)) 
+			{
+				xOffset = -3.0f*(angleToMouseLocalLimited - Mathf.DegToRad(50))/Mathf.DegToRad(40);
+			}
+			
+			sideHeadAnimation.Rotation = Common.FlipAngleYAxis(angleToMouseLocalLimited + Mathf.Pi);
+			sideHeadAnimation.Position = new Vector2(sideHeadAnimationPosition.X + xOffset, sideHeadAnimation.Position.Y);
+			float projectileSpawnAngleToMouse = projectileSpawnPointSide.GlobalPosition.AngleToPoint(GetGlobalMousePosition());
+			projectileSpawnPointSide.GlobalRotation = projectileSpawnAngleToMouse + Mathf.Pi;
+		} else {
+			sideHeadAnimation.Position = new Vector2(sideHeadAnimationPosition.X, sideHeadAnimation.Position.Y);
+			sideHeadAnimation.Rotation = 0;
+			projectileSpawnPointSide.Rotation = 0;
+		}
 	}
 
 	private void HandleTestInput()
@@ -234,7 +304,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 	public void Shoot()
 	{
 		Laser laser = laserScene.Instantiate() as Laser;
-		laser.transformSource = projectileSpawnPoint;
+		laser.transformSource = activeProjectileSpawnPoint;
 		laser.flipDirection = true;
 		laser.ZIndex = 2;
 		Node2D projectiles = GetParent().GetNode<Node2D>("Projectiles");
