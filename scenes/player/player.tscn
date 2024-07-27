@@ -5604,7 +5604,7 @@ tracks/11/keys = {
 "values": [&"deploy"]
 }
 
-[sub_resource type="Animation" id="Animation_owg24"]
+[sub_resource type="Animation" id="Animation_sqnum"]
 resource_name = "walk_forward"
 length = 1.6
 loop_mode = 1
@@ -5615,10 +5615,10 @@ tracks/0/path = NodePath("flipper/body_AnimatedSprite2D:animation")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 1.6),
+"transitions": PackedFloat32Array(1, 1),
 "update": 1,
-"values": [&"walk"]
+"values": [&"walk", &"walk"]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -5639,10 +5639,10 @@ tracks/2/path = NodePath("flipper/body_AnimatedSprite2D/side/back_arm_AnimatedSp
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 1.6),
+"transitions": PackedFloat32Array(1, 1),
 "update": 1,
-"values": [&"walk"]
+"values": [&"walk", &"walk"]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
@@ -5663,10 +5663,10 @@ tracks/4/path = NodePath("flipper/body_AnimatedSprite2D/side/front_arm_AnimatedS
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 1.6),
+"transitions": PackedFloat32Array(1, 1),
 "update": 1,
-"values": [&"walk"]
+"values": [&"walk", &"walk"]
 }
 tracks/5/type = "value"
 tracks/5/imported = false
@@ -5711,10 +5711,10 @@ tracks/8/path = NodePath("flipper/body_AnimatedSprite2D/side/front_drill_Animate
 tracks/8/interp = 1
 tracks/8/loop_wrap = true
 tracks/8/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 1.6),
+"transitions": PackedFloat32Array(1, 1),
 "update": 1,
-"values": [&"walk"]
+"values": [&"walk", &"walk"]
 }
 tracks/9/type = "value"
 tracks/9/imported = false
@@ -5723,10 +5723,10 @@ tracks/9/path = NodePath("flipper/body_AnimatedSprite2D/side/back_drill_Animated
 tracks/9/interp = 1
 tracks/9/loop_wrap = true
 tracks/9/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 1.6),
+"transitions": PackedFloat32Array(1, 1),
 "update": 1,
-"values": [&"walk"]
+"values": [&"walk", &"walk"]
 }
 tracks/10/type = "value"
 tracks/10/imported = false
@@ -5774,7 +5774,7 @@ _data = {
 "mine_up_standup": SubResource("Animation_07hxd"),
 "power_down": SubResource("Animation_3i8v8"),
 "retract_solar_panel": SubResource("Animation_inld7"),
-"walk_forward": SubResource("Animation_owg24")
+"walk_forward": SubResource("Animation_sqnum")
 }
 
 [sub_resource type="Animation" id="Animation_0qs3e"]
@@ -6194,7 +6194,6 @@ animation = &"idle"
 autoplay = "walk"
 
 [node name="front" type="Node2D" parent="flipper/body_AnimatedSprite2D"]
-visible = false
 
 [node name="front_head_AnimatedSprite2D" type="AnimatedSprite2D" parent="flipper/body_AnimatedSprite2D/front"]
 unique_name_in_owner = true
@@ -6237,6 +6236,7 @@ sprite_frames = SubResource("SpriteFrames_1504l")
 animation = &"deploy"
 
 [node name="side" type="Node2D" parent="flipper/body_AnimatedSprite2D"]
+visible = false
 
 [node name="side_head_AnimatedSprite2D" type="AnimatedSprite2D" parent="flipper/body_AnimatedSprite2D/side"]
 unique_name_in_owner = true

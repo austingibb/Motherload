@@ -77,6 +77,7 @@ public class GroundedPlayerStateProcessor : PlayerStateProcessor
         {
             Vector2 velocity = player.Velocity;
             Vector2 direction = Input.GetVector("move_left", "move_right", "fly", "down");
+            bool IsMouseLeftOfPlayer = player.GlobalPosition.X > player.GetGlobalMousePosition().X;
             if (direction != Vector2.Zero)
             {
                 if (direction.Y > 0)
@@ -102,7 +103,13 @@ public class GroundedPlayerStateProcessor : PlayerStateProcessor
                         transitionState = PlayerState.Drilling;
                     } else 
                     {
-                        playerAnimation.UpdateAnimation(PlayerAnimationState.WalkLeft);
+                        if (IsMouseLeftOfPlayer)
+                        {
+                            playerAnimation.UpdateAnimation(PlayerAnimationState.WalkLeft);
+                        } else
+                        {
+                            playerAnimation.UpdateAnimation(PlayerAnimationState.WalkLeftBackwards);
+                        }
                     }
                 } else if (direction.X > 0) 
                 {
@@ -114,7 +121,13 @@ public class GroundedPlayerStateProcessor : PlayerStateProcessor
                         transitionState = PlayerState.Drilling;
                     } else 
                     {
-                        playerAnimation.UpdateAnimation(PlayerAnimationState.WalkRight);
+                        if (!IsMouseLeftOfPlayer)
+                        {
+                            playerAnimation.UpdateAnimation(PlayerAnimationState.WalkRight);
+                        } else
+                        {
+                            playerAnimation.UpdateAnimation(PlayerAnimationState.WalkRightBackwards);
+                        }                    
                     }
                 }
             } else

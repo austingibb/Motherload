@@ -18,7 +18,9 @@ public enum PlayerAnimationState
     DrillStandupDown,
     DrillStandupUp,
     WalkLeft,
+    WalkLeftBackwards,
     WalkRight,
+    WalkRightBackwards,
     Fall,
     FallStatic,
     Launch,
@@ -77,6 +79,8 @@ public partial class PlayerAnimation : GodotObject
     {
         PlayerAnimationState.WalkLeft,
         PlayerAnimationState.WalkRight,
+        PlayerAnimationState.WalkLeftBackwards,
+        PlayerAnimationState.WalkRightBackwards,
         PlayerAnimationState.SetupDrillLeft,
         PlayerAnimationState.SetupDrillRight,
         PlayerAnimationState.DrillLeft,
@@ -195,6 +199,14 @@ public partial class PlayerAnimation : GodotObject
             case PlayerAnimationState.WalkRight:
                 animationPlayer.Play("walk_forward");
                 flipper.Scale = new Vector2(-1, 1);
+                break;
+            case PlayerAnimationState.WalkLeftBackwards:
+                animationPlayer.PlayBackwards("walk_forward");
+                flipper.Scale = new Vector2(-1, 1);
+                break;
+            case PlayerAnimationState.WalkRightBackwards:
+                animationPlayer.PlayBackwards("walk_forward");
+                flipper.Scale = new Vector2(1, 1);
                 break;
             case PlayerAnimationState.Fall:
                 animationPlayer.Play("fall");
