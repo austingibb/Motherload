@@ -49,6 +49,10 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 	public float Health;
 
 	public GetUnitDistanceBetweenPoints getUnitDistanceBetweenPoints;
+	
+	// signals
+	[Signal]
+	public delegate void onDeadEventHandler();
 
     public override void _Ready()
     {
@@ -299,6 +303,11 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		{
 			Health = 0;
 		}
+	}
+
+	public void Die()
+	{
+		EmitSignal(SignalName.onDead);
 	}
 
 	public void Shoot()

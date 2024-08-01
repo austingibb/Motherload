@@ -20,6 +20,7 @@ public partial class Game : Node2D
     public AnimationPlayer energyBarAnimator;
     public ProgressBarNinePatch healthBar;
     public Sky sky;
+    public Timer gameResetTimer;
 
     // Buildings
     public SellStation sellStation;
@@ -45,6 +46,7 @@ public partial class Game : Node2D
         gameGrid.drillableDug += _on_drillable_dug;
         gameGrid.itemSpawned += _on_item_spawned;
         playerCharacter.SetUnitDistanceDelegate(gameGrid.GetTileDistanceBetweenPoints);
+        playerCharacter.onDead += _on_player_dead;
         inventory = GetNode<Inventory>("%Inventory") as Inventory;
         hud = GetNode<CanvasLayer>("%HUD") as CanvasLayer;
         hud.Visible = true;
@@ -63,6 +65,8 @@ public partial class Game : Node2D
         batteryUpgradeTab.upgrade += BatteryUpgradePurchased;
 
         sky = GetNode<Sky>("%Sky") as Sky;
+
+        gameResetTimer = GetNode<Timer>("%GameResetTimer");
 
         Money = 0;
 
@@ -105,7 +109,7 @@ public partial class Game : Node2D
 
         // load other
         timeManager = new TimeManager();
-        timeManager.Start();
+        // timeManager.Start();
     }
 
     public override void _Process(double delta)
@@ -147,7 +151,7 @@ public partial class Game : Node2D
         gameGrid.Update(playerCharacter.GlobalPosition);
 
         timeManager.UpdateTime(delta);
-        sky.UpdateSky(timeManager.GameTime);
+        sky.UpdateSky(100f);
     }
 
     public string GetMoneyString()
@@ -199,6 +203,16 @@ public partial class Game : Node2D
     public bool CanAfford(int cost)
     {
         return Money >= cost;
+    }
+
+    public void _on_player_dead()
+    {
+        gameResetTimer.Start();
+    }
+
+    public void _on_game_reset_timer_timeout()
+    {
+        GetTree().ReloadCurrentScene();
     }
 
     public void _on_sell_all()

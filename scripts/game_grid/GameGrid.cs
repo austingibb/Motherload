@@ -84,7 +84,7 @@ public partial class GameGrid : TileMap
             }
         }
 
-        enemyManager.SpawnEnemy(new Vector2(150, 0));
+        // enemyManager.SpawnEnemy(new Vector2(150, 0));
     }
 
     public void Update(Godot.Vector2 playerPosition)

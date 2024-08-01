@@ -10,6 +10,7 @@ public class DeadPlayerStateProcessor : PlayerStateProcessor
     {
         player.Rotation = 0;
         playerAnimation.UpdateAnimation(PlayerAnimationState.PowerDown);
+        player.Die();
     }
 
     public override StateTransition ProcessState(double delta)

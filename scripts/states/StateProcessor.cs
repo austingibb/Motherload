@@ -3,7 +3,6 @@ using Godot;
 
 public abstract class StateProcessor<T>
 {
-
     public struct StateTransition
     {
         public T ToState;
