@@ -1,4 +1,4 @@
-[gd_scene load_steps=457 format=3 uid="uid://cwrufed6b0h7m"]
+[gd_scene load_steps=459 format=3 uid="uid://cwrufed6b0h7m"]
 
 [ext_resource type="Script" path="res://scripts/player/PlayerCharacterBody2D.cs" id="1_m1nbs"]
 [ext_resource type="Shader" path="res://scripts/shaders/player_color_adjust.gdshader" id="2_4qksy"]
@@ -62,6 +62,7 @@
 [ext_resource type="PackedScene" uid="uid://cryoaby3gsnas" path="res://scenes/player/battery_3.tscn" id="56_h3ief"]
 [ext_resource type="PackedScene" uid="uid://eafjl4ghvsh4" path="res://scenes/player/battery_4.tscn" id="57_7jn0b"]
 [ext_resource type="PackedScene" uid="uid://cytmaqam4uu4a" path="res://scenes/player/battery_5.tscn" id="58_4fjaj"]
+[ext_resource type="Script" path="res://scripts/player/PlayerAnimation.cs" id="63_7sqvn"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4jutj"]
 
@@ -5753,6 +5754,132 @@ tracks/11/keys = {
 "values": [22.95]
 }
 
+[sub_resource type="Animation" id="Animation_xvn4h"]
+resource_name = "idle_turn"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("flipper/body_AnimatedSprite2D:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"idle"]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("flipper/body_AnimatedSprite2D:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [0, 0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("flipper/body_AnimatedSprite2D/front/front_head_AnimatedSprite2D:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0.349, -6.878)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("flipper/body_AnimatedSprite2D/front/arms_AnimatedSprite2D:animation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"idle"]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("flipper/body_AnimatedSprite2D/side/side_head_AnimatedSprite2D:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0.349, -6.878)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("flipper/body_AnimatedSprite2D/Battery:position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [Vector2(-2.5, 0.5), Vector2(-2.5, 0.5)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("flipper/body_AnimatedSprite2D/front/drills_AnimatedSprite2D:animation")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"idle"]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("flipper/body_AnimatedSprite2D/front/drills_AnimatedSprite2D:frame")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [0, 0]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("CollisionShape2D:shape:height")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [22.9465]
+}
+tracks/9/type = "method"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("PlayerAnimation")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0.1),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"FlipX"
+}]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_b26ya"]
 _data = {
 "RESET": SubResource("Animation_s8mo3"),
@@ -5762,6 +5889,7 @@ _data = {
 "fall": SubResource("Animation_bq4lv"),
 "fall_static": SubResource("Animation_48xxi"),
 "idle": SubResource("Animation_kmh8t"),
+"idle_turn": SubResource("Animation_xvn4h"),
 "land": SubResource("Animation_nfgmf"),
 "land_soft": SubResource("Animation_nqecw"),
 "launch": SubResource("Animation_r8se3"),
@@ -6185,6 +6313,7 @@ remote_path = NodePath("../../HitBox/CollisionShape2D")
 [node name="flipper" type="Node2D" parent="."]
 unique_name_in_owner = true
 material = SubResource("ShaderMaterial_4jutj")
+scale = Vector2(-1, 1)
 
 [node name="body_AnimatedSprite2D" type="AnimatedSprite2D" parent="flipper"]
 unique_name_in_owner = true
@@ -6358,6 +6487,10 @@ collision_mask = 8
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HitBox"]
 position = Vector2(0.0349426, 0.763586)
 shape = ExtResource("2_h73lu")
+
+[node name="PlayerAnimation" type="Node2D" parent="."]
+unique_name_in_owner = true
+script = ExtResource("63_7sqvn")
 
 [connection signal="animation_finished" from="flipper/body_AnimatedSprite2D/player_AnimationPlayer" to="." method="_on_player_animation_player_animation_finished"]
 [connection signal="body_entered" from="HitBox" to="." method="_on_hit_box_body_entered"]

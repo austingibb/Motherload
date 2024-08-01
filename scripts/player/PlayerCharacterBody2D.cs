@@ -83,7 +83,8 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		playerShaderManager = GetNode<Node2D>("%shaderManager") as PlayerShaderManager;	
 		playerShaderManager.UpdateDrills(DrillType.Base);
 
-		playerAnimation = new PlayerAnimation(flipper, bodyAnimation, jetAnimation, frontSprites, sideSprites,
+		playerAnimation = GetNode<PlayerAnimation>("%PlayerAnimation");
+		playerAnimation.Init(flipper, bodyAnimation, jetAnimation, frontSprites, sideSprites,
 			animationPlayer, headAnimationPlayer, shaderAnimationPlayer, battery);
 
 		SurroundingDrillables = new List<List<Drillable>>();
@@ -158,6 +159,13 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 
 	private void HandleFrontHead(float delta) 
 	{
+		if (!playerStateManager.CanShoot())
+		{
+			frontHeadAnimation.Rotation = 0;
+			frontHeadProjectileParent.Rotation = 0;
+			return;
+		}
+
 		bool isPlayerFacingMouse = ((IsFacingLeft() && (GetGlobalMousePosition().X < this.GlobalPosition.X)) 
 		|| (!IsFacingLeft() && (GetGlobalMousePosition().X > this.GlobalPosition.X)));
 		if (!isPlayerFacingMouse && playerAnimation.IsFacingForward())
@@ -167,34 +175,27 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 
 		bool isFlipped = this.flipper.Scale.X < 0;
 
-		if (playerStateManager.CanShoot())
+		float angleToMouse = frontHeadAnimation.Position.AngleToPoint(GetLocalMousePosition());
+
+		if (!isFlipped) 
 		{
-			float angleToMouse = frontHeadAnimation.Position.AngleToPoint(GetLocalMousePosition());
-
-			if (!isFlipped) 
-			{
-				angleToMouse = Common.FlipAngleYAxis(angleToMouse);
-			}
-
-			float targetRotation = 0;
-			if (angleToMouse > Mathf.DegToRad(-90) && angleToMouse < Mathf.DegToRad(50))
-			{
-				playerAnimation.SetHeadAnimation(PlayerHeadState.LookSide);
-				targetRotation = Common.FlipAngleYAxis(angleToMouse + Mathf.Pi);
-			} else if (angleToMouse >= Mathf.DegToRad(50) && angleToMouse <= Mathf.DegToRad(90))
-			{
-				playerAnimation.SetHeadAnimation(PlayerHeadState.LookDown);
-				targetRotation = Common.FlipAngleYAxis(angleToMouse + Mathf.Pi/2);
-			}
-
-			float result = Mathf.MoveToward(frontHeadAnimation.Rotation, targetRotation, delta * 10.0f);
-			frontHeadAnimation.Rotation = result;
-			frontHeadProjectileParent.Rotation = Common.FlipAngleYAxis(angleToMouse + Mathf.Pi);
-		} else 
-		{
-			frontHeadAnimation.Rotation = 0;
-			frontHeadProjectileParent.Rotation = 0;
+			angleToMouse = Common.FlipAngleYAxis(angleToMouse);
 		}
+
+		float targetRotation = 0;
+		if (angleToMouse > Mathf.DegToRad(-90) && angleToMouse < Mathf.DegToRad(50))
+		{
+			playerAnimation.SetHeadAnimation(PlayerHeadState.LookSide);
+			targetRotation = Common.FlipAngleYAxis(angleToMouse + Mathf.Pi);
+		} else if (angleToMouse >= Mathf.DegToRad(50) && angleToMouse <= Mathf.DegToRad(90))
+		{
+			playerAnimation.SetHeadAnimation(PlayerHeadState.LookDown);
+			targetRotation = Common.FlipAngleYAxis(angleToMouse + Mathf.Pi/2);
+		}
+
+		float result = Mathf.MoveToward(frontHeadAnimation.Rotation, targetRotation, delta * 10.0f);
+		frontHeadAnimation.Rotation = result;
+		frontHeadProjectileParent.Rotation = Common.FlipAngleYAxis(angleToMouse + Mathf.Pi);
 	}
 
 	private void HandleSideHead(float delta)

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public enum PlayerAnimationState
 {
     Idle,
+    IdleTurn,
     SetupDrillLeft,
     SetupDrillRight,
     SetupDrillDown,
@@ -39,7 +40,7 @@ public enum PlayerHeadState
     LookDown
 }
 
-public partial class PlayerAnimation : GodotObject
+public partial class PlayerAnimation : Node2D
 {
     Node2D flipper;
     public AnimatedSprite2D bodyAnimation;
@@ -53,10 +54,12 @@ public partial class PlayerAnimation : GodotObject
     public PlayerHeadState _currentHeadState;
     public PlayerAnimationState _previousState;
     public Battery battery;
+    public bool isInit = false;
 
     public HashSet<PlayerAnimationState> forwardFacingStates = new HashSet<PlayerAnimationState>
     {
         PlayerAnimationState.Idle,
+        PlayerAnimationState.IdleTurn,
         PlayerAnimationState.Fall,
         PlayerAnimationState.FallStatic,
         PlayerAnimationState.Launch,
@@ -89,7 +92,7 @@ public partial class PlayerAnimation : GodotObject
         PlayerAnimationState.DrillStandupRight
     };
 
-    public PlayerAnimation(Node2D flipper, AnimatedSprite2D bodyAnimation, AnimatedSprite2D jetAnimation, Node2D frontSprites, Node2D sideSprites,
+    public void Init(Node2D flipper, AnimatedSprite2D bodyAnimation, AnimatedSprite2D jetAnimation, Node2D frontSprites, Node2D sideSprites,
         AnimationPlayer animationPlayer, AnimationPlayer headAnimationPlayer, AnimationPlayer shaderAnimationPlayer, Battery battery)
     {
         this.flipper = flipper;
@@ -103,6 +106,7 @@ public partial class PlayerAnimation : GodotObject
         this.battery = battery;
         this._currentState = PlayerAnimationState.Idle;
         this._previousState = PlayerAnimationState.Idle;
+        this.isInit = true;
     }
 
     public PlayerAnimationState GetPreviousState()
@@ -159,6 +163,11 @@ public partial class PlayerAnimation : GodotObject
 
     public void UpdateAnimation(PlayerAnimationState state)
     {
+        if (!isInit)
+        {
+            return;
+        }
+
         if (_currentState == state)
             return;
         
@@ -191,6 +200,9 @@ public partial class PlayerAnimation : GodotObject
         {
             case PlayerAnimationState.Idle:
                 animationPlayer.Play("idle");
+                break;
+            case PlayerAnimationState.IdleTurn:
+                animationPlayer.Play("idle_turn");
                 break;
             case PlayerAnimationState.WalkLeft:
                 animationPlayer.Play("walk_forward");
@@ -300,5 +312,10 @@ public partial class PlayerAnimation : GodotObject
     public bool IsFacingForward()
     {
         return forwardFacingStates.Contains(_currentState);
+    }
+
+    public void FlipX()
+    {
+        flipper.Scale = new Vector2(-flipper.Scale.X, flipper.Scale.Y);
     }
 }

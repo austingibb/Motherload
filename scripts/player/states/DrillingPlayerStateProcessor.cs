@@ -26,7 +26,12 @@ public class DrillingPlayerStateProcessor : PlayerStateProcessor
         Vector2 velocity = player.Velocity;
         velocity /= 5;
         player.Velocity = velocity;
-        if (drillFromDirection == DrillFromDirection.RIGHT)
+
+        if ((playerAnimation._currentState == PlayerAnimationState.WalkLeftBackwards && drillFromDirection == DrillFromDirection.RIGHT) ||
+            (playerAnimation._currentState == PlayerAnimationState.WalkRightBackwards && drillFromDirection == DrillFromDirection.LEFT))
+        {
+            playerAnimation.UpdateAnimation(PlayerAnimationState.IdleTurn);
+        } else if (drillFromDirection == DrillFromDirection.RIGHT)
         {
             playerAnimation.UpdateAnimation(PlayerAnimationState.SetupDrillLeft);
         } else if (drillFromDirection == DrillFromDirection.LEFT)
@@ -167,6 +172,17 @@ public class DrillingPlayerStateProcessor : PlayerStateProcessor
             {
                 playerAnimation.UpdateAnimation(PlayerAnimationState.DrillUp);
             } 
+        }
+
+        if (animationName == "idle_turn")
+        {
+            if (drillFromDirection == DrillFromDirection.RIGHT)
+            {
+                playerAnimation.UpdateAnimation(PlayerAnimationState.SetupDrillLeft);
+            } else if (drillFromDirection == DrillFromDirection.LEFT)
+            {
+                playerAnimation.UpdateAnimation(PlayerAnimationState.SetupDrillRight);
+            }
         }
 
         if (animationName == "drill_standup" || animationName == "drill_down_standup")
