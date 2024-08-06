@@ -6,6 +6,7 @@ public enum PlayerAnimationState
 {
     Idle,
     IdleTurn,
+    IdleSide,
     SetupDrillLeft,
     SetupDrillRight,
     SetupDrillDown,
@@ -89,7 +90,8 @@ public partial class PlayerAnimation : Node2D
         PlayerAnimationState.DrillLeft,
         PlayerAnimationState.DrillRight,
         PlayerAnimationState.DrillStandupLeft,
-        PlayerAnimationState.DrillStandupRight
+        PlayerAnimationState.DrillStandupRight,
+        PlayerAnimationState.IdleSide
     };
 
     public void Init(Node2D flipper, AnimatedSprite2D bodyAnimation, AnimatedSprite2D jetAnimation, Node2D frontSprites, Node2D sideSprites,
@@ -200,6 +202,9 @@ public partial class PlayerAnimation : Node2D
         {
             case PlayerAnimationState.Idle:
                 animationPlayer.Play("idle");
+                break;
+            case PlayerAnimationState.IdleSide:
+                animationPlayer.Play("idle_side");
                 break;
             case PlayerAnimationState.IdleTurn:
                 animationPlayer.Play("idle_turn");

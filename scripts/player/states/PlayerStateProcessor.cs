@@ -41,32 +41,6 @@ public abstract class PlayerStateProcessor : StateProcessor<PlayerState>
         player.Velocity = velocity;
     }
 
-    public virtual void ApplyHorizontalFlight(double delta) 
-    {
-        Vector2 velocity = player.Velocity;
-        Vector2 direction = Input.GetVector("move_left", "move_right", "ui_up", "ui_down");
-        if (direction.X < 0)
-        {
-            velocity.X -= player.HorizontalFlightSpeed * (float)delta;
-            player.Rotation = -PlayerConstants.TiltAmount;
-        }
-        else if (direction.X > 0)
-        {
-            velocity.X += player.HorizontalFlightSpeed * (float)delta;
-            player.Rotation = PlayerConstants.TiltAmount;
-        }
-        else 
-        {
-            player.Rotation = 0;
-        }
-
-        if (Mathf.Abs(velocity.X) > player.MaxHorozontalSpeed)
-		{
-			velocity.X = Mathf.Sign(velocity.X) * player.MaxHorozontalSpeed;
-		}
-        player.Velocity = velocity;
-    }
-
     public virtual void ApplyDrag() 
     {
         Vector2 velocity = player.Velocity;

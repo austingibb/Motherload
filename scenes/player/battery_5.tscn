@@ -9,17 +9,21 @@
 [ext_resource type="Texture2D" uid="uid://b52htrxs3s1ue" path="res://assets/player/battery/battery_5_side_background.png" id="7_7x8pc"]
 
 [node name="Battery5" type="Node2D"]
+use_parent_material = true
 script = ExtResource("1_3vp58")
 
 [node name="front" type="Node2D" parent="."]
+use_parent_material = true
 
 [node name="front_Sprite2D" type="Sprite2D" parent="front"]
 z_index = 2
+use_parent_material = true
 position = Vector2(2.5, -0.5)
 texture = ExtResource("2_1ihkv")
 
 [node name="front_Charge" type="TextureProgressBar" parent="front"]
 z_index = 1
+use_parent_material = true
 offset_top = -4.0
 offset_right = 5.0
 offset_bottom = 3.0
@@ -29,19 +33,23 @@ fill_mode = 3
 texture_progress = ExtResource("3_30ctw")
 
 [node name="back_Sprite2D" type="Sprite2D" parent="front"]
+use_parent_material = true
 position = Vector2(2.5, -0.5)
 texture = ExtResource("4_50puv")
 
 [node name="side" type="Node2D" parent="."]
 visible = false
+use_parent_material = true
 
 [node name="side_Sprite2D" type="Sprite2D" parent="side"]
 z_index = 2
+use_parent_material = true
 position = Vector2(2.08165e-12, -0.5)
 texture = ExtResource("5_ou3ep")
 
 [node name="side_Charge" type="TextureProgressBar" parent="side"]
 z_index = 1
+use_parent_material = true
 offset_left = -1.0
 offset_top = -4.0
 offset_right = 1.0
@@ -52,5 +60,6 @@ fill_mode = 3
 texture_progress = ExtResource("6_grhhm")
 
 [node name="side_back_Sprite2D" type="Sprite2D" parent="side"]
+use_parent_material = true
 position = Vector2(2.08165e-12, -0.5)
 texture = ExtResource("7_7x8pc")

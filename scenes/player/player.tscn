@@ -1,4 +1,4 @@
-[gd_scene load_steps=459 format=3 uid="uid://cwrufed6b0h7m"]
+[gd_scene load_steps=460 format=3 uid="uid://cwrufed6b0h7m"]
 
 [ext_resource type="Script" path="res://scripts/player/PlayerCharacterBody2D.cs" id="1_m1nbs"]
 [ext_resource type="Shader" path="res://scripts/shaders/player_color_adjust.gdshader" id="2_4qksy"]
@@ -68,7 +68,8 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rcttw"]
 shader = ExtResource("2_4qksy")
-shader_parameter/hurt_strength = 2.08165e-12
+shader_parameter/hurt_strength = 0.0
+shader_parameter/gray_divide = 1.0
 shader_parameter/colors_to_replace = null
 shader_parameter/replacement_colors = PackedColorArray()
 
@@ -674,12 +675,6 @@ animations = [{
 "speed": 35.0
 }]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_7hxlo"]
-shader = ExtResource("2_4qksy")
-shader_parameter/hurt_strength = 2.08165e-12
-shader_parameter/colors_to_replace = null
-shader_parameter/replacement_colors = null
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_jjcg5"]
 atlas = ExtResource("15_4p1oc")
 region = Rect2(0, 0, 25, 25)
@@ -808,9 +803,17 @@ animations = [{
 "speed": 11.0
 }]
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7hxlo"]
+shader = ExtResource("2_4qksy")
+shader_parameter/hurt_strength = 2.08165e-12
+shader_parameter/gray_divide = 0.0
+shader_parameter/colors_to_replace = null
+shader_parameter/replacement_colors = null
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_x710y"]
 shader = ExtResource("2_4qksy")
 shader_parameter/hurt_strength = 0.0
+shader_parameter/gray_divide = 1.0
 shader_parameter/colors_to_replace = PackedColorArray()
 shader_parameter/replacement_colors = PackedColorArray()
 
@@ -1260,6 +1263,7 @@ animations = [{
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_u1q2t"]
 shader = ExtResource("2_4qksy")
 shader_parameter/hurt_strength = 0.0
+shader_parameter/gray_divide = 0.0
 shader_parameter/colors_to_replace = PackedColorArray()
 shader_parameter/replacement_colors = null
 
@@ -1847,12 +1851,6 @@ animations = [{
 "speed": 30.0
 }]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_1aqd2"]
-shader = ExtResource("2_4qksy")
-shader_parameter/hurt_strength = 0.0
-shader_parameter/colors_to_replace = null
-shader_parameter/replacement_colors = null
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_6kr8o"]
 atlas = ExtResource("33_rojek")
 region = Rect2(0, 0, 25, 25)
@@ -1867,12 +1865,6 @@ animations = [{
 "name": &"default",
 "speed": 5.0
 }]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_k6rhv"]
-shader = ExtResource("2_4qksy")
-shader_parameter/hurt_strength = 2.08165e-12
-shader_parameter/colors_to_replace = null
-shader_parameter/replacement_colors = null
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_8b6xy"]
 atlas = ExtResource("34_nt4gb")
@@ -2105,6 +2097,7 @@ animations = [{
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_46tb5"]
 shader = ExtResource("2_4qksy")
 shader_parameter/hurt_strength = 0.0
+shader_parameter/gray_divide = 1.0
 shader_parameter/colors_to_replace = PackedColorArray()
 shader_parameter/replacement_colors = PackedColorArray()
 
@@ -2335,12 +2328,6 @@ animations = [{
 "name": &"walk",
 "speed": 5.0
 }]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_1g4wt"]
-shader = ExtResource("2_4qksy")
-shader_parameter/hurt_strength = 0.0
-shader_parameter/colors_to_replace = null
-shader_parameter/replacement_colors = null
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_0c2kp"]
 atlas = ExtResource("40_gnlw7")
@@ -2573,6 +2560,7 @@ animations = [{
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_f0cqk"]
 shader = ExtResource("2_4qksy")
 shader_parameter/hurt_strength = 0.0
+shader_parameter/gray_divide = 1.0
 shader_parameter/colors_to_replace = PackedColorArray()
 shader_parameter/replacement_colors = PackedColorArray()
 
@@ -5748,10 +5736,22 @@ tracks/11/path = NodePath("CollisionShape2D:shape:height")
 tracks/11/interp = 1
 tracks/11/loop_wrap = true
 tracks/11/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 1.6),
+"transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [22.95]
+"values": [22.95, 22.95]
+}
+tracks/12/type = "value"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("flipper/body_AnimatedSprite2D/side/side_head_AnimatedSprite2D:position")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = {
+"times": PackedFloat32Array(0, 1.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0.349, -6.878), Vector2(0.349, -6.878)]
 }
 
 [sub_resource type="Animation" id="Animation_xvn4h"]
@@ -5880,6 +5880,166 @@ tracks/9/keys = {
 }]
 }
 
+[sub_resource type="Animation" id="Animation_cve6h"]
+resource_name = "idle_side"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("flipper/body_AnimatedSprite2D:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [&"walk", &"walk"]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("flipper/body_AnimatedSprite2D:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4, 1.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("flipper/body_AnimatedSprite2D/side/back_arm_AnimatedSprite2D:animation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [&"walk", &"walk"]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("flipper/body_AnimatedSprite2D/side/back_arm_AnimatedSprite2D:frame")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4, 1.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("flipper/body_AnimatedSprite2D/side/front_arm_AnimatedSprite2D:animation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 1.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [&"walk", &"walk"]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("flipper/body_AnimatedSprite2D/side/front_arm_AnimatedSprite2D:frame")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4, 1.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("flipper/body_AnimatedSprite2D/Battery:position")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 1.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(-2.5, 0.5), Vector2(-2.5, 0.5)]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("flipper/body_AnimatedSprite2D/side/front_drill_AnimatedSprite2D:frame")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4, 1.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("flipper/body_AnimatedSprite2D/side/front_drill_AnimatedSprite2D:animation")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0, 1.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [&"walk", &"walk"]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("flipper/body_AnimatedSprite2D/side/back_drill_AnimatedSprite2D:animation")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0, 1.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [&"walk", &"walk"]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("flipper/body_AnimatedSprite2D/side/back_drill_AnimatedSprite2D:frame")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4, 1.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+}
+tracks/11/type = "value"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("CollisionShape2D:shape:height")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = {
+"times": PackedFloat32Array(0, 1.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [22.95, 22.95]
+}
+tracks/12/type = "value"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("flipper/body_AnimatedSprite2D/side/side_head_AnimatedSprite2D:position")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = {
+"times": PackedFloat32Array(0, 1.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0.349, -6.878), Vector2(0.349, -6.878)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_b26ya"]
 _data = {
 "RESET": SubResource("Animation_s8mo3"),
@@ -5889,6 +6049,7 @@ _data = {
 "fall": SubResource("Animation_bq4lv"),
 "fall_static": SubResource("Animation_48xxi"),
 "idle": SubResource("Animation_kmh8t"),
+"idle_side": SubResource("Animation_cve6h"),
 "idle_turn": SubResource("Animation_xvn4h"),
 "land": SubResource("Animation_nfgmf"),
 "land_soft": SubResource("Animation_nqecw"),
@@ -6075,23 +6236,23 @@ step = 0.01
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath(".:material:shader_parameter/strength")
+tracks/0/path = NodePath("%back_drill_AnimatedSprite2D:material:shader_parameter/hurt_strength")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [8.32659e-13]
+"values": [0.0]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("front/arms_AnimatedSprite2D:material:shader_parameter/strength")
+tracks/1/path = NodePath("%front_drill_AnimatedSprite2D:material:shader_parameter/hurt_strength")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0.001),
+"times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [0.0]
@@ -6099,11 +6260,11 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("side/back_arm_AnimatedSprite2D:material:shader_parameter/strength")
+tracks/2/path = NodePath("%drills_AnimatedSprite2D:material:shader_parameter/hurt_strength")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0.001),
+"times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [0.0]
@@ -6111,70 +6272,10 @@ tracks/2/keys = {
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("side/front_arm_AnimatedSprite2D:material:shader_parameter/strength")
+tracks/3/path = NodePath(".:material:shader_parameter/hurt_strength")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0.001),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [8.32659e-13]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("front/front_head_AnimatedSprite2D:material:shader_parameter/strength")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
-}
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("%side_head_AnimatedSprite2D:material:shader_parameter/hurt_strength")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
-}
-tracks/6/type = "value"
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/path = NodePath("%back_drill_AnimatedSprite2D:material:shader_parameter/hurt_strength")
-tracks/6/interp = 1
-tracks/6/loop_wrap = true
-tracks/6/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
-}
-tracks/7/type = "value"
-tracks/7/imported = false
-tracks/7/enabled = true
-tracks/7/path = NodePath("%front_drill_AnimatedSprite2D:material:shader_parameter/hurt_strength")
-tracks/7/interp = 1
-tracks/7/loop_wrap = true
-tracks/7/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
-}
-tracks/8/type = "value"
-tracks/8/imported = false
-tracks/8/enabled = true
-tracks/8/path = NodePath("%drills_AnimatedSprite2D:material:shader_parameter/hurt_strength")
-tracks/8/interp = 1
-tracks/8/loop_wrap = true
-tracks/8/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
@@ -6186,7 +6287,7 @@ step = 0.01
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("side/front_arm_AnimatedSprite2D:material:shader_parameter/hurt_strength")
+tracks/0/path = NodePath(".:material:shader_parameter/hurt_strength")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -6198,94 +6299,34 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath(".:material:shader_parameter/hurt_strength")
+tracks/1/path = NodePath("%back_drill_AnimatedSprite2D:material:shader_parameter/hurt_strength")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [0.0, 1.0, 2.08165e-12, 1.0, 2.08165e-12, 1.0, 2.08165e-12]
+"values": [0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("side/back_arm_AnimatedSprite2D:material:shader_parameter/hurt_strength")
+tracks/2/path = NodePath("%front_drill_AnimatedSprite2D:material:shader_parameter/hurt_strength")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [0.0, 1.0, 2.08165e-12, 1.0, 2.08165e-12, 1.0, 0.0]
+"values": [0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("front/arms_AnimatedSprite2D:material:shader_parameter/hurt_strength")
+tracks/3/path = NodePath("%drills_AnimatedSprite2D:material:shader_parameter/hurt_strength")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
-"update": 0,
-"values": [0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("front/front_head_AnimatedSprite2D:material:shader_parameter/hurt_strength")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
-"update": 0,
-"values": [0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 2.08165e-12]
-}
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("%side_head_AnimatedSprite2D:material:shader_parameter/hurt_strength")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
-"times": PackedFloat32Array(0.000917256, 0.100917, 0.200459, 0.3, 0.4, 0.5, 0.599541),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
-"update": 0,
-"values": [0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0]
-}
-tracks/6/type = "value"
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/path = NodePath("%back_drill_AnimatedSprite2D:material:shader_parameter/hurt_strength")
-tracks/6/interp = 1
-tracks/6/loop_wrap = true
-tracks/6/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
-"update": 0,
-"values": [0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0]
-}
-tracks/7/type = "value"
-tracks/7/imported = false
-tracks/7/enabled = true
-tracks/7/path = NodePath("%front_drill_AnimatedSprite2D:material:shader_parameter/hurt_strength")
-tracks/7/interp = 1
-tracks/7/loop_wrap = true
-tracks/7/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
-"update": 0,
-"values": [0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0]
-}
-tracks/8/type = "value"
-tracks/8/imported = false
-tracks/8/enabled = true
-tracks/8/path = NodePath("%drills_AnimatedSprite2D:material:shader_parameter/hurt_strength")
-tracks/8/interp = 1
-tracks/8/loop_wrap = true
-tracks/8/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
 "update": 0,
@@ -6296,6 +6337,139 @@ tracks/8/keys = {
 _data = {
 "RESET": SubResource("Animation_pb4h6"),
 "hurt": SubResource("Animation_38eys")
+}
+
+[sub_resource type="Animation" id="Animation_3620f"]
+resource_name = "dash"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("%flipper/../HitBox/CollisionShape2D:disabled")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:material:shader_parameter/gray_divide")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [2.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("%drills_AnimatedSprite2D:material:shader_parameter/gray_divide")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [2.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("%front_drill_AnimatedSprite2D:material:shader_parameter/gray_divide")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [2.0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("%back_drill_AnimatedSprite2D:material:shader_parameter/gray_divide")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [2.0]
+}
+
+[sub_resource type="Animation" id="Animation_w4fdd"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("%flipper/../HitBox/CollisionShape2D:disabled")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:material:shader_parameter/gray_divide")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [1.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("%drills_AnimatedSprite2D:material:shader_parameter/gray_divide")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [1.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("%front_drill_AnimatedSprite2D:material:shader_parameter/gray_divide")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [1.0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("%back_drill_AnimatedSprite2D:material:shader_parameter/gray_divide")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [1.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_cg4so"]
+_data = {
+"RESET": SubResource("Animation_w4fdd"),
+"dash": SubResource("Animation_3620f")
 }
 
 [node name="player" type="CharacterBody2D"]
@@ -6323,11 +6497,13 @@ animation = &"idle"
 autoplay = "walk"
 
 [node name="front" type="Node2D" parent="flipper/body_AnimatedSprite2D"]
+visible = false
+use_parent_material = true
 
 [node name="front_head_AnimatedSprite2D" type="AnimatedSprite2D" parent="flipper/body_AnimatedSprite2D/front"]
 unique_name_in_owner = true
 z_index = 3
-material = SubResource("ShaderMaterial_7hxlo")
+use_parent_material = true
 position = Vector2(0.349, -4.878)
 sprite_frames = SubResource("SpriteFrames_26287")
 animation = &"look_down"
@@ -6353,6 +6529,7 @@ animation = &"mine_down_setup"
 [node name="arms_AnimatedSprite2D" type="AnimatedSprite2D" parent="flipper/body_AnimatedSprite2D/front"]
 unique_name_in_owner = true
 material = SubResource("ShaderMaterial_u1q2t")
+use_parent_material = true
 position = Vector2(16.494, 4.5142)
 sprite_frames = SubResource("SpriteFrames_emnws")
 animation = &"launch"
@@ -6365,12 +6542,12 @@ sprite_frames = SubResource("SpriteFrames_1504l")
 animation = &"deploy"
 
 [node name="side" type="Node2D" parent="flipper/body_AnimatedSprite2D"]
-visible = false
+use_parent_material = true
 
 [node name="side_head_AnimatedSprite2D" type="AnimatedSprite2D" parent="flipper/body_AnimatedSprite2D/side"]
 unique_name_in_owner = true
 z_index = 3
-material = SubResource("ShaderMaterial_1aqd2")
+use_parent_material = true
 position = Vector2(0.349, -6.878)
 sprite_frames = SubResource("SpriteFrames_6yk8p")
 offset = Vector2(-0.607, 6.892)
@@ -6382,7 +6559,7 @@ position = Vector2(-3.32475, -1.09371)
 [node name="front_arm_AnimatedSprite2D" type="AnimatedSprite2D" parent="flipper/body_AnimatedSprite2D/side"]
 unique_name_in_owner = true
 z_index = 2
-material = SubResource("ShaderMaterial_k6rhv")
+use_parent_material = true
 position = Vector2(-2.08165e-12, -2.08165e-12)
 sprite_frames = SubResource("SpriteFrames_h0rl5")
 animation = &"setup_drill_forward"
@@ -6397,7 +6574,7 @@ animation = &"setup_drill_forward"
 [node name="back_arm_AnimatedSprite2D" type="AnimatedSprite2D" parent="flipper/body_AnimatedSprite2D/side"]
 unique_name_in_owner = true
 z_index = -1
-material = SubResource("ShaderMaterial_1g4wt")
+use_parent_material = true
 sprite_frames = SubResource("SpriteFrames_20v51")
 animation = &"setup_drill_forward"
 
@@ -6434,7 +6611,14 @@ libraries = {
 "": SubResource("AnimationLibrary_pcd6x")
 }
 
+[node name="dash_AnimationPlayer" type="AnimationPlayer" parent="flipper/body_AnimatedSprite2D"]
+unique_name_in_owner = true
+libraries = {
+"": SubResource("AnimationLibrary_cg4so")
+}
+
 [node name="Battery" type="Node2D" parent="flipper/body_AnimatedSprite2D"]
+use_parent_material = true
 position = Vector2(2.08165e-12, 1)
 
 [node name="Battery0" parent="flipper/body_AnimatedSprite2D/Battery" instance=ExtResource("53_k6py7")]

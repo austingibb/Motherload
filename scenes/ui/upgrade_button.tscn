@@ -10,6 +10,7 @@
 resource_local_to_scene = true
 shader = ExtResource("1_u6g0n")
 shader_parameter/hurt_strength = 0.0
+shader_parameter/gray_divide = 1.0
 shader_parameter/colors_to_replace = PackedColorArray(0.494118, 0.321569, 0, 1, 0.862745, 0.564706, 0.00784314, 1, 0, 0, 0, 1)
 shader_parameter/replacement_colors = PackedColorArray(1, 1, 1, 0.776471, 0.917647, 0.917647, 0.917647, 0.807843, 1, 1, 1, 0.870588)
 

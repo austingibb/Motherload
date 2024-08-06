@@ -1,6 +1,7 @@
 shader_type canvas_item;
 
 uniform float hurt_strength = 0;
+uniform float gray_divide = 1;
 
 uniform vec4 colors_to_replace[10] : source_color;
 uniform vec4 replacement_colors[10] : source_color;
@@ -22,6 +23,10 @@ void fragment() {
 		COLOR = apply_color_replace(COLOR, colors_to_replace[i], replacement_colors[i]);
 	}
 	COLOR.r = pow(pow(COLOR.r, 2)+pow(hurt_strength, 2), 0.5);
+
+	COLOR.r = COLOR.r / gray_divide;
+	COLOR.g = COLOR.g / gray_divide;
+	COLOR.b = COLOR.b / gray_divide;
 }
 
 //void light() {

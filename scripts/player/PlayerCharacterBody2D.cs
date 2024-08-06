@@ -7,15 +7,16 @@ public delegate Vector2 GetUnitDistanceBetweenPoints(Vector2 point1, Vector2 poi
 
 public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 {
-	public float WalkSpeed = 120.0f;
+	public float WalkSpeed = 140.0f;
+	public float DashSpeed = 240.0f;
 	public float DrillSideSpeed = 80.0f;
 	public float DrillVerticalSpeed = 80.0f;	
 	public float VerticalFlightSpeed = -900.0f;
 	public  float CatchVerticalFlightSpeed = -1100.0f;
 	public float HorizontalFlightSpeed = 300.0f;
 	public float MaxHorozontalSpeed = 300.0f;
+	public float DashFlightSpeed = 100f;
 
-	
 	public float EnergyLossScale = PlayerConstants.BaseEnergyLossScale;
 	public float NoEnergyHealthLoss = 10.0f;
 	public PlayerDrillables playerDrillables = new();
@@ -43,6 +44,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 	public List<List<Drillable>> SurroundingDrillables;
 	private PackedScene laserScene;
 	private PlayerStateManager playerStateManager;
+	public PlayerDash playerDash;
 
 	public float Energy;
 	public float MaxEnergy = PlayerConstants.BaseEnergy;
@@ -91,6 +93,9 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		playerAnimation.Init(flipper, bodyAnimation, jetAnimation, frontSprites, sideSprites,
 			animationPlayer, headAnimationPlayer, shaderAnimationPlayer, battery);
 
+		AnimationPlayer dashAnimation = GetNode<AnimationPlayer>("%dash_AnimationPlayer");
+		playerDash = new PlayerDash(dashAnimation);
+
 		SurroundingDrillables = new List<List<Drillable>>();
 		for (int i = 0; i < 3; i++)
 		{
@@ -128,6 +133,8 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 		{
 			Shoot();
 		}
+
+		playerDash.Update((float)delta);
 
 		playerStateManager.Update((float)delta);
 
@@ -204,9 +211,6 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 
 	private void HandleSideHead(float delta)
 	{
-		bool isPlayerFacingMouse = ((IsFacingLeft() && (GetGlobalMousePosition().X < this.GlobalPosition.X)) 
-		|| (!IsFacingLeft() && (GetGlobalMousePosition().X > this.GlobalPosition.X)));
-
 		bool isFlipped = this.flipper.Scale.X < 0;
 		
 		float angleToMouse = frontHeadAnimation.Position.AngleToPoint(GetLocalMousePosition());
@@ -217,7 +221,7 @@ public partial class PlayerCharacterBody2D : Godot.CharacterBody2D
 			angleToMouseLocal = Common.FlipAngleYAxis(angleToMouseLocal);
 		}
 
-		if (isPlayerFacingMouse && playerStateManager.CanShoot())
+		if (playerStateManager.CanShoot())
 		{
 			float xOffset = 0;
 			float angleToMouseLocalLimited = angleToMouseLocal;

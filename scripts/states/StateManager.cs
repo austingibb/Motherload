@@ -16,12 +16,18 @@ public class StateManager<T> where T : IComparable
 
     public void Update(double delta)
     {
-        StateProcessor<T>.StateTransition stateTransition = stateProcessors[currentState].ProcessState(delta);
-        if (stateTransition.ToState.CompareTo(currentState) != 0 && stateTransition.ToState.CompareTo(emptyState) != 0)
+        while (true)
         {
-            stateTransition.FromState = currentState;
-            currentState = stateTransition.ToState;
-            stateProcessors[currentState].SetupState(stateTransition);
+            StateProcessor<T>.StateTransition stateTransition = stateProcessors[currentState].ProcessState(delta);
+            if (stateTransition.ToState.CompareTo(currentState) != 0 && stateTransition.ToState.CompareTo(emptyState) != 0)
+            {
+                stateTransition.FromState = currentState;
+                currentState = stateTransition.ToState;
+                stateProcessors[currentState].SetupState(stateTransition);
+            } else
+            {
+                break;
+            }
         }
     }
 

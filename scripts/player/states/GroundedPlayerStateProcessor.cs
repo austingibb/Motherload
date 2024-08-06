@@ -9,6 +9,7 @@ public class GroundedPlayerStateProcessor : PlayerStateProcessor
         IDLE,
         SOFT_LAND,
         HARD_LAND,
+        DASH,
         NONE
     }
 
@@ -26,18 +27,21 @@ public class GroundedPlayerStateProcessor : PlayerStateProcessor
             {
                 playerAnimation.UpdateAnimation(PlayerAnimationState.LandHard);
                 groundedPlayerState = GroundedPlayerStates.HARD_LAND;
-                velocity.X /= 5;
                 float healthLoss = (Mathf.Pow(1.01f, prevVelocity.Y - 200f)*4)+7;
                 player.Health -= healthLoss;
             } else if (prevVelocity.Y > 150 && !Input.IsActionPressed("fly")) 
             {
                 playerAnimation.UpdateAnimation(PlayerAnimationState.LandSoft);
                 groundedPlayerState = GroundedPlayerStates.SOFT_LAND;
-                velocity.X /= 2;
             } else 
             {
                 playerAnimation.UpdateAnimation(PlayerAnimationState.Idle);
                 groundedPlayerState = GroundedPlayerStates.IDLE;
+            }
+
+            if (player.playerDash.IsDashActive())
+            {
+                groundedPlayerState = GroundedPlayerStates.DASH;
             }
         } else 
         {
@@ -64,6 +68,14 @@ public class GroundedPlayerStateProcessor : PlayerStateProcessor
         {
             // waiting for animation to finish before player can take action
             return new StateTransition { ToState = PlayerState.None };
+        }
+
+        if (groundedPlayerState == GroundedPlayerStates.DASH)
+        {
+            if (!player.playerDash.IsDashActive()) 
+            {
+                groundedPlayerState = GroundedPlayerStates.IDLE;
+            }
         }
 
         player.Rotation = 0;
@@ -95,7 +107,15 @@ public class GroundedPlayerStateProcessor : PlayerStateProcessor
                 }
                 else if (direction.X < 0) 
                 {   
-                    velocity.X = direction.X * player.WalkSpeed;
+                    if (velocity.X < -player.WalkSpeed)
+                    {
+                        velocity.X = Mathf.MoveToward(velocity.X, direction.X * player.WalkSpeed, (float) delta * 500.0f);
+                    } else if (velocity.X <= 0)
+                    {
+                        velocity.X = Mathf.MoveToward(velocity.X, direction.X * player.WalkSpeed, (float) delta * 1000.0f);
+                    } else {
+                        velocity.X = 0;
+                    }
                     drillFromDirection = DrillFromDirection.RIGHT;
                     Node2D readyDrillable = playerDrillables.DirectionHeld(drillFromDirection, delta);
                     if (readyDrillable != null)
@@ -103,17 +123,31 @@ public class GroundedPlayerStateProcessor : PlayerStateProcessor
                         transitionState = PlayerState.Drilling;
                     } else 
                     {
-                        if (IsMouseLeftOfPlayer)
+                        if (Input.IsActionPressed("dash") && player.playerDash.CanDash())
                         {
-                            playerAnimation.UpdateAnimation(PlayerAnimationState.WalkLeft);
-                        } else
+                            StartDash(direction, ref velocity);
+                        } else 
                         {
-                            playerAnimation.UpdateAnimation(PlayerAnimationState.WalkLeftBackwards);
+                            if (IsMouseLeftOfPlayer)
+                            {
+                                playerAnimation.UpdateAnimation(PlayerAnimationState.WalkLeft);
+                            } else
+                            {
+                                playerAnimation.UpdateAnimation(PlayerAnimationState.WalkLeftBackwards);
+                            }
                         }
                     }
                 } else if (direction.X > 0) 
                 {
-                    velocity.X = direction.X * player.WalkSpeed;
+                    if (velocity.X >= player.WalkSpeed)
+                    {
+                        velocity.X = Mathf.MoveToward(velocity.X, direction.X * player.WalkSpeed, (float) delta * 500.0f);
+                    } else if (velocity.X >= 0)
+                    {
+                        velocity.X = Mathf.MoveToward(velocity.X, direction.X * player.WalkSpeed, (float) delta * 1000.0f);
+                    } else {
+                        velocity.X = 0;
+                    }
                     drillFromDirection = DrillFromDirection.LEFT;
                     Node2D readyDrillable = playerDrillables.DirectionHeld(DrillFromDirection.LEFT, delta);
                     if (readyDrillable != null)
@@ -121,25 +155,44 @@ public class GroundedPlayerStateProcessor : PlayerStateProcessor
                         transitionState = PlayerState.Drilling;
                     } else 
                     {
-                        if (!IsMouseLeftOfPlayer)
+                        if (Input.IsActionPressed("dash") && player.playerDash.CanDash())
                         {
-                            playerAnimation.UpdateAnimation(PlayerAnimationState.WalkRight);
-                        } else
-                        {
-                            playerAnimation.UpdateAnimation(PlayerAnimationState.WalkRightBackwards);
+                            StartDash(direction, ref velocity);
+                        } else {
+                            if (!IsMouseLeftOfPlayer)
+                            {
+                                playerAnimation.UpdateAnimation(PlayerAnimationState.WalkRight);
+                            } else
+                            {
+                                playerAnimation.UpdateAnimation(PlayerAnimationState.WalkRightBackwards);
+                            }
                         }                    
                     }
                 }
             } else
             {
                 playerDrillables.DirectionHeld(DrillFromDirection.NONE, delta);
-                velocity.X = 0;
+                if (Mathf.Abs(velocity.X) > player.WalkSpeed)
+                {
+                    velocity.X = Mathf.MoveToward(velocity.X, 0, (float) delta * 500.0f);
+                } else
+                {
+                    velocity.X = Mathf.MoveToward(velocity.X, 0, (float) delta * 1000.0f);
+                }
                 playerAnimation.UpdateAnimation(PlayerAnimationState.Idle);
             }
 
             player.Velocity = velocity;
         }
         return new StateTransition { ToState = transitionState, TransitionData = drillFromDirection };
+    }
+
+    public void StartDash(Vector2 direction, ref Vector2 velocity)
+    {
+        playerAnimation.UpdateAnimation(PlayerAnimationState.IdleSide);
+        groundedPlayerState = GroundedPlayerStates.DASH;
+        player.playerDash.Dash();
+        velocity.X = direction.X * player.DashSpeed;
     }
 
     public override void AnimationFinished(string animationName)
