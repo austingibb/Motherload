@@ -52,6 +52,6 @@ animations = [{
 [node name="dirt" instance=ExtResource("1_r0lpe")]
 DrillableType = 2
 
-[node name="Dirt_AnimatedSprite2D" parent="." index="1"]
+[node name="Dirt_AnimatedSprite2D" parent="." index="0"]
 material = SubResource("ShaderMaterial_rcn5w")
 sprite_frames = SubResource("SpriteFrames_tcgkw")

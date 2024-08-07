@@ -67,8 +67,8 @@ public partial class GameGrid : TileMap
         emptyTileNoise = EmptyTileNoiseTexture.Noise as FastNoiseLite;
         emptyTileNoise.Seed = Seed;
 
-        drillableGridProbability = new GameGridProbability<DrillableType>(drillableType, DrillableType.DIRT, toDrillableProbabilityCurve, drillableTypeDepthRanges, Seed);
-        chestGridProbability = new GameGridProbability<ChestType>(chestType, ChestType.None, toChestProbabilityCurve, chestTypedepthRanges, Seed);
+        drillableGridProbability = new GameGridProbability<DrillableType>(drillableType, DrillableType.DIRT, toDrillableProbabilityCurve, drillableTypeDepthRanges, 1f, Seed);
+        chestGridProbability = new GameGridProbability<ChestType>(chestType, ChestType.None, toChestProbabilityCurve, chestTypedepthRanges, seed: Seed);
 
         enemyManager = GetNode<Node2D>("EnemyManager") as EnemyManager;
 

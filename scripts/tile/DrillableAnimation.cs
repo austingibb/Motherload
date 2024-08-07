@@ -6,7 +6,6 @@ public partial class DrillableAnimation
     public DrillFromDirection drillFromDirection;
     private Drillable drillable;
     private ShaderMaterial shaderMaterial;
-    private AnimationPlayer animationPlayer;
     private const float HorozontalAnimationOffset = -10.0f;
     private const float VerticalAnimationOffset = 3.0f;
     private const float ProgressScale = 1.0f;
@@ -15,8 +14,6 @@ public partial class DrillableAnimation
     public DrillableAnimation(Drillable drillable)
     {
         this.drillable = drillable;
-        AnimationPlayer animationPlayer = drillable.GetNode<AnimationPlayer>("./AnimationPlayer");
-		this.animationPlayer = animationPlayer;
         AnimatedSprite2D animatedSprite2D = drillable.GetNode<AnimatedSprite2D>("Dirt_AnimatedSprite2D");
         shaderMaterial = animatedSprite2D.Material as ShaderMaterial;
     }

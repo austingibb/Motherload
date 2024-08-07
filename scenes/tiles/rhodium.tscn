@@ -1,0 +1,57 @@
+[gd_scene load_steps=15 format=3 uid="uid://cyaoy7d01l0bf"]
+
+[ext_resource type="PackedScene" uid="uid://4dp3owa1a7k" path="res://scenes/tiles/dirt.tscn" id="1_fsa1n"]
+[ext_resource type="Shader" path="res://scripts/shaders/drillable_dynamic_sprite.gdshader" id="2_v1j7u"]
+[ext_resource type="Texture2D" uid="uid://dud4q44sj7tp7" path="res://assets/tiles/covers/dirt_bottom_cover.png" id="3_a5pmy"]
+[ext_resource type="Texture2D" uid="uid://vek6jvgwmjql" path="res://assets/tiles/covers/dirt_concave_connector.png" id="4_1mw1n"]
+[ext_resource type="Texture2D" uid="uid://dl1xui0fts47f" path="res://assets/tiles/masks/dirt_convex_mask.png" id="5_kx30k"]
+[ext_resource type="Texture2D" uid="uid://ut1ddro0h28i" path="res://assets/tiles/masks/dig_mask_down.png" id="6_5eiqx"]
+[ext_resource type="Texture2D" uid="uid://drftncua07736" path="res://assets/tiles/masks/dig_mask_side.png" id="7_v2h2s"]
+[ext_resource type="Texture2D" uid="uid://b372ist2ldhbd" path="res://assets/tiles/covers/dirt_left_cover.png" id="8_57v06"]
+[ext_resource type="Texture2D" uid="uid://cvmw7psh2dyed" path="res://assets/tiles/covers/dirt_right_cover.png" id="9_6bd6j"]
+[ext_resource type="Texture2D" uid="uid://bx68ylxuirvgc" path="res://assets/tiles/covers/dirt_top_cover.png" id="10_xq5r1"]
+[ext_resource type="Texture2D" uid="uid://61rqa4jwrcyv" path="res://assets/tiles/rhodium.png" id="11_mlunv"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rcn5w"]
+resource_local_to_scene = true
+shader = ExtResource("2_v1j7u")
+shader_parameter/corner_states = Vector4(2.08165e-12, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+shader_parameter/dig_orientation = true
+shader_parameter/show_top_cover = true
+shader_parameter/show_bottom_cover = true
+shader_parameter/show_left_cover = false
+shader_parameter/show_right_cover = false
+shader_parameter/flip_dig_animation_h = true
+shader_parameter/flip_dig_animation_v = false
+shader_parameter/debug_animation = false
+shader_parameter/dig_offset = 33
+shader_parameter/top_cover = ExtResource("10_xq5r1")
+shader_parameter/bottom_cover = ExtResource("3_a5pmy")
+shader_parameter/left_cover = ExtResource("8_57v06")
+shader_parameter/right_cover = ExtResource("9_6bd6j")
+shader_parameter/concave_connector = ExtResource("4_1mw1n")
+shader_parameter/convex_mask = ExtResource("5_kx30k")
+shader_parameter/dig_down = ExtResource("6_5eiqx")
+shader_parameter/dig_side = ExtResource("7_v2h2s")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ko7dr"]
+atlas = ExtResource("11_mlunv")
+region = Rect2(0, 0, 37, 47)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_gwmgt"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ko7dr")
+}],
+"loop": false,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="rhodium" instance=ExtResource("1_fsa1n")]
+DrillableType = 8
+
+[node name="Dirt_AnimatedSprite2D" parent="." index="0"]
+material = SubResource("ShaderMaterial_rcn5w")
+sprite_frames = SubResource("SpriteFrames_gwmgt")

@@ -10,9 +10,12 @@ public partial class GameGridProbability<[MustBeVariant] T>
     public Godot.Collections.Array<Curve> probabilityCurves;
     private RandomNumberGenerator rng;
     Godot.Collections.Array<Vector2I> depthRanges;
+    public float probabilityConstant;
 
-    public GameGridProbability(Godot.Collections.Array<T> types, T defaultType, Godot.Collections.Array<Curve> probabilityCurves, Godot.Collections.Array<Vector2I> depthRanges, int seed = -1)
+    public GameGridProbability(Godot.Collections.Array<T> types, T defaultType, Godot.Collections.Array<Curve> probabilityCurves, Godot.Collections.Array<Vector2I> depthRanges, 
+        float probabilityConstant = 0.01f, int seed = -1)
     {
+        this.probabilityConstant = probabilityConstant;
         this.types = types;
         this.probabilityCurves = probabilityCurves;
         this.depthRanges = depthRanges;
@@ -64,6 +67,6 @@ public partial class GameGridProbability<[MustBeVariant] T>
 
         float depthNormalized = ((float) depth - lowerDepthRange) / (depthWidth);
 
-        return curve.Sample(depthNormalized) / 100f;
+        return curve.Sample(depthNormalized) * this.probabilityConstant;
     }
 }

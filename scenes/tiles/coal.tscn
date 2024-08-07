@@ -1,0 +1,57 @@
+[gd_scene load_steps=15 format=3 uid="uid://fhq2pp15ko3a"]
+
+[ext_resource type="PackedScene" uid="uid://4dp3owa1a7k" path="res://scenes/tiles/dirt.tscn" id="1_2o7tc"]
+[ext_resource type="Shader" path="res://scripts/shaders/drillable_dynamic_sprite.gdshader" id="2_p4k66"]
+[ext_resource type="Texture2D" uid="uid://dud4q44sj7tp7" path="res://assets/tiles/covers/dirt_bottom_cover.png" id="3_d4vof"]
+[ext_resource type="Texture2D" uid="uid://vek6jvgwmjql" path="res://assets/tiles/covers/dirt_concave_connector.png" id="4_47ach"]
+[ext_resource type="Texture2D" uid="uid://dl1xui0fts47f" path="res://assets/tiles/masks/dirt_convex_mask.png" id="5_scsik"]
+[ext_resource type="Texture2D" uid="uid://ut1ddro0h28i" path="res://assets/tiles/masks/dig_mask_down.png" id="6_r7u0w"]
+[ext_resource type="Texture2D" uid="uid://drftncua07736" path="res://assets/tiles/masks/dig_mask_side.png" id="7_qf4k5"]
+[ext_resource type="Texture2D" uid="uid://b372ist2ldhbd" path="res://assets/tiles/covers/dirt_left_cover.png" id="8_dla5j"]
+[ext_resource type="Texture2D" uid="uid://cvmw7psh2dyed" path="res://assets/tiles/covers/dirt_right_cover.png" id="9_nd5vk"]
+[ext_resource type="Texture2D" uid="uid://bx68ylxuirvgc" path="res://assets/tiles/covers/dirt_top_cover.png" id="10_ixb55"]
+[ext_resource type="Texture2D" uid="uid://dymk0xnxbq3q2" path="res://assets/tiles/coal.png" id="11_ar8wf"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rcn5w"]
+resource_local_to_scene = true
+shader = ExtResource("2_p4k66")
+shader_parameter/corner_states = Vector4(2.08165e-12, 2.08165e-12, 2.08165e-12, 2.08165e-12)
+shader_parameter/dig_orientation = true
+shader_parameter/show_top_cover = true
+shader_parameter/show_bottom_cover = true
+shader_parameter/show_left_cover = false
+shader_parameter/show_right_cover = false
+shader_parameter/flip_dig_animation_h = true
+shader_parameter/flip_dig_animation_v = false
+shader_parameter/debug_animation = false
+shader_parameter/dig_offset = 33
+shader_parameter/top_cover = ExtResource("10_ixb55")
+shader_parameter/bottom_cover = ExtResource("3_d4vof")
+shader_parameter/left_cover = ExtResource("8_dla5j")
+shader_parameter/right_cover = ExtResource("9_nd5vk")
+shader_parameter/concave_connector = ExtResource("4_47ach")
+shader_parameter/convex_mask = ExtResource("5_scsik")
+shader_parameter/dig_down = ExtResource("6_r7u0w")
+shader_parameter/dig_side = ExtResource("7_qf4k5")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gcpn8"]
+atlas = ExtResource("11_ar8wf")
+region = Rect2(0, 0, 37, 47)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_jfi31"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gcpn8")
+}],
+"loop": false,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="coal" instance=ExtResource("1_2o7tc")]
+DrillableType = 9
+
+[node name="Dirt_AnimatedSprite2D" parent="." index="0"]
+material = SubResource("ShaderMaterial_rcn5w")
+sprite_frames = SubResource("SpriteFrames_jfi31")

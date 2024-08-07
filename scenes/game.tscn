@@ -1,4 +1,4 @@
-[gd_scene load_steps=49 format=3 uid="uid://c4n3nw1neoend"]
+[gd_scene load_steps=65 format=3 uid="uid://c4n3nw1neoend"]
 
 [ext_resource type="PackedScene" uid="uid://cwrufed6b0h7m" path="res://scenes/player/player.tscn" id="1_cpms4"]
 [ext_resource type="Script" path="res://scripts/game/Game.cs" id="1_jibs2"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://20uasolvx0af" path="res://scenes/tiles/dirt_non_drillable.tscn" id="4_m5gwg"]
 [ext_resource type="PackedScene" uid="uid://d4hktp3q7gvtg" path="res://scenes/chest/gold_chest_spawn.tscn" id="5_a8x4h"]
 [ext_resource type="PackedScene" uid="uid://dltcds5x4kmfi" path="res://scenes/tiles/dirt_background.tscn" id="5_br6br"]
+[ext_resource type="PackedScene" uid="uid://4bb1uekiqgay" path="res://scenes/tiles/bauxite.tscn" id="5_c4ld7"]
 [ext_resource type="PackedScene" uid="uid://vvbgo5qew4k3" path="res://scenes/tiles/gold.tscn" id="6_1qt14"]
 [ext_resource type="Texture2D" uid="uid://qbpb1x8pgoq5" path="res://assets/sky_blue.png" id="6_qb6hb"]
 [ext_resource type="PackedScene" uid="uid://bwvk0l13hnn6j" path="res://scenes/tiles/iron.tscn" id="7_p6cjd"]
@@ -20,9 +21,16 @@
 [ext_resource type="PackedScene" uid="uid://bcomgcerauytl" path="res://scenes/tiles/diamond.tscn" id="10_vxvp4"]
 [ext_resource type="Script" path="res://scripts/inventory/Inventory.cs" id="11_3hhjf"]
 [ext_resource type="PackedScene" uid="uid://cl2qb4ttwe8h8" path="res://scenes/tiles/lithium.tscn" id="11_04x7u"]
+[ext_resource type="PackedScene" uid="uid://fhq2pp15ko3a" path="res://scenes/tiles/coal.tscn" id="12_88ube"]
 [ext_resource type="PackedScene" uid="uid://bpspmu2o75ucw" path="res://scenes/buildings/sell_station.tscn" id="12_nuqs6"]
 [ext_resource type="PackedScene" uid="uid://v0qqttb0yfbx" path="res://scenes/ui/hud.tscn" id="13_6ipmk"]
 [ext_resource type="PackedScene" uid="uid://2j154jrcrhfx" path="res://scenes/buildings/charge_station.tscn" id="13_s1kka"]
+[ext_resource type="PackedScene" uid="uid://dbbah5rkonj5t" path="res://scenes/tiles/emerald.tscn" id="13_uq6us"]
+[ext_resource type="PackedScene" uid="uid://b7prfc81k0fmb" path="res://scenes/tiles/agate.tscn" id="14_bxnkn"]
+[ext_resource type="PackedScene" uid="uid://cyaoy7d01l0bf" path="res://scenes/tiles/rhodium.tscn" id="15_es65a"]
+[ext_resource type="PackedScene" uid="uid://b5ggjx3ruyr4x" path="res://scenes/tiles/ruby.tscn" id="16_505n1"]
+[ext_resource type="PackedScene" uid="uid://b2jye3yonsp7g" path="res://scenes/tiles/sapphire.tscn" id="17_a2kqf"]
+[ext_resource type="PackedScene" uid="uid://s6scwptjutb8" path="res://scenes/tiles/uranium.tscn" id="18_f4qks"]
 [ext_resource type="PackedScene" uid="uid://dawbd1hptxxk8" path="res://scenes/buildings/upgrade_station.tscn" id="18_svd0m"]
 [ext_resource type="Script" path="res://scripts/enemy/EnemyManager.cs" id="19_kbbim"]
 [ext_resource type="PackedScene" uid="uid://p0424hsm5m6h" path="res://scenes/ui/upgrade_menu.tscn" id="20_2vh3i"]
@@ -32,6 +40,7 @@
 
 [sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_4ukp1"]
 scenes/1/scene = ExtResource("3_pqfaf")
+scenes/2/scene = ExtResource("14_bxnkn")
 scenes/3/scene = ExtResource("5_br6br")
 scenes/4/scene = ExtResource("6_1qt14")
 scenes/5/scene = ExtResource("7_p6cjd")
@@ -40,12 +49,19 @@ scenes/7/scene = ExtResource("9_bld13")
 scenes/8/scene = ExtResource("10_vxvp4")
 scenes/9/scene = ExtResource("11_04x7u")
 scenes/10/scene = ExtResource("4_hdq5j")
+scenes/11/scene = ExtResource("5_c4ld7")
 scenes/12/scene = ExtResource("5_a8x4h")
 scenes/13/scene = ExtResource("4_m5gwg")
 scenes/14/scene = ExtResource("7_ukns3")
 scenes/15/scene = ExtResource("8_ddeii")
 scenes/16/scene = ExtResource("9_jnof7")
 scenes/17/scene = ExtResource("10_m2stv")
+scenes/18/scene = ExtResource("12_88ube")
+scenes/19/scene = ExtResource("13_uq6us")
+scenes/20/scene = ExtResource("15_es65a")
+scenes/21/scene = ExtResource("16_505n1")
+scenes/22/scene = ExtResource("17_a2kqf")
+scenes/23/scene = ExtResource("18_f4qks")
 
 [sub_resource type="TileSet" id="TileSet_smrpq"]
 tile_size = Vector2i(33, 33)
@@ -59,33 +75,75 @@ width = 20
 height = 60
 noise = SubResource("FastNoiseLite_vnfqb")
 
-[sub_resource type="Curve" id="Curve_iyd77"]
-max_value = 10.0
-_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.0342742, 5.36822), -0.261717, -0.261717, 0, 0, Vector2(0.282258, 2.22127), -7.67707, -7.67707, 0, 0, Vector2(0.699597, 1.48994), -1.22135, -1.22135, 0, 0, Vector2(1, 1.00239), 0.0, 0.0, 0, 0]
-point_count = 5
-
-[sub_resource type="Curve" id="Curve_sf736"]
-max_value = 5.0
-_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.0987903, 1.44306), 2.29003, 2.29003, 0, 0, Vector2(0.489919, 1.89737), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+[sub_resource type="Curve" id="Curve_iuji8"]
+max_value = 0.1
+_data = [Vector2(0, 0.00972463), 0.0, 0.0, 0, 0, Vector2(0.0515873, 0.016037), 0.0, 0.0, 0, 0, Vector2(0.209524, 0.016037), 0.0, 0.0, 0, 0, Vector2(0.315079, 0), 0.0, 0.0, 0, 0]
 point_count = 4
 
-[sub_resource type="Curve" id="Curve_uvtsv"]
-max_value = 2.0
-_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.493952, 0.962837), 2.22591, 2.22591, 0, 0, Vector2(0.945565, 1.93795), 0.0, 0.0, 0, 0, Vector2(1, 0.0276167), 0.0, 0.0, 0, 0]
+[sub_resource type="Curve" id="Curve_n3847"]
+max_value = 0.04
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.121429, 0.0258534), 0.0, 0.0, 0, 0, Vector2(0.365873, 0.0260263), 0.0, 0.0, 0, 0, Vector2(0.661111, 0), 0.0, 0.0, 0, 0]
 point_count = 4
 
-[sub_resource type="Curve" id="Curve_5cnw7"]
-_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.256048, 0.0470508), 0.283131, 0.283131, 0, 0, Vector2(0.495968, 0.177804), 0.977081, 0.977081, 0, 0, Vector2(0.754032, 0.505796), 0.0, 0.0, 0, 0, Vector2(1, 0.224344), 0.0, 0.0, 0, 0]
+[sub_resource type="Curve" id="Curve_m3w7c"]
+max_value = 0.1
+_data = [Vector2(0.0984127, 0), 0.0, 0.0, 0, 0, Vector2(0.257937, 0.0120593), 0.10301, 0.10301, 0, 0, Vector2(0.437302, 0.0196688), 0.0, 0.0, 0, 0, Vector2(0.642063, 0.0117135), -0.0614099, -0.0614099, 0, 0, Vector2(0.99127, 0.0047226), 0.0, 0.0, 0, 0]
 point_count = 5
 
-[sub_resource type="Curve" id="Curve_nbjsf"]
-_data = [Vector2(0, 0.259802), 0.0, 0.0, 0, 0, Vector2(1, 0.330719), 0.0, 0.0, 0, 0]
+[sub_resource type="Curve" id="Curve_lr3tw"]
+max_value = 0.1
+_data = [Vector2(0, 0.000299327), 0.0, 0.0, 0, 0, Vector2(0.369841, 0.00367168), 0.0161957, 0.0161957, 0, 0, Vector2(0.494444, 0.0166423), 0.0, 0.0, 0, 0, Vector2(0.771429, 0.0147399), -0.0435813, -0.0435813, 0, 0, Vector2(0.975397, 0), 0.0, 0.0, 0, 0]
+point_count = 5
+
+[sub_resource type="Curve" id="Curve_44xf2"]
+max_value = 0.01
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.480952, 0.00254756), 0.0169796, 0.0169796, 0, 0, Vector2(0.602381, 0.00672276), 0.0103116, 0.0103116, 0, 0, Vector2(0.703175, 0.00699082), 0.0, 0.0, 0, 0, Vector2(0.815079, 0.00620394), -0.0173806, -0.0173806, 0, 0, Vector2(1, 0.00159638), 0.0, 0.0, 0, 0]
+point_count = 6
+
+[sub_resource type="Curve" id="Curve_m44rq"]
+max_value = 0.04
+_data = [Vector2(0.497619, 0), 0.0, 0.0, 0, 0, Vector2(0.749206, 0.00101902), 0.00682595, 0.00682595, 0, 0, Vector2(1, 0.00302514), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_mnl41"]
+max_value = 0.1
+_data = [Vector2(0, 0.00955169), 0.0, 0.0, 0, 0]
+point_count = 1
+
+[sub_resource type="Curve" id="Curve_guj75"]
+max_value = 0.04
+_data = [Vector2(0.296032, 0), 0.0, 0.0, 0, 0, Vector2(0.342857, 0.00333644), 0.0, 0.0, 0, 0]
 point_count = 2
 
-[sub_resource type="Curve" id="Curve_m53ut"]
-max_value = 4.0
-_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.145161, 3.98227), 0.0, 0.0, 0, 0, Vector2(0.590726, 2.56393), -2.74007, -2.74007, 0, 0, Vector2(0.987903, 0.746676), 0.0, 0.0, 0, 0]
+[sub_resource type="Curve" id="Curve_7y5wi"]
+max_value = 0.04
+_data = [Vector2(0.592857, 0), 0.0, 0.0, 0, 0, Vector2(0.66746, 0.00344021), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_pfqsx"]
+max_value = 0.02
+_data = [Vector2(0, 0), 0.0, 0.0709592, 0, 0, Vector2(0.05, 0.00402022), 0.00943176, 0.00943176, 0, 0, Vector2(0.263492, 0.00277504), -0.0161551, -0.0161551, 0, 0, Vector2(0.416667, 0.00140881), -0.00399495, -0.00399495, 0, 0, Vector2(1, 0.000212856), 0.0, 0.0, 0, 0]
+point_count = 5
+
+[sub_resource type="Curve" id="Curve_7x0fu"]
+max_value = 0.01
+_data = [Vector2(0.0714286, 0), 0.0, 0.0, 0, 0, Vector2(0.248413, 0.00253758), 0.00138667, 0.00138667, 0, 0, Vector2(0.371429, 0.00210523), -0.00357224, -0.00357224, 0, 0, Vector2(0.47619, 0.0014394), -0.00700411, -0.00700411, 0, 0, Vector2(1, 3.99128e-05), 0.0, 0.0, 0, 0]
+point_count = 5
+
+[sub_resource type="Curve" id="Curve_1qa24"]
+max_value = 0.01
+_data = [Vector2(0.37381, 0), 0.0, 0.0, 0, 0, Vector2(0.501587, 0.00319809), 0.0151707, 0.0151707, 0, 0, Vector2(0.623809, 0.00261008), -0.0181589, -0.0181589, 0, 0, Vector2(1, 0.000558734), 0.0, 0.0, 0, 0]
 point_count = 4
+
+[sub_resource type="Curve" id="Curve_6bc05"]
+max_value = 0.01
+_data = [Vector2(0.565079, 0), 0.0, 0.0, 0, 0, Vector2(0.669841, 0.00105893), 0.0167847, 0.0167847, 0, 0, Vector2(0.730952, 0.00322935), 0.0, 0.0, 0, 0, Vector2(0.886508, 0.00252029), -0.00556357, -0.00556357, 0, 0, Vector2(1, 0.00056605), 0.0, 0.0, 0, 0]
+point_count = 5
+
+[sub_resource type="Curve" id="Curve_cbgy8"]
+max_value = 0.01
+_data = [Vector2(0.811111, 0), 0.0, 0.0, 0, 0, Vector2(0.90873, 0.00136158), 0.0, 0.0, 0, 0]
+point_count = 2
 
 [sub_resource type="Curve" id="Curve_1ehs6"]
 max_value = 0.25
@@ -149,9 +207,9 @@ ChunkWidth = 16
 ChunkSize = 3
 ChunkPadding = 5
 EmptyTileNoiseTexture = SubResource("NoiseTexture2D_5udv4")
-drillableType = [1, 2, 3, 4, 5, 6]
-toDrillableProbabilityCurve = [SubResource("Curve_iyd77"), SubResource("Curve_sf736"), SubResource("Curve_uvtsv"), SubResource("Curve_5cnw7"), SubResource("Curve_nbjsf"), SubResource("Curve_m53ut")]
-drillableTypeDepthRanges = [Vector2i(0, 100), Vector2i(0, 200), Vector2i(50, 250), Vector2i(0, 400), Vector2i(0, 100), Vector2i(0, 100)]
+drillableType = [7, 1, 6, 2, 3, 8, 9, 5, 10, 11, 12, 13, 14, 4]
+toDrillableProbabilityCurve = [SubResource("Curve_iuji8"), SubResource("Curve_n3847"), SubResource("Curve_m3w7c"), SubResource("Curve_lr3tw"), SubResource("Curve_44xf2"), SubResource("Curve_m44rq"), SubResource("Curve_mnl41"), SubResource("Curve_guj75"), SubResource("Curve_7y5wi"), SubResource("Curve_pfqsx"), SubResource("Curve_7x0fu"), SubResource("Curve_1qa24"), SubResource("Curve_6bc05"), SubResource("Curve_cbgy8")]
+drillableTypeDepthRanges = [Vector2i(0, 1000), Vector2i(0, 1000), Vector2i(0, 1000), Vector2i(0, 1000), Vector2i(0, 1000), Vector2i(0, 1000), Vector2i(0, 1000), Vector2i(0, 1000), Vector2i(0, 1000), Vector2i(0, 1000), Vector2i(0, 1000), Vector2i(0, 1000), Vector2i(0, 1000), Vector2i(0, 1000)]
 chestType = [4, 3, 2, 0, 1]
 toChestProbabilityCurve = [SubResource("Curve_1ehs6"), SubResource("Curve_n5bbe"), SubResource("Curve_uaiqh"), SubResource("Curve_wousd"), SubResource("Curve_owoel")]
 chestTypedepthRanges = [Vector2i(0, 100), Vector2i(0, 100), Vector2i(0, 100), Vector2i(0, 100), Vector2i(0, 100), Vector2i(0, 100)]
